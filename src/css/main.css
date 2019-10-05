@@ -1,0 +1,36 @@
+/*
+    main.css
+
+    Sep 29 2019   Initial
+    Sep 30 2019   new sections
+    Oct 03 2019   new sections
+
+*/
+
+* {
+    margin: 0;
+    padding: 0;
+  }
+#app {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin-top: 60px;
+}
+#header {
+  border-bottom: 2px solid lightgray;
+}
+#header h1 { font-weight: bold; font-size: 1.5em; }
+#header h2 {font-weight: normal;font-size: 1em; }
+#menu {text-align: left;}
+#appzone {padding-top: 1em;padding-bottom: 1em;margin-top: 1em;}
+#footer {border: 2px solid  lightgray;font-size: 1em;margin-top: 1em;padding-top: 1em;}
+
+.bootstrap h1 { font-weight: bold;font-size: 1em;}
+.bootstrap h2 {font-weight: normal;font-size: 0.8em;}
+
+.identification {padding-top: 1em;padding-bottom: 1em;}
+.viewbackground {background-color: lightgray;}
+.viewframe { border: 1px solid lightgray};
+
+li {margin: 0 0.8em;}
