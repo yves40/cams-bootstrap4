@@ -10,7 +10,6 @@
     "startserver": "pm2 start ./src/server.js --watch --ignore-watch='node_modules' --name server",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --hot",
     "stopserver": "pm2 delete server",
-    "startweb": "cross-env NODE_ENV=development pm2 start D:\\ALL\\LAB\\GIT\\MEVNTemplate\\node_modules\\webpack-dev-server\\bin\\webpack-dev-server.js --watch --ignore-watch='node_modules' --name webvue",
     "stopweb": "pm2 delete webvue",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
