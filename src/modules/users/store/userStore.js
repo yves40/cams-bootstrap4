@@ -2,11 +2,12 @@
     userstore.js    
 
     Oct 04 2019   Initial
+    Oct 06 2019   Vuex tests
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
 
-const logger = require('../utilities/logger');
+const logger = require('../../core/services/logger');
 
 Vue.use(Vuex);
 
@@ -16,7 +17,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userStore:1.00, Oct 04 2019 ',
+        Version: 'userstore:1.04, Oct 06 2019 ',
         clock: '',
     },
     /*----------------------------------------------------------------------------
@@ -35,13 +36,8 @@ export default {
     /*----------------------------------------------------------------------------
         VUEX actions
     ----------------------------------------------------------------------------*/
-    actions:  { // Asynchronous
-        settimer(context) {
-            setInterval(() => {
-                context.commit('updateTime')
-              }, 1000);
-            logger.debug(context.state.Version + 'action settimer');
-        },
-    },}
+    actions:  {
+    },
+}
 
 

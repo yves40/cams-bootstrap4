@@ -7,6 +7,7 @@
   Oct 03 2019   Grid setup
   Oct 04 2019   Some info
   Oct 05 2019   Reorg
+  Oct 06 2019   1st vuex tests
 -->
 <template>
   <div>
@@ -21,7 +22,11 @@
         <b-row>
           <b-col cols="2"></b-col>
           <b-col>
-            {{ version }}
+            <b-list-group>
+              <b-list-group-item>{{version}}</b-list-group-item>
+              <b-list-group-item>{{coreversion}} {{today}}</b-list-group-item>
+              <b-list-group-item>{{userversion}}</b-list-group-item>
+            </b-list-group>
           </b-col>
           <b-col cols="2"></b-col>
         </b-row>
@@ -30,10 +35,23 @@
 </template>
 
 <script>
+
+import { mapGetters } from 'vuex'
+
 export default {
+  computed: {
+    ...mapGetters (
+        'userstore', {userversion: 'getVersion'}
+      ),
+    ...mapGetters (
+        'corestore', {coreversion: 'getVersion',
+                      today: 'getToday'
+        },
+      )
+  },
   data() {
     return {
-      version: "Home 1.38, Oct 05 2019"
+      version: "Home 1.42, Oct 06 2019"
     };
   },
   created() {
