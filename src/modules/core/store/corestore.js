@@ -4,21 +4,21 @@
     Oct 04 2019     Initial
     Oct 05 2019     Reorg
     Oct 06 2019     Install common services
+    Oct 09 2019     Getter for date
 ----------------------------------------------------------------------------*/
 
 import Vue from 'vue';
 import Vuex from 'vuex'
-
+import datetime from '../services/datetime';
 const logger = require('../services/logger');
 
 Vue.use(Vuex);
-const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 /*----------------------------------------------------------------------------
     VUEX states
 ----------------------------------------------------------------------------*/
 const state = {
-    Version: 'corestore.js:1.07, Oct 06 2019',
-    today: days[new Date().getDay()],
+    Version: 'corestore.js:1.08, Oct 09 2019',
+    today: datetime.getDate(),
 };
 /*----------------------------------------------------------------------------
     VUEX Getters
@@ -28,7 +28,7 @@ const getters = {
         return state.Version;
     },
     getToday(state) {
-        return state.today;;
+        return state.today;
     }
 };
 /*----------------------------------------------------------------------------
