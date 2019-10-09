@@ -11,20 +11,22 @@
 //    Mar 14 2019   use helper for dates
 //    Apr 03 2019   Test for error : Cannot read property of undefined
 //    Oct 04 2019   Pushed in the MEVNTemplate project
+//    Oct 09 2019   Use the datetime service
 //----------------------------------------------------------------------------
-const Version = 'logger:1.33, Oct 042019';
+const Version = 'logger:1.34, Oct 09 2019';
+
+import datetime from './datetime';
 
 let fs = require('fs'); 
 
 const MAXLOGS = 10;
-const months = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
 let logs = [];
 
-const DEBUG = 0;
-const INFORMATIONAL = 1;
-const WARNING = 2;
-const ERROR = 3;
-const FATAL = 4;
+export const DEBUG = 0;
+export const INFORMATIONAL = 1;
+export const WARNING = 2;
+export const ERROR = 3;
+export const FATAL = 4;
 // ENV shell variables LOGMODE and LOGFILE defines log level and log destination 
 // If LOGFILE is defined, it automatically turns the logger to file output, 
 // except if used in a browser
@@ -33,11 +35,11 @@ let OUTFILE = process.env.LOGFILE || '/tmp/' + Version.replace(/[,:]/g,'_').repl
 let tracetofileflag = false;
 let tracetoconsoleflag = true;
 
-module.exports.DEBUG = DEBUG;
-module.exports.INFORMATIONAL = INFORMATIONAL;
-module.exports.WARNING = WARNING;
-module.exports.ERROR = ERROR;
-module.exports.FATAL = FATAL;
+// module.exports.DEBUG = DEBUG;
+//module.exports.INFORMATIONAL = INFORMATIONAL;
+//module.exports.WARNING = WARNING;
+//module.exports.ERROR = ERROR;
+//module.exports.FATAL = FATAL;
 
 //----------------------------------------------------------------------------
 // Small func to return a readable status
@@ -57,7 +59,7 @@ function levelToString(level) {
 // Logger infos
 // Returns an object with logger data
 //-----------------------------------------------------
-module.exports.getLoggerInfo = function getLoggerInfo() {
+export function getLoggerInfo() {
     loggerinfo = {};
     loggerinfo.version = Version;
     if (process.env.LOGMODE) {
@@ -96,8 +98,7 @@ function log(mess, level, syncmode = false) {
         if (logs.length === MAXLOGS) {
             logs.shift();                   // Handle the log buffer
         }
-        let logstring = months[d.getMonth()] + '-' + d.getDate() + '-' + d.getFullYear() + ' ' 
-                + d.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1") 
+        let logstring = datetime.getDateTime()
                 + ' [' + levelToString(level) + '] '
                 + ' ' + mess ;
        logs.push( logstring);
@@ -134,11 +135,11 @@ function log(mess, level, syncmode = false) {
 //----------------------------------------------------------------------------
 // Functions used to switch console mode
 //----------------------------------------------------------------------------
-module.exports.enableconsole = function enableconsole() {
+export function enableconsole() {
     tracetoconsoleflag = true;
 }
 
-module.exports.disableconsole = function disableconsole() {
+export function disableconsole() {
     if (tracetofileflag)            // If no trace set to file, do not disable the console
         tracetoconsoleflag = false;
 }
@@ -149,53 +150,53 @@ module.exports.disableconsole = function disableconsole() {
 //  which itsel depends on either LOGFILE environment 
 //  variable or a default (see code above)
 //-----------------------------------------------------
-module.exports.tracetofile = function tracetofile(filename = OUTFILE) {
+export function tracetofile(filename = OUTFILE) {
     tracetofileflag = true;
     OUTFILE = filename;
 }
 //-----------------------------------------------------
 // For ASync mode
 //-----------------------------------------------------
-module.exports.debug = function debug(mess) {
+export function debug(mess) {
     log(mess, DEBUG);
     return;
 }
-module.exports.info = function info(mess) {
+export function info(mess) {
     log(mess, INFORMATIONAL);
     return;
 }
-module.exports.warning = function warning(mess) {
+export function warning(mess) {
     log(mess, WARNING);
     return;
 }
-module.exports.error = function error(mess) {
+export function error(mess) {
     log(mess, ERROR);
     return;
 }
-module.exports.fatal = function fatal(mess) {
+export function fatal(mess) {
     log(mess, FATAL);
     return;
 }
 //-----------------------------------------------------
 // For Sync mode
 //-----------------------------------------------------
-module.exports.debugs = function debugs(mess) {
+export function debugs(mess) {
     log(mess, DEBUG, true);
     return;
 }
-module.exports.infos = function infos(mess) {
+export function infos(mess) {
     log(mess, INFORMATIONAL, true);
     return;
 }
-module.exports.warnings = function warnings(mess) {
+export function warnings(mess) {
     log(mess, WARNING, true);
     return;
 }
-module.exports.errors = function errors(mess) {
+export function errors(mess) {
     log(mess, ERROR, true);
     return;
 }
-module.exports.fatals = function fatals(mess) {
+export function fatals(mess) {
     log(mess, FATAL, true);
     return;
 }
