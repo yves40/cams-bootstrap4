@@ -7,6 +7,7 @@
   Oct 02 2019   Menu popup not hiding after select 
   Oct 03 2019   Dropdown problem
   Oct 04 2019   Dropdown problem unsolved, discarded. Few changes on copyright
+  Oct 09 2019   About, date in header bar
 -->
 
 <template>
@@ -57,7 +58,7 @@
           <b-col cols="2"></b-col>
           <b-col>
             <h1>{{ msg }}</h1>
-            <h2>{{ version }}</h2>
+            <h2>{{ version }} : {{today}}</h2>
           </b-col>
           <b-col cols="2"></b-col>
         </b-row>
@@ -83,12 +84,20 @@
 </template>
 
 <script>
+
+import { mapGetters } from 'vuex'
+
 export default {
   name: "app",
+  computed: {
+    ...mapGetters (
+        'corestore', { today: 'getToday'},
+      )
+  },
   data() {
     return {
       msg: "Welcome to Your Vue.js Application",
-      version: "App 1.65, Oct 04 2019",
+      version: "App 1.68, Oct 09 2019",
       copyright: "MEVN template by oldtimerSoft",
       // These arrays are defining the displayed menus
       // enableflag drives the visibility of the URL
@@ -111,6 +120,13 @@ export default {
             { url: "form", text: "form", enableflag: true, disableflag: false },
             {url: "pagination",text: "pagination",enableflag: true,disableflag: false},
             {url: "template",text: "template",enableflag: true,disableflag: false}
+          ]
+        },
+        {
+          text: "About",
+          enableflag: true,
+          navoptions: [
+            {url: "about",text: "about",enableflag: true,disableflag: false},
           ]
         }
       ]
