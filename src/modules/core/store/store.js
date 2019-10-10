@@ -12,7 +12,7 @@ import Vuex from 'vuex'
 const logger = require('../services/logger');
 
 // Get various stores
-import {corestore} from './corestore';
+import corestore from './corestore';
 import userstore from '../../users/store/userstore';
 
 export default new Vuex.Store({

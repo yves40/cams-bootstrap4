@@ -2,8 +2,9 @@
 //    datetime.js
 //
 //    Oct 09 2019   Initial
+//    Oct 10 2019   Timer for minutes
 //----------------------------------------------------------------------------
-const Version = 'datetime:1.02, Oct 09 2019';
+const Version = 'datetime:1.04, Oct 10 2019';
 
 const months = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
 
@@ -24,8 +25,15 @@ function getTime() {
     let d = new Date();
     return d.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1") ;
 }
+function getShortTime() {
+    let d = new Date();
+    let shortime =  d.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1") ;
+    return shortime.slice(1,5);
+}
 export default {
     getDateTime,
     getDate,
     getTime,
+    getShortTime,
 }
+

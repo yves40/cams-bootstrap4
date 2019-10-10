@@ -24,7 +24,7 @@
           <b-col>
             <b-list-group >
               <b-list-group-item>{{version}}</b-list-group-item>
-              <b-list-group-item>{{coreversion}} {{today}}</b-list-group-item>
+              <b-list-group-item>{{coreversion}}</b-list-group-item>
               <b-list-group-item>{{userversion}}</b-list-group-item>
             </b-list-group>
           </b-col>

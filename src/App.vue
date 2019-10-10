@@ -8,6 +8,7 @@
   Oct 03 2019   Dropdown problem
   Oct 04 2019   Dropdown problem unsolved, discarded. Few changes on copyright
   Oct 09 2019   About, date in header bar
+  Oct 10 2019   About, date in Menu bar
 -->
 
 <template>
@@ -26,8 +27,8 @@
               <b-navbar-nav>
                 <b-nav-item text="Home"></b-nav-item>
               </b-navbar-nav>
-              <b-navbar-nav>
-                <div v-for="entry in topmenu" :key="entry.id">
+              <b-navbar-nav> 
+                <div v-for="entry in topmenu" :key="entry.id"> <!-- Load menus and sub menus -->
                   <b-nav-item-dropdown
                     :id="entry.text"
                     :text="entry.text"
@@ -43,7 +44,9 @@
                   </b-nav-item-dropdown>
                 </div>
                 <!--
+                    Add the date
                 -->
+                <b-nav-text >{{today}} {{hms}}</b-nav-text>
               </b-navbar-nav>
             </b-navbar>
           </b-col>
@@ -58,7 +61,7 @@
           <b-col cols="2"></b-col>
           <b-col>
             <h1>{{ msg }}</h1>
-            <h2>{{ version }} : {{today}}</h2>
+            <h2>{{ version }}</h2>
           </b-col>
           <b-col cols="2"></b-col>
         </b-row>
@@ -85,19 +88,60 @@
 
 <script>
 
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: "app",
   computed: {
     ...mapGetters (
-        'corestore', { today: 'getToday'},
-      )
+        'corestore', { today: 'getToday',
+                       hms: 'getHM'},
+    ),
   },
-  data() {
+
+  mounted() {
+    this.$store.dispatch("settimer");
+  },
+
+methods: {
+    ...mapActions(
+        'corestore', { 
+          settimer: 'settimer',
+        }
+    ),
+    // These methods are used by application pages to disable their menu entries
+    // No need to display a login entry in a menu if you're on the login page
+    // See the created() and beforeDestroy() methods in slave pages
+    disableMe(label) {
+      let inner,
+      outer = 0;
+      for (outer in this.topmenu) {
+        for (inner in this.topmenu[outer].navoptions) {
+          if (this.topmenu[outer].navoptions[inner].url === label) {
+            this.topmenu[outer].navoptions[inner].enableflag = false;
+            break;
+          }
+        }
+      }
+    },
+    enableMe(label) {
+      let inner,
+      outer = 0;
+      for (outer in this.topmenu) {
+        for (inner in this.topmenu[outer].navoptions) {
+          if (this.topmenu[outer].navoptions[inner].url === label) {
+            this.topmenu[outer].navoptions[inner].enableflag = true;
+            break;
+          }
+        }
+      }
+    },
+  },
+
+data() {
     return {
       msg: "Welcome to Your Vue.js Application",
-      version: "App 1.68, Oct 09 2019",
+      version: "App 1.74, Oct 10 2019",
       copyright: "MEVN template by oldtimerSoft",
       // These arrays are defining the displayed menus
       // enableflag drives the visibility of the URL
@@ -132,34 +176,5 @@ export default {
       ]
     };
   },
-  methods: {
-    // These methods are used by application pages to disable their menu entries
-    // No need to display a login entry in a menu if you're on the login page
-    // See the created() and beforeDestroy() methods in slave pages
-    disableMe(label) {
-      let inner,
-      outer = 0;
-      for (outer in this.topmenu) {
-        for (inner in this.topmenu[outer].navoptions) {
-          if (this.topmenu[outer].navoptions[inner].url === label) {
-            this.topmenu[outer].navoptions[inner].enableflag = false;
-            break;
-          }
-        }
-      }
-    },
-    enableMe(label) {
-      let inner,
-      outer = 0;
-      for (outer in this.topmenu) {
-        for (inner in this.topmenu[outer].navoptions) {
-          if (this.topmenu[outer].navoptions[inner].url === label) {
-            this.topmenu[outer].navoptions[inner].enableflag = true;
-            break;
-          }
-        }
-      }
-    }
-  }
 };
 </script>
