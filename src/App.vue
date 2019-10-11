@@ -16,28 +16,31 @@
   <div id="app">
     <!-- ------------------------------------------------------------------------- -->
     <div id="menu">
-      <b-navbar class="navbar-dark bg-dark" fixed="top">
-        <b-navbar-brand v-bind:to="{ name: 'home' }">Home</b-navbar-brand>
-        <b-navbar-nav class="mr-auto"> 
-          <div v-for="entry in topmenu" :key="entry.id"> <!-- Load menus and sub menus -->
-            <b-nav-item-dropdown
-              :id="entry.text"
-              :text="entry.text"
-              v-show="entry.enableflag"
-            >
-              <div v-for="submenu in entry.navoptions" :key="submenu.id">
-                <b-dropdown-item
-                  v-bind:to="submenu.url"
-                  :disabled="submenu.disableflag"
-                  v-show="submenu.enableflag"
-                >{{ submenu.text }}</b-dropdown-item>
-              </div>
-            </b-nav-item-dropdown>
-          </div>
-        </b-navbar-nav>
-        <b-navbar-nav class="ml-auto">
-          <b-nav-item v-bind:to="{ name: 'login' }">Login</b-nav-item>
-        </b-navbar-nav>
+      <b-navbar toggleable="sm" class="navbar-dark bg-dark" fixed="top">
+        <b-navbar-toggle target="collapsetop"></b-navbar-toggle>
+        <b-collapse id=collapsetop is-nav>
+          <b-navbar-brand v-bind:to="{ name: 'home' }">Home</b-navbar-brand>
+          <b-navbar-nav class="mr-auto"> 
+            <div v-for="entry in topmenu" :key="entry.id"> <!-- Load menus and sub menus -->
+              <b-nav-item-dropdown
+                :id="entry.text"
+                :text="entry.text"
+                v-show="entry.enableflag"
+              >
+                <div v-for="submenu in entry.navoptions" :key="submenu.id">
+                  <b-dropdown-item
+                    v-bind:to="submenu.url"
+                    :disabled="submenu.disableflag"
+                    v-show="submenu.enableflag"
+                  >{{ submenu.text }}</b-dropdown-item>
+                </div>
+              </b-nav-item-dropdown>
+            </div>
+          </b-navbar-nav>
+          <b-navbar-nav class="ml-auto">
+            <b-nav-item v-bind:to="{ name: 'login' }">Login</b-nav-item>
+          </b-navbar-nav>
+        </b-collapse>
       </b-navbar>
     </div>
     <!-- ------------------------------------------------------------------------- -->
@@ -57,16 +60,19 @@
       <router-view></router-view>
     </div>
     <!-- ------------------------------------------------------------------------- -->
-    <div id="footer">
-      <b-navbar class="navbar-dark bg-dark" fixed="bottom">
-        <b-navbar-nav class="mr-auto">
-          <b-nav-text >{{version}} by &copy;{{copyright}}</b-nav-text>
-        </b-navbar-nav>
-        <b-navbar-nav class="ml-auto">
-          <b-nav-text>{{today}} [ {{hms}} ]</b-nav-text>
-        </b-navbar-nav>
-      </b-navbar>
-    </div>
+      <div id="footer">
+        <b-navbar toggleable="sm" class="navbar-dark bg-dark" fixed="bottom">
+          <b-navbar-toggle target="collapsebottom"></b-navbar-toggle>
+          <b-collapse id=collapsebottom is-nav>
+            <b-navbar-nav class="mr-auto">
+              <b-nav-text >{{version}} by &copy;{{copyright}}</b-nav-text>
+            </b-navbar-nav>
+            <b-navbar-nav class="ml-auto">
+              <b-nav-text>{{today}} [ {{hms}} ]</b-nav-text>
+            </b-navbar-nav>
+          </b-collapse> 
+        </b-navbar>
+      </div>
   </div>
 </template>
 
@@ -78,8 +84,8 @@ export default {
   name: "app",
   data() {
       return {
-        headermsg: "Welcome dear user",
-        version: "Cams Manager 1.77, Oct 11 2019",
+        headermsg: "Placeholder for future use, i.e, info on logged user",
+        version: "Cams Manager 1.79, Oct 11 2019",
         copyright: "oldtimerSoft, 2019",
         // These arrays are defining the displayed menus
         // enableflag drives the visibility of the URL
