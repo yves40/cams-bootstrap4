@@ -6,6 +6,7 @@
     Oct 06 2019     Install common services
     Oct 09 2019     Getter for date
     Oct 10 2019     Getter for hour minutes
+    Oct 11 2019     Vuex integration
 ----------------------------------------------------------------------------*/
 
 import Vue from 'vue';
@@ -18,7 +19,7 @@ Vue.use(Vuex);
     VUEX states
 ----------------------------------------------------------------------------*/
 const state = {
-    Version: 'corestore.js:1.14, Oct 10 2019',
+    Version: 'corestore.js:1.16, Oct 11 2019',
     today: datetime.getDate(),
     hourminute: datetime.getShortTime(),
 };
@@ -42,7 +43,7 @@ const getters = {
 const mutations = { // Synchronous
     armtimer(state) {
         setInterval(updateHM, 60000);
-        logger.debug(context.state.Version + ' Timer armed');
+        logger.debug(state.Version + ' Timer armed');
     },
 };
 /*----------------------------------------------------------------------------
@@ -65,7 +66,7 @@ export default {
     Internal
 ----------------------------------------------------------------------------*/
 function updateHM() {
-    hourminute = datetime.getShortTime();
-    logger.debug('**** called');
+    state.hourminute = datetime.getShortTime();
+    logger.debug('state.hourminute : ' + state.hourminute);
 }
 

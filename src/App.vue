@@ -8,7 +8,8 @@
   Oct 03 2019   Dropdown problem
   Oct 04 2019   Dropdown problem unsolved, discarded. Few changes on copyright
   Oct 09 2019   About, date in header bar
-  Oct 10 2019   About, date in Menu bar
+  Oct 10 2019   About, date in Menu bar.
+  Oct 11 2019   About, date in Menu bar..
 -->
 
 <template>
@@ -100,7 +101,7 @@ export default {
   },
 
   mounted() {
-    this.$store.dispatch("settimer");
+    this.$store.dispatch("corestore/settimer");
   },
 
 methods: {
@@ -141,7 +142,7 @@ methods: {
 data() {
     return {
       msg: "Welcome to Your Vue.js Application",
-      version: "App 1.74, Oct 10 2019",
+      version: "App 1.75, Oct 11 2019",
       copyright: "MEVN template by oldtimerSoft",
       // These arrays are defining the displayed menus
       // enableflag drives the visibility of the URL
