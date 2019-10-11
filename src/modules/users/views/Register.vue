@@ -6,9 +6,11 @@
   Oct 02 2019   Fix the popup menu problem. Use ready() instead of created()
   Oct 04 2019   Start work to get register implementation
   Oct 05 2019   Add buttons, handle requests, reorg folders
+  Oct 11 2019   Add b-container to be bootstrap4 compliant
 -->
 <template>
   <div>
+    <b-container>
     <b-row>
       <b-col cols="2"></b-col>
       <b-col>
@@ -92,12 +94,11 @@
                 <b-button  v-on:click="clear">Clear</b-button>
                 <b-button  v-on:click="register" v-bind:to="{ name: 'home' }">Cancel</b-button>
             </b-form-group>
-
-
         </div>
       </b-col>
       <b-col cols="2"></b-col>
     </b-row>
+    </b-container>
   </div>
 </template>
 
@@ -108,7 +109,7 @@ const Logger = require('../../core/services/logger');
 export default {
   data() {
     return {
-      version: "Register 1.20, Oct 05 2019",
+      version: "Register 1.21, Oct 11 2019",
       name: '',
       email: '',
       userdescription: '',

@@ -20,17 +20,23 @@
           </b-col>
           <b-col cols="2"></b-col>
         </b-row>
-        <b-row>
+      <b-row>
+        <b-col cols="2"></b-col>
+        <b-col>
+          <p>{{version}}</p>
+        </b-col>
+        <b-col cols="2"></b-col>
+      </b-row>
+      <b-row>
           <b-col cols="2"></b-col>
           <b-col>
               <p>
                 This is the temporary home page. This application will manage webcams.
                 The goal is to easily monitor their status, set alarm on and off, based on time schedule,
                 and then get the Video stream and display it in one or more windows.
-                The technology used are :
+                Some of the used technologies are :
               </p>
                 <b-list-group >
-                  <b-list-group-item>{{version}}</b-list-group-item>
                   <b-list-group-item >MongoDB</b-list-group-item>
                   <b-list-group-item >Vue</b-list-group-item>
                   <b-list-group-item >Vuex</b-list-group-item>

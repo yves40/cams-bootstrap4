@@ -7,61 +7,64 @@
   Oct 02 2019   Fix the popup menu problem. Use ready() instead of created()
   Oct 04 2019   Start work to get login implementation
   Oct 05 2019   Actions. Reorg folders
+  Oct 11 2019   Add b-container to be bootstrap4 compliant
 -->
 <template>
   <div>
-    <b-row>
-      <b-col cols="2"></b-col>
-      <b-col>
-        <img src="../../../assets/users.png" />
-      </b-col>
-      <b-col cols="2"></b-col>
-    </b-row>
-    <b-row>
-      <b-col cols="2"></b-col>
-      <b-col>
-        <p>{{version}}</p>
-      </b-col>
-      <b-col cols="2"></b-col>
-    </b-row>
-    <b-row>
-      <b-col cols="2"></b-col>
-      <b-col >
-        <div >
-            <b-form-group
-              id="email"
-              label="Your email"
-              label-for="email"
-              label-cols-sm="3"
-              :invalid-feedback="invalidEmail"
-              :state="emailstate"
-            >
-              <b-form-input id="email" v-model="email" :state="emailstate" trim></b-form-input>
-            </b-form-group>
-            <b-form-group
-              id="password"
-              label="Password"
-              label-for="password"
-              label-cols-sm="3"
-              :state="passwordstate"
-            >
-              <b-form-input id="password" v-model="password" :state="passwordstate" trim></b-form-input>
-            </b-form-group>
+    <b-container>
+      <b-row>
+        <b-col cols="2"></b-col>
+        <b-col>
+          <img src="../../../assets/users.png" />
+        </b-col>
+        <b-col cols="2"></b-col>
+      </b-row>
+      <b-row>
+        <b-col cols="2"></b-col>
+        <b-col>
+          <p>{{version}}</p>
+        </b-col>
+        <b-col cols="2"></b-col>
+      </b-row>
+      <b-row>
+        <b-col cols="2"></b-col>
+        <b-col >
+          <div >
+              <b-form-group
+                id="email"
+                label="Your email"
+                label-for="email"
+                label-cols-sm="3"
+                :invalid-feedback="invalidEmail"
+                :state="emailstate"
+              >
+                <b-form-input id="email" v-model="email" :state="emailstate" trim></b-form-input>
+              </b-form-group>
+              <b-form-group
+                id="password"
+                label="Password"
+                label-for="password"
+                label-cols-sm="3"
+                :state="passwordstate"
+              >
+                <b-form-input id="password" v-model="password" :state="passwordstate" trim></b-form-input>
+              </b-form-group>
 
-            <b-form-group
-              label-cols-sm="3"
-            >
-              <b-button :disabled="checkall" v-on:click="login">Login</b-button>
-              <b-button  v-on:click="clear">Clear</b-button>
-              <b-button  v-bind:to="{ name: 'home' }">Cancel</b-button>
-            </b-form-group>
-            <b-form-group label-cols-sm="3">
-              <b-link  v-bind:to="{ name: 'register' }">New to the site ? Register</b-link>
-            </b-form-group>
-        </div>
-      </b-col>
-      <b-col cols="2"></b-col>
-    </b-row>
+              <b-form-group
+                label-cols-sm="3"
+              >
+                <b-button :disabled="checkall" v-on:click="login">Login</b-button>
+                <b-button  v-on:click="clear">Clear</b-button>
+                <b-button  v-bind:to="{ name: 'home' }">Cancel</b-button>
+              </b-form-group>
+              <b-form-group label-cols-sm="3">
+                <b-link  v-bind:to="{ name: 'register' }">New to the site ? Register</b-link>
+              </b-form-group>
+          </div>
+        </b-col>
+        <b-col cols="2"></b-col>
+      </b-row>
+    </b-container>
   </div>
 </template>
 
@@ -69,7 +72,7 @@
 export default {
   data() {
       return {
-        version: "Login 1.29, Oct 05 2019",
+        version: "Login 1.30, Oct 11 2019",
         email: '',
         password: '',
       };
