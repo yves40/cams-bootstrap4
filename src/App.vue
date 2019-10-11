@@ -9,51 +9,36 @@
   Oct 04 2019   Dropdown problem unsolved, discarded. Few changes on copyright
   Oct 09 2019   About, date in header bar
   Oct 10 2019   About, date in Menu bar.
-  Oct 11 2019   About, date in Menu bar..
+  Oct 11 2019   Date / hour in Menu bar. Change meun look 
 -->
 
 <template>
   <div id="app">
     <!-- ------------------------------------------------------------------------- -->
     <div id="menu">
-      <b-container>
-        <b-row>
-          <b-col cols="1"></b-col>
-          <b-col>
-            <!-- 
-              variant can be set as : primary, success, info, warning, danger, dark, or light
-            -->
-            <b-navbar fixed="top" type="dark" variant="primary">
-              <b-navbar-brand v-bind:to="{ name: 'home' }">Home</b-navbar-brand>
-              <b-navbar-nav>
-                <b-nav-item text="Home"></b-nav-item>
-              </b-navbar-nav>
-              <b-navbar-nav> 
-                <div v-for="entry in topmenu" :key="entry.id"> <!-- Load menus and sub menus -->
-                  <b-nav-item-dropdown
-                    :id="entry.text"
-                    :text="entry.text"
-                    v-show="entry.enableflag"
-                  >
-                    <div v-for="submenu in entry.navoptions" :key="submenu.id">
-                      <b-dropdown-item
-                        v-bind:to="submenu.url"
-                        :disabled="submenu.disableflag"
-                        v-show="submenu.enableflag"
-                      >{{ submenu.text }}</b-dropdown-item>
-                    </div>
-                  </b-nav-item-dropdown>
-                </div>
-                <!--
-                    Add the date
-                -->
-                <b-nav-text >{{today}} {{hms}}</b-nav-text>
-              </b-navbar-nav>
-            </b-navbar>
-          </b-col>
-          <b-col cols="2"></b-col>
-        </b-row>
-      </b-container>
+      <b-navbar class="navbar-dark bg-dark" fixed="top">
+        <b-navbar-brand v-bind:to="{ name: 'home' }">Home</b-navbar-brand>
+        <b-navbar-nav class="mr-auto"> 
+          <div v-for="entry in topmenu" :key="entry.id"> <!-- Load menus and sub menus -->
+            <b-nav-item-dropdown
+              :id="entry.text"
+              :text="entry.text"
+              v-show="entry.enableflag"
+            >
+              <div v-for="submenu in entry.navoptions" :key="submenu.id">
+                <b-dropdown-item
+                  v-bind:to="submenu.url"
+                  :disabled="submenu.disableflag"
+                  v-show="submenu.enableflag"
+                >{{ submenu.text }}</b-dropdown-item>
+              </div>
+            </b-nav-item-dropdown>
+          </div>
+        </b-navbar-nav>
+        <b-navbar-nav class="ml-auto">
+          <b-nav-text >{{version}}</b-nav-text>
+        </b-navbar-nav>
+      </b-navbar>
     </div>
     <!-- ------------------------------------------------------------------------- -->
     <div id="header">
@@ -61,8 +46,7 @@
         <b-row>
           <b-col cols="2"></b-col>
           <b-col>
-            <h1>{{ msg }}</h1>
-            <h2>{{ version }}</h2>
+            <h1>{{ headermsg }}</h1>
           </b-col>
           <b-col cols="2"></b-col>
         </b-row>
@@ -74,15 +58,14 @@
     </div>
     <!-- ------------------------------------------------------------------------- -->
     <div id="footer">
-      <b-container>
-        <b-row>
-          <b-col cols="2"></b-col>
-          <b-col>
-              <p>&copy;{{copyright}}</p>
-          </b-col>
-          <b-col cols="2"></b-col>
-        </b-row>
-      </b-container>
+      <b-navbar class="navbar-dark bg-dark" fixed="bottom">
+        <b-navbar-nav class="mr-auto">
+          <b-nav-text >&copy;{{copyright}}</b-nav-text>
+        </b-navbar-nav>
+        <b-navbar-nav class="ml-auto">
+          <b-nav-text >{{today}} [ {{hms}} ]</b-nav-text>
+        </b-navbar-nav>
+      </b-navbar>
     </div>
   </div>
 </template>
@@ -141,9 +124,9 @@ methods: {
 
 data() {
     return {
-      msg: "Welcome to Your Vue.js Application",
-      version: "App 1.75, Oct 11 2019",
-      copyright: "MEVN template by oldtimerSoft",
+      headermsg: "Welcome dear user",
+      version: "Cams Manager 1.77, Oct 11 2019",
+      copyright: "oldtimerSoft, 2019",
       // These arrays are defining the displayed menus
       // enableflag drives the visibility of the URL
       // disableflag drives the active/inactive state

@@ -67,6 +67,5 @@ export default {
 ----------------------------------------------------------------------------*/
 function updateHM() {
     state.hourminute = datetime.getShortTime();
-    logger.debug('state.hourminute : ' + state.hourminute);
 }
 

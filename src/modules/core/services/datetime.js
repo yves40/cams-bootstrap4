@@ -26,9 +26,7 @@ function getTime() {
     return d.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1") ;
 }
 function getShortTime() {
-    let d = new Date();
-    let shortime =  d.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1") ;
-    return shortime.slice(1,5);
+    return new Date().toTimeString().slice(0,5);
 }
 export default {
     getDateTime,
