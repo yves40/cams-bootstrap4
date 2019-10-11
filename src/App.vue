@@ -36,7 +36,7 @@
           </div>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
-          <b-nav-text >{{version}}</b-nav-text>
+          <b-nav-item v-bind:to="{ name: 'login' }">Login</b-nav-item>
         </b-navbar-nav>
       </b-navbar>
     </div>
@@ -60,10 +60,10 @@
     <div id="footer">
       <b-navbar class="navbar-dark bg-dark" fixed="bottom">
         <b-navbar-nav class="mr-auto">
-          <b-nav-text >&copy;{{copyright}}</b-nav-text>
+          <b-nav-text >{{version}} by &copy;{{copyright}}</b-nav-text>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
-          <b-nav-text >{{today}} [ {{hms}} ]</b-nav-text>
+          <b-nav-text>{{today}} [ {{hms}} ]</b-nav-text>
         </b-navbar-nav>
       </b-navbar>
     </div>
@@ -76,6 +76,45 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: "app",
+  data() {
+      return {
+        headermsg: "Welcome dear user",
+        version: "Cams Manager 1.77, Oct 11 2019",
+        copyright: "oldtimerSoft, 2019",
+        // These arrays are defining the displayed menus
+        // enableflag drives the visibility of the URL
+        // disableflag drives the active/inactive state
+        topmenu: [
+          {
+            text: "User",
+            enableflag: true,
+            navoptions: [
+              {url: "login",text: "Login",enableflag: true,disableflag: false},
+              {url: "register",text: "Register",enableflag: true,disableflag: false}
+            ]
+          },
+          {
+            text: "Bootstrap4",
+            enableflag: true,
+            navoptions: [
+              {url: "buttons",text: "buttons",enableflag: true,disableflag: false},
+              { url: "tabs", text: "tabs", enableflag: true, disableflag: false },
+              { url: "form", text: "form", enableflag: true, disableflag: false },
+              {url: "pagination",text: "pagination",enableflag: true,disableflag: false},
+              {url: "template",text: "template",enableflag: true,disableflag: false}
+            ]
+          },
+          {
+            text: "About",
+            enableflag: true,
+            navoptions: [
+              {url: "about",text: "about",enableflag: true,disableflag: false},
+            ]
+          }
+        ]
+      };
+    },
+
   computed: {
     ...mapGetters (
         'corestore', { today: 'getToday',
@@ -120,45 +159,6 @@ methods: {
         }
       }
     },
-  },
-
-data() {
-    return {
-      headermsg: "Welcome dear user",
-      version: "Cams Manager 1.77, Oct 11 2019",
-      copyright: "oldtimerSoft, 2019",
-      // These arrays are defining the displayed menus
-      // enableflag drives the visibility of the URL
-      // disableflag drives the active/inactive state
-      topmenu: [
-        {
-          text: "User",
-          enableflag: true,
-          navoptions: [
-            {url: "login",text: "Login",enableflag: true,disableflag: false},
-            {url: "register",text: "Register",enableflag: true,disableflag: false}
-          ]
-        },
-        {
-          text: "Bootstrap4",
-          enableflag: true,
-          navoptions: [
-            {url: "buttons",text: "buttons",enableflag: true,disableflag: false},
-            { url: "tabs", text: "tabs", enableflag: true, disableflag: false },
-            { url: "form", text: "form", enableflag: true, disableflag: false },
-            {url: "pagination",text: "pagination",enableflag: true,disableflag: false},
-            {url: "template",text: "template",enableflag: true,disableflag: false}
-          ]
-        },
-        {
-          text: "About",
-          enableflag: true,
-          navoptions: [
-            {url: "about",text: "about",enableflag: true,disableflag: false},
-          ]
-        }
-      ]
-    };
   },
 };
 </script>
