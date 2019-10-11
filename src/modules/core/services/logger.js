@@ -12,37 +12,38 @@
 //    Apr 03 2019   Test for error : Cannot read property of undefined
 //    Oct 04 2019   Pushed in the MEVNTemplate project
 //    Oct 09 2019   Use the datetime service
+//    Oct 11 2019   export default
 //----------------------------------------------------------------------------
-const Version = 'logger:1.34, Oct 09 2019';
+const Version = 'logger:1.35, Oct 11 2019';
 
 import datetime from './datetime';
 
 let fs = require('fs'); 
 
-const MAXLOGS = 10;
+//----------------------------------------------------------------------------
+// Globals
+//----------------------------------------------------------------------------
 let logs = [];
-
-export const DEBUG = 0;
-export const INFORMATIONAL = 1;
-export const WARNING = 2;
-export const ERROR = 3;
-export const FATAL = 4;
+let tracetofileflag = false;
+let tracetoconsoleflag = true;
+let OUTFILE = process.env.LOGFILE || '/tmp/' + Version.replace(/[,:]/g,'_').replace(/ /g, '_') + '.log'
+//----------------------------------------------------------------------------
+// Constants
+//----------------------------------------------------------------------------
+const MAXLOGS = 10;
+const DEBUG = 0;
+const INFORMATIONAL = 1;
+const WARNING = 2;
+const ERROR = 3;
+const FATAL = 4;
 // ENV shell variables LOGMODE and LOGFILE defines log level and log destination 
 // If LOGFILE is defined, it automatically turns the logger to file output, 
 // except if used in a browser
 const LOGMODE = process.env.LOGMODE || DEBUG;
-let OUTFILE = process.env.LOGFILE || '/tmp/' + Version.replace(/[,:]/g,'_').replace(/ /g, '_') + '.log'
-let tracetofileflag = false;
-let tracetoconsoleflag = true;
-
-// module.exports.DEBUG = DEBUG;
-//module.exports.INFORMATIONAL = INFORMATIONAL;
-//module.exports.WARNING = WARNING;
-//module.exports.ERROR = ERROR;
-//module.exports.FATAL = FATAL;
 
 //----------------------------------------------------------------------------
-// Small func to return a readable status
+// LOCAL FUNCTIONS
+// Get a readable log level
 //----------------------------------------------------------------------------
 function levelToString(level) {
     switch (level) {
@@ -54,40 +55,6 @@ function levelToString(level) {
         default: return 'FTL';
     }
 }
-
-//-----------------------------------------------------
-// Logger infos
-// Returns an object with logger data
-//-----------------------------------------------------
-export function getLoggerInfo() {
-    loggerinfo = {};
-    loggerinfo.version = Version;
-    if (process.env.LOGMODE) {
-        loggerinfo.logleveldefiner = 'Shell defined as ' +  process.env.LOGMODE;
-    }
-    else {
-        loggerinfo.logleveldefiner = 'Program defined, using default DEBUG level';
-    }
-    loggerinfo.loglevel = levelToString(parseInt(LOGMODE, 10));
-    if (process.env.LOGFILE) {
-        loggerinfo.logfiledefiner = 'Shell defined';
-    }
-    else {
-        loggerinfo.logfiledefiner = 'Program defined';
-    }
-    loggerinfo.logfile = OUTFILE;
-    if (tracetoconsoleflag) 
-        loggerinfo.tracetoconsole = 'Console log enabled'; 
-    else 
-        loggerinfo.tracetoconsole = 'Console log disabled';
-    if (tracetofileflag)
-        loggerinfo.tracetofile = 'File log enabled';
-    else
-        loggerinfo.tracetofile = 'File log disabled';
-
-    return loggerinfo;
-}
-
 //----------------------------------------------------------------------------
 // The logger 
 // syncmode set to TRUE if waiting for the I/O to complete
@@ -131,72 +98,119 @@ function log(mess, level, syncmode = false) {
     return;
     }
 }
+//----------------------------------------------------------------------------
+// PUBLIC FUNCTIONS
+//----------------------------------------------------------------------------
+// Logger infos
+// Returns an object with logger data
+//-----------------------------------------------------
+function getLoggerInfo() {
+    loggerinfo = {};
+    loggerinfo.version = Version;
+    if (process.env.LOGMODE) {
+        loggerinfo.logleveldefiner = 'Shell defined as ' +  process.env.LOGMODE;
+    }
+    else {
+        loggerinfo.logleveldefiner = 'Program defined, using default DEBUG level';
+    }
+    loggerinfo.loglevel = levelToString(parseInt(LOGMODE, 10));
+    if (process.env.LOGFILE) {
+        loggerinfo.logfiledefiner = 'Shell defined';
+    }
+    else {
+        loggerinfo.logfiledefiner = 'Program defined';
+    }
+    loggerinfo.logfile = OUTFILE;
+    if (tracetoconsoleflag) 
+        loggerinfo.tracetoconsole = 'Console log enabled'; 
+    else 
+        loggerinfo.tracetoconsole = 'Console log disabled';
+    if (tracetofileflag)
+        loggerinfo.tracetofile = 'File log enabled';
+    else
+        loggerinfo.tracetofile = 'File log disabled';
 
+    return loggerinfo;
+}
 //----------------------------------------------------------------------------
-// Functions used to switch console mode
+// Switch console mode
 //----------------------------------------------------------------------------
-export function enableconsole() {
+function enableconsole() {
     tracetoconsoleflag = true;
 }
-
-export function disableconsole() {
+function disableconsole() {
     if (tracetofileflag)            // If no trace set to file, do not disable the console
         tracetoconsoleflag = false;
 }
-
 //-----------------------------------------------------
 //  Set the file trace
 //  If no filename passed, will default to OUTFILE
 //  which itsel depends on either LOGFILE environment 
 //  variable or a default (see code above)
 //-----------------------------------------------------
-export function tracetofile(filename = OUTFILE) {
+function tracetofile(filename = OUTFILE) {
     tracetofileflag = true;
     OUTFILE = filename;
 }
 //-----------------------------------------------------
 // For ASync mode
 //-----------------------------------------------------
-export function debug(mess) {
+function debug(mess) {
     log(mess, DEBUG);
     return;
 }
-export function info(mess) {
+function info(mess) {
     log(mess, INFORMATIONAL);
     return;
 }
-export function warning(mess) {
+function warning(mess) {
     log(mess, WARNING);
     return;
 }
-export function error(mess) {
+function error(mess) {
     log(mess, ERROR);
     return;
 }
-export function fatal(mess) {
+function fatal(mess) {
     log(mess, FATAL);
     return;
 }
 //-----------------------------------------------------
 // For Sync mode
 //-----------------------------------------------------
-export function debugs(mess) {
+function debugs(mess) {
     log(mess, DEBUG, true);
     return;
 }
-export function infos(mess) {
+function infos(mess) {
     log(mess, INFORMATIONAL, true);
     return;
 }
-export function warnings(mess) {
+function warnings(mess) {
     log(mess, WARNING, true);
     return;
 }
-export function errors(mess) {
+function errors(mess) {
     log(mess, ERROR, true);
     return;
 }
-export function fatals(mess) {
+function fatals(mess) {
     log(mess, FATAL, true);
     return;
+}
+
+export default {
+    MAXLOGS,
+    DEBUG,
+    INFORMATIONAL,
+    WARNING,
+    ERROR,
+    FATAL,
+    LOGMODE,
+    getLoggerInfo,
+    enableconsole,
+    disableconsole,
+    tracetofile,
+    debug, info, warning, error, fatal,
+    debugs, infos, warnings, errors, fatals,
 }

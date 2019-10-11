@@ -12,14 +12,14 @@
 import Vue from 'vue';
 import Vuex from 'vuex'
 import datetime from '../services/datetime';
-const logger = require('../services/logger');
+import logger from '../services/logger';
 
 Vue.use(Vuex);
 /*----------------------------------------------------------------------------
     VUEX states
 ----------------------------------------------------------------------------*/
 const state = {
-    Version: 'corestore.js:1.16, Oct 11 2019',
+    Version: 'corestore.js:1.17, Oct 11 2019',
     today: datetime.getDate(),
     hourminute: datetime.getShortTime(),
 };

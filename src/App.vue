@@ -78,6 +78,8 @@
 
 <script>
 
+import mongodb from './modules/core/services/mongodb';
+import logger from './modules/core/services/logger';
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -85,7 +87,7 @@ export default {
   data() {
       return {
         headermsg: "Placeholder for future use, i.e, info on logged user",
-        version: "Cams Manager 1.79, Oct 11 2019",
+        version: "Cams Manager 1.80, Oct 11 2019",
         copyright: "oldtimerSoft, 2019",
         // These arrays are defining the displayed menus
         // enableflag drives the visibility of the URL
@@ -130,6 +132,7 @@ export default {
 
   mounted() {
     this.$store.dispatch("corestore/settimer");
+    logger.debug('Will connect on mongo here : ' + mongodb.getMongoDBURI());
   },
 
 methods: {
