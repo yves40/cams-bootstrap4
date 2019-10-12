@@ -9,13 +9,15 @@
 //    Mar 30 2019   Remove some log message
 //    Apr 26 2019   Add a variable for the mongodb server location
 //    Oct 11 2019   Get service in cams-bootstrap4 project
+//    Oct 12 2019   Small bugs after migration
 //----------------------------------------------------------------------------
-const Version = "mongodb:1.24, Oct 11 2019 ";
+const Version = "mongodb:1.27, Oct 12 2019 ";
 
-var mongoose = require('mongoose');
-const logger = require('./logger');
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true});
 
-import properties from './properties.js';
+import properties from './properties';
+import logger from './logger';
 
 //----------------------------------------------------------------------------
 // Const variables
@@ -45,9 +47,9 @@ function getMongoDBURI() {
 // Open mongo connection
 //----------------------------------------------------------------------------
 function getMongoDBConnection(traceflag = false) {
-  if(traceflag) logger.debug(Version + 'Connect to : ' + mongodbserver);
+  if(traceflag) logger.debug(Version + 'Connect to : ' + properties.mongodbserver);
   try {
-    mongoose.connect(mongodbserver,{useNewUrlParser: true, keepAlive: false, useFindAndModify: false } )
+    mongoose.connect(properties.mongodbserver,{useNewUrlParser: true, keepAlive: false, useFindAndModify: false } )
     .then(function(MongooseObject) {
       if(traceflag) logger.info('Mongoose now ready [' + MongooseObject.connection.readyState + ']');
       return MongooseObject.connection;
