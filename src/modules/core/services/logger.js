@@ -13,10 +13,13 @@
 //    Oct 04 2019   Pushed in the MEVNTemplate project
 //    Oct 09 2019   Use the datetime service
 //    Oct 11 2019   export default
+//    Oct 12 2019   Change import to require for node
+//                  export default is also a problem
 //----------------------------------------------------------------------------
-const Version = 'logger:1.35, Oct 11 2019';
+const Version = 'logger:1.36, Oct 12 2019';
 
-import datetime from './datetime';
+//import datetime from './datetime';
+const datetime = require('./datetime'); 
 
 let fs = require('fs'); 
 
@@ -199,6 +202,14 @@ function fatals(mess) {
     return;
 }
 
+module.exports = {
+    debug: debug, 
+    info: info, 
+    warning: warning, 
+    error: error, 
+    fatal: fatal,
+}
+/*
 export default {
     MAXLOGS,
     DEBUG,
@@ -214,3 +225,4 @@ export default {
     debug, info, warning, error, fatal,
     debugs, infos, warnings, errors, fatals,
 }
+*/

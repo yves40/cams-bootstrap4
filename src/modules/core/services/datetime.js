@@ -3,8 +3,9 @@
 //
 //    Oct 09 2019   Initial
 //    Oct 10 2019   Timer for minutes
+//    Oct 12 2019   export default is a problem for node
 //----------------------------------------------------------------------------
-const Version = 'datetime:1.04, Oct 10 2019';
+const Version = 'datetime:1.05, Oct 12 2019';
 
 const months = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
 
@@ -28,10 +29,10 @@ function getTime() {
 function getShortTime() {
     return new Date().toTimeString().slice(0,5);
 }
-export default {
-    getDateTime,
-    getDate,
-    getTime,
-    getShortTime,
+module.exports =  {
+    getDateTime: getDateTime,
+    getDate: getDate,
+    getTime: getTime,
+    getShortTime: getShortTime,
 }
 
