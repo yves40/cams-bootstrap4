@@ -208,15 +208,15 @@ module.exports = {
     warning: warning, 
     error: error, 
     fatal: fatal,
-}
-/*
-export default {
-    MAXLOGS,
     DEBUG,
     INFORMATIONAL,
     WARNING,
     ERROR,
     FATAL,
+}
+/*
+export default {
+    MAXLOGS,
     LOGMODE,
     getLoggerInfo,
     enableconsole,
