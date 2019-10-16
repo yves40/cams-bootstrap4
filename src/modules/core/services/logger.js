@@ -17,7 +17,7 @@
 //                  export default is also a problem
 //    Oct 16 2019   Report log level on 1st call
 //----------------------------------------------------------------------------
-const Version = 'logger:1.43, Oct 16 2019';
+const Version = 'logger:1.44, Oct 16 2019';
 
 //import datetime from './datetime';
 const datetime = require('./datetime'); 
@@ -40,15 +40,13 @@ const INFORMATIONAL = 1;
 const WARNING = 2;
 const ERROR = 3;
 const FATAL = 4;
-const LOGGERLEVEL = properties.loggerlevel || process.env.LOGGERLEVEL ||DEBUG;
+const LOGGERLEVEL = properties.loggerlevel || process.env.LOGGERLEVEL || DEBUG;
 
 const MAXLOGS = 10;
 //----------------------------------------------------------------------------
-// ENV shell variables LOGMODE and LOGFILE defines log level and log destination 
+// ENV shell variable LOGFILE defines log destination 
 // If LOGFILE is defined, it automatically turns the logger to file output, 
 // except if used in a browser
-//----------------------------------------------------------------------------
-const LOGMODE = process.env.LOGMODE || DEBUG;
 //----------------------------------------------------------------------------
 // LOCAL FUNCTIONS
 // Get a readable log level
@@ -68,7 +66,7 @@ function levelToString(level = DEBUGLEVEL) {
 // syncmode set to TRUE if waiting for the I/O to complete
 //----------------------------------------------------------------------------
 function log(mess, level, syncmode = false) {
-    if (level >= LOGMODE) {
+    if (level >= LOGGERLEVEL) {
         let d = new Date();
         if (logs.length === MAXLOGS) {
             logs.shift();                   // Handle the log buffer
