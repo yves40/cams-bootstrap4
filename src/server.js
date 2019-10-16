@@ -5,6 +5,7 @@
                   understand how it works! Attend the express training here : 
                   https://www.youtube.com/watch?v=L72fhGm1tfE&list=WL&index=18&t=0s
     Oct 15 2019   Work on PATHS and middleware chaining
+    Oct 16 2019   training follow up
 ----------------------------------------------------------------------------*/
 const bodyParser  = require('body-parser');
 const mongoose = require('mongoose');
@@ -15,7 +16,7 @@ const logger =  require('./modules/core/services/logger');
 const httplogger = require('./modules/core/services/httplogger');
 const properties =  require('./modules/core/services/properties');
 
-const Version = 'server.js:1.09, Oct 15 2019';
+const Version = 'server.js:1.12, Oct 16 2019';
 
 const app = express();
 
@@ -41,7 +42,13 @@ app.get('/test', (req, res) => {
 
 // Let's start the server
 app.listen(properties.nodeserverport, ()=>{
-  logger.debug(Version);
+  console.log('\n\n');
+  const logparams = logger.getLoggerInfo();
+  console.log('Logger version    : ' + logparams.version);
+  console.log('Log level         : ' + logparams.loglevel);
+  console.log('\n\n');
+
+  logger.info(Version);
   logger.debug('API listening on port ' + properties.nodeserverport);
 });
 

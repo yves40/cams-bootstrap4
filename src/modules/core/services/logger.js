@@ -15,11 +15,13 @@
 //    Oct 11 2019   export default
 //    Oct 12 2019   Change import to require for node
 //                  export default is also a problem
+//    Oct 16 2019   Report log level on 1st call
 //----------------------------------------------------------------------------
-const Version = 'logger:1.36, Oct 12 2019';
+const Version = 'logger:1.43, Oct 16 2019';
 
 //import datetime from './datetime';
 const datetime = require('./datetime'); 
+const properties = require('./properties'); 
 
 let fs = require('fs'); 
 
@@ -33,22 +35,25 @@ let OUTFILE = process.env.LOGFILE || '/tmp/' + Version.replace(/[,:]/g,'_').repl
 //----------------------------------------------------------------------------
 // Constants
 //----------------------------------------------------------------------------
-const MAXLOGS = 10;
 const DEBUG = 0;
 const INFORMATIONAL = 1;
 const WARNING = 2;
 const ERROR = 3;
 const FATAL = 4;
+const LOGGERLEVEL = properties.loggerlevel || process.env.LOGGERLEVEL ||DEBUG;
+
+const MAXLOGS = 10;
+//----------------------------------------------------------------------------
 // ENV shell variables LOGMODE and LOGFILE defines log level and log destination 
 // If LOGFILE is defined, it automatically turns the logger to file output, 
 // except if used in a browser
+//----------------------------------------------------------------------------
 const LOGMODE = process.env.LOGMODE || DEBUG;
-
 //----------------------------------------------------------------------------
 // LOCAL FUNCTIONS
 // Get a readable log level
 //----------------------------------------------------------------------------
-function levelToString(level) {
+function levelToString(level = DEBUGLEVEL) {
     switch (level) {
         case DEBUG: return 'DBG';
         case INFORMATIONAL: return 'INF';
@@ -110,13 +115,9 @@ function log(mess, level, syncmode = false) {
 function getLoggerInfo() {
     loggerinfo = {};
     loggerinfo.version = Version;
-    if (process.env.LOGMODE) {
-        loggerinfo.logleveldefiner = 'Shell defined as ' +  process.env.LOGMODE;
-    }
-    else {
-        loggerinfo.logleveldefiner = 'Program defined, using default DEBUG level';
-    }
-    loggerinfo.loglevel = levelToString(parseInt(LOGMODE, 10));
+    loggerinfo.loglevel = LOGGERLEVEL;
+    loggerinfo.loglevel = levelToString(LOGGERLEVEL);
+
     if (process.env.LOGFILE) {
         loggerinfo.logfiledefiner = 'Shell defined';
     }
@@ -213,12 +214,13 @@ module.exports = {
     WARNING,
     ERROR,
     FATAL,
+    levelToString,
+    getLoggerInfo,
 }
 /*
 export default {
     MAXLOGS,
     LOGMODE,
-    getLoggerInfo,
     enableconsole,
     disableconsole,
     tracetofile,
