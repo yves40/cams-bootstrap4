@@ -18,6 +18,9 @@ const properties =  require('./modules/core/services/properties');
 const Version = 'server.js:1.14, Oct 16 2019';
 
 const app = express();
+// Body parser middleware
+app.use(express.json());
+app.use(express.urlencoded( {extended: false}));
 
 // Set a static folder containing html files
 app.use(express.static(path.join(__dirname, 'public')));
@@ -31,19 +34,8 @@ app.use('/style', express.static(path.join(__dirname, 'css')));
 // The imported function is installed in the MW chain
 app.use(httplogger);
 
-// Body parser middleware
-app.use(express.json());
-app.use(express.urlencoded( {extended: false}));
-
-// Few dummy routes APIs tests
-app.get('/api/ping', (req, res) => {
-  res.json({message: 'Welcome to the Server Yves, check me'});
-  logger.debug('/api served');
-});
-app.get('/api/test', (req, res) => {
-  res.json({message: 'API test'});
-  logger.debug('/test served');
-});
+// Install the api testing middleware
+app.use('/api', require('./modules/core/noderouter/api'));
 
 // get my logger
 console.log('\n\n');
