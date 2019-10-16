@@ -1,6 +1,10 @@
 /*----------------------------------------------------------------------------
     Oct 15 2019   Initial ; Playing with express middleware
+    Oct 16 2019   Comment
 ----------------------------------------------------------------------------*/
+// Middleware function used to track HTTP requests
+// This module has to be installed by node main server program
+// Here server.js
 
 const logger =  require('./logger');
 
