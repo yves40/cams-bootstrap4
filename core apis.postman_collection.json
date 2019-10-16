@@ -1,0 +1,51 @@
+{
+	"info": {
+		"_postman_id": "42554586-f7a2-4b17-a629-67433e442b2b",
+		"name": "core apis",
+		"description": "Testing basic cross module apis",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "localhost:8081/mongo/mongostatus",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8081/mongo/mongostatus",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"mongo",
+						"mongostatus"
+					]
+				},
+				"description": "is mongo alive ? "
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8081/api/ping",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8081/api/ping",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"ping"
+					]
+				},
+				"description": "Just to check the node router status"
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
