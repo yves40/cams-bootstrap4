@@ -15,7 +15,7 @@ const logger =  require('./modules/core/services/logger');
 const httplogger = require('./modules/core/services/httplogger');
 const properties =  require('./modules/core/services/properties');
 
-const Version = 'server.js:1.14, Oct 16 2019';
+const Version = 'server.js:1.15, Oct 16 2019';
 
 const app = express();
 // Body parser middleware
@@ -36,6 +36,8 @@ app.use(httplogger);
 
 // Install the api testing middleware
 app.use('/api', require('./modules/core/noderouter/api'));
+// Install the mongodb api middleware
+app.use('/mongo', require('./modules/core/noderouter/mongoapi'));
 
 // get my logger
 console.log('\n\n');
