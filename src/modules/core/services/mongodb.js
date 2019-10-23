@@ -11,9 +11,12 @@
 //    Oct 11 2019   Get service in cams-bootstrap4 project
 //    Oct 12 2019   Small bugs after migration
 //    Oct 16 2019   import replaced by require because of node
-//    Oct 20 2019   Double request to mùongoose connect, don't know why
+//    Oct 20 2019   Double request to mongoose connect, don't know why.
+//                  Fix warning message on connect with useUnifiedTopology: true
+//                  Look here : https://mongoosejs.com/docs/deprecations.html
+//    Oct 22 2019   Change some log messages and set mongoose options
 //----------------------------------------------------------------------------
-const Version = "mongodb:1.33, Oct 20 2019 ";
+const Version = "mongodb:1.35, Oct 22 2019 ";
 
 const mongoose = require('mongoose');
 const properties = require('./properties');
@@ -51,7 +54,10 @@ function getMongoDBConnection(traceflag = false) {
   if(traceflag) logger.debug(Version + 'Connect to : ' + properties.mongodbserver);
   try {
     mongoose.connect(properties.mongodbserver,{
-      useNewUrlParser: true, keepAlive: false, useFindAndModify: false,
+      useNewUrlParser: true, 
+      keepAlive: false, 
+      useFindAndModify: false,
+      useCreateIndex: true,
       useUnifiedTopology: true,
     } )
     .then(function(MongooseObject) {

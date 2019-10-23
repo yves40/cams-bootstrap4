@@ -6,6 +6,9 @@
                   https://www.youtube.com/watch?v=L72fhGm1tfE&list=WL&index=18&t=0s
     Oct 15 2019   Work on PATHS and middleware chaining
     Oct 16 2019   training follow up
+    Oct 22 2019   Initial Logger message
+                  install cors
+    Oct 23 2019   Initial log trace
 ----------------------------------------------------------------------------*/
 const mongoose = require('mongoose');
 const express = require('express');
@@ -14,40 +17,58 @@ const path = require('path');
 const logger =  require('./modules/core/services/logger');
 const httplogger = require('./modules/core/services/httplogger');
 const properties =  require('./modules/core/services/properties');
+const corshelper = require('./modules/core/services/corshelper');
+const cors = require('cors');
 
-const Version = 'server.js:1.15, Oct 16 2019';
+const Version = 'server.js:1.20, Oct 23 2019';
 
 const app = express();
+//---------------------------------------------------------------------------------------------------------
 // Body parser middleware
 app.use(express.json());
 app.use(express.urlencoded( {extended: false}));
 
+//---------------------------------------------------------------------------------------------------------
 // Set a static folder containing html files
 app.use(express.static(path.join(__dirname, 'public')));
-
+//---------------------------------------------------------------------------------------------------------
 // Add a second path for the root css file (main.css)
 // The additional 1st parameter of app.use is the virtual path
 // This path is just used by public/ static files to get the css file
 app.use('/style', express.static(path.join(__dirname, 'css')));
-
+//---------------------------------------------------------------------------------------------------------
 // Test a simple middleware function tracking requests made on the server : see the httplogger.js source file
 // The imported function is installed in the MW chain
 app.use(httplogger);
-
+//---------------------------------------------------------------------------------------------------------
 // Install the api testing middleware
 app.use('/api', require('./modules/core/noderouter/api'));
+//---------------------------------------------------------------------------------------------------------
 // Install the mongodb api middleware
 app.use('/mongo', require('./modules/core/noderouter/mongoapi'));
-
+//---------------------------------------------------------------------------------------------------------
 // get my logger
-console.log('\n\n');
 const logparams = logger.getLoggerInfo();
+logger.info('********************** RESTART ********************************');
+logger.info(Version);
 logger.info('Logger version    : ' + logparams.version);
 logger.info('Log level         : ' + logparams.loglevel);
+//----------------------------------------------------------------------------
+// Cross-Origin Resource Sharing
+// https://github.com/expressjs/cors/blob/master/README.md
+//----------------------------------------------------------------------------
+logger.info("---------------------------------------------------------");
+logger.info('CORS Security setting, sites list:');
+logger.info("---------------------------------------------------------");
+let loop = 0;
+let sitelist = corshelper.getCORSwhitelist();
+for (; loop < sitelist.length; ++loop) {
+  logger.info('Site : ' + sitelist[loop]);
+}
+app.use(cors(corshelper.getCORS()));
 
 // Let's start the server
 app.listen(properties.nodeserverport, ()=>{
-  logger.info(Version);
-  logger.debug('API listening on port ' + properties.nodeserverport);
+  logger.debug('nodejs now listening on port ' + properties.nodeserverport);
 });
 
