@@ -9,6 +9,7 @@
     Oct 22 2019   Initial Logger message
                   install cors
     Oct 23 2019   Initial log trace
+                  Install a response header middleware
 ----------------------------------------------------------------------------*/
 const mongoose = require('mongoose');
 const express = require('express');
@@ -16,11 +17,12 @@ const path = require('path');
 
 const logger =  require('./modules/core/services/logger');
 const httplogger = require('./modules/core/services/httplogger');
+const responseheader = require('./modules/core/services/responseheader');
 const properties =  require('./modules/core/services/properties');
 const corshelper = require('./modules/core/services/corshelper');
 const cors = require('cors');
 
-const Version = 'server.js:1.20, Oct 23 2019';
+const Version = 'server.js:1.21, Oct 23 2019';
 
 const app = express();
 //---------------------------------------------------------------------------------------------------------
@@ -40,6 +42,9 @@ app.use('/style', express.static(path.join(__dirname, 'css')));
 // Test a simple middleware function tracking requests made on the server : see the httplogger.js source file
 // The imported function is installed in the MW chain
 app.use(httplogger);
+//---------------------------------------------------------------------------------------------------------
+// Install middleware responsible for response header settings
+app.use(responseheader);
 //---------------------------------------------------------------------------------------------------------
 // Install the api testing middleware
 app.use('/api', require('./modules/core/noderouter/api'));
