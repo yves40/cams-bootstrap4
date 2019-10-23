@@ -21,11 +21,7 @@ const nodeserverport = process.env.NODESERVERPORT || 8081;
 // The node server
 const nodeserver =  process.env.NODESERVER || 'http://localhost:8081';
 // CORS site list to enable cross server requests
-const whitelist = [
-    'http://localhost:8080',
-    'http://vboxweb:8080',
-  ];
-  
+const corsclientorigin = 'http://localhost:8080';  
 
 const loggerlevel = logger.DEBUG;
 
@@ -36,5 +32,5 @@ module.exports = {
     nodeserverport: nodeserverport,
     loggerlevel: loggerlevel,
     nodeserver: nodeserver,
-    whitelist: whitelist,
+    corsclientorigin: corsclientorigin,
 }

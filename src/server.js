@@ -22,7 +22,7 @@ const properties =  require('./modules/core/services/properties');
 const corshelper = require('./modules/core/services/corshelper');
 const cors = require('cors');
 
-const Version = 'server.js:1.21, Oct 23 2019';
+const Version = 'server.js:1.22, Oct 23 2019';
 
 const app = express();
 //---------------------------------------------------------------------------------------------------------
@@ -63,13 +63,9 @@ logger.info('Log level         : ' + logparams.loglevel);
 // https://github.com/expressjs/cors/blob/master/README.md
 //----------------------------------------------------------------------------
 logger.info("---------------------------------------------------------");
-logger.info('CORS Security setting, sites list:');
+logger.info('CORS Security setting: webserver node');
 logger.info("---------------------------------------------------------");
-let loop = 0;
-let sitelist = corshelper.getCORSwhitelist();
-for (; loop < sitelist.length; ++loop) {
-  logger.info('Site : ' + sitelist[loop]);
-}
+logger.info('Site : ' + properties.corsclientorigin);
 app.use(cors(corshelper.getCORS()));
 
 // Let's start the server

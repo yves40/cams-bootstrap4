@@ -6,22 +6,22 @@
 //    Mar 06 2019   console.log replaced by logger
 //    Oct 22 2019   Project cams-bootstrap
 //    Oct 23 2019   Blocked by CORS, once again ;-(
+//                  Problem fixed by adding a response handler in express 
+//                  middleware. Look at responseheader.js
+//                  useful URL: https://github.com/expressjs/cors/blob/master/README.md
 //----------------------------------------------------------------------------
-const Version = "corshelper:1.20, Oct 23 2019 ";
+const Version = "corshelper:1.22, Oct 23 2019 ";
 
 const logger = require('./logger');
-const properties = require('./properties');
+const corsclientorigin = require('./properties').corsclientorigin;
 
-const whitelist = require('./properties').whitelist;
-logger.debug('Got the white list for CORS');
-logger.debug(whitelist);
 function checkOrigin(origin, callback) {
-  // console.log(Version + (origin === undefined ? 'Local node': origin) + ' CORS check');
+  logger.debug(Version + (origin === undefined ? 'Local node': origin) + ' CORS check');
   if (origin === undefined) { // Do not want to block REST tools or server-to-server requests
     callback(null, true);
   }
   else { // origin is specified
-    if (whitelist.indexOf(origin) !== -1) {
+    if (corsclientorigin === origin) {
       callback(null, true)
     } else {
       logger.error(Version + (origin === null ? 'Local node': origin) + ' not allowed by CORS');
