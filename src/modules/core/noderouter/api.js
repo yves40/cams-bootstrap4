@@ -1,14 +1,15 @@
 /*----------------------------------------------------------------------------
     Oct 16 2019   Initial
+    Oct 23 2019   Change PATH
 ----------------------------------------------------------------------------*/
 const express = require('express');
 const router = express.Router();
 const logger = require('../services/logger');
 
-const Version = 'api.js:1.03, Oct 16 2019';
+const Version = 'api.js:1.04, Oct 23 2019';
 
 // Few dummy routes APIs tests
-router.get('/ping', (req, res) => {
+router.get('/api/ping', (req, res) => {
     res.json({
         message: 'Welcome to the Server Yves, check me',
         apiversion: Version,
@@ -16,7 +17,7 @@ router.get('/ping', (req, res) => {
     logger.debug(Version + '/api/ping served');
   });
 
-router.get('/test', (req, res) => {
+router.get('/api/test', (req, res) => {
     res.json({
         message: 'API test',
         apiversion: Version,

@@ -1,15 +1,16 @@
 /*----------------------------------------------------------------------------
     Oct 16 2019   Initial
+    Oct 23 2019   Change PATH
 ----------------------------------------------------------------------------*/
 const express = require('express');
 const router = express.Router();
 const logger = require('../services/logger');
 const mongodb = require('../services/mongodb');
 
-const Version = 'mongoapi.js:1.03, Oct 16 2019';
+const Version = 'mongoapi.js:1.04, Oct 23 2019';
 
 // Few dummy routes APIs tests
-router.get('/mongostatus', (req, res) => {
+router.get('/mongo/status', (req, res) => {
     let status = mongodb.getMongoDBStatusText();
     res.json({
         message: 'Checking mongodb server status',
@@ -19,7 +20,7 @@ router.get('/mongostatus', (req, res) => {
     logger.debug(Version + '/mongostatus served');
   });
 
-router.get('/mongoclose', (req, res) => {
+router.get('/mongo/close', (req, res) => {
     mongodb.closeMongoDBConnection();
     res.json({
         message: 'Requested closing of mongo connection',
