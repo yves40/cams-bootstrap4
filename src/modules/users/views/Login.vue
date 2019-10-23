@@ -9,6 +9,7 @@
   Oct 05 2019   Actions. Reorg folders
   Oct 11 2019   Add b-container to be bootstrap4 compliant
   Oct 22 2019   Mongodb status
+  Oct 23 2019   Change mongodb status checking : use Vuex with mongostore
 -->
 <template>
   <div>
@@ -23,7 +24,7 @@
       <b-row>
         <b-col cols="2"></b-col>
         <b-col>
-          <p>{{version}}</p>
+          <p>{{version}} / Mongo status {{MongoStatus}}</p>
         </b-col>
         <b-col cols="2"></b-col>
       </b-row>
@@ -72,16 +73,14 @@
 <script>
 
 const logger = require('../../core/services/logger');
-const axios = require('../../core/services/axios');
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   data() {
       return {
-        version: "Login 1.36, Oct 22 2019 ",
+        version: "Login 1.42, Oct 23 2019 ",
         email: '',
         password: '',
-        mongostatus: false,
-        axiosinstance: null,
       };
   },
   computed: {
@@ -100,29 +99,19 @@ export default {
       },
       checkall() {
         return ! ((this.emailstate && this.passwordstate));
-      }
+      },
+    ...mapGetters (
+        'mongostore', { 
+            MongoStatus: 'getMongoStatus',
+            mongostoreversion: 'getVersion',
+            IsMongoDown:  'IsMongoDown',
+        },
+    ),
   },  
   created() {
     this.$parent.disableMe('login');
   },
   mounted() {
-    this.axiosinstance = axios.getAxios();
-    logger.debug(this.version + 'Polling mongostatus from ' + axios.getNodeserver());
-    this.axiosinstance(
-      {
-          url: '/mongo/mongostatus',
-          method: 'get',
-      },
-    )
-    .then((response) => {
-      logger.debug('Axios call done : mongo status is ' + response.data.status);
-      },
-    )
-    .catch((error) => {
-      logger.error('Axios call done : Error received');
-      console.log(error);
-      },
-    );
   },
   beforeDestroy() {
     this.$parent.enableMe('login');

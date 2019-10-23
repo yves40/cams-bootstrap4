@@ -156,7 +156,7 @@ function IsMongoDown() {
     case CONNECTED:
       return false;
     default:
-      return false;
+      return true;
   }
 };
 

@@ -49,7 +49,8 @@
         <b-row>
           <b-col cols="2"></b-col>
           <b-col>
-            <h1>{{ headermsg }}</h1>
+            <h3>{{ mongostoreversion }}</h3>
+            <h3>{{ corestoreversion}}</h3>
           </b-col>
           <b-col cols="2"></b-col>
         </b-row>
@@ -86,8 +87,8 @@ export default {
   data() {
       return {
         headermsg: "Placeholder for future use, i.e, info on logged user",
-        version: "Cams Manager 1.82, Oct 11 2019",
-        copyright: "oldtimerSoft, 2019",
+        version: "Cams Manager 1.90, Oct 23 2019",
+        copyright: "oldtimerSoft",
         // These arrays are defining the displayed menus
         // enableflag drives the visibility of the URL
         // disableflag drives the active/inactive state
@@ -124,13 +125,22 @@ export default {
 
   computed: {
     ...mapGetters (
-        'corestore', { today: 'getToday',
-                       hms: 'getHM'},
+        'corestore', { 
+            today: 'getToday',
+            hms: 'getHM',
+            corestoreversion: 'getVersion',
+        },
+    ),
+    ...mapGetters (
+        'mongostore', { 
+            mongostoreversion: 'getVersion',
+        },
     ),
   },
 
   mounted() {
     this.$store.dispatch("corestore/settimer");
+    this.$store.dispatch('mongostore/setMongoTimer');  // Used to periodically check mongodb server status
   },
 
 methods: {
