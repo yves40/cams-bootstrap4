@@ -14,6 +14,7 @@ const responseheader = (req, res, next ) => {
   res.set('Access-Control-Allow-Origin', corsclientorigin);   // Set the client address for the server
                                                               // to inform the client browser that he will 
                                                               // accept requests from him
+                                                              // Can only specify one URI
   res.set('Access-Control-Allow-Credentials', 'true');
   next();
 };

@@ -47,14 +47,16 @@ app.use(httplogger);
 app.use(responseheader);
 //---------------------------------------------------------------------------------------------------------
 // Install the api testing middleware
-app.use('/api', require('./modules/core/noderouter/api'));
+app.use(require('./modules/core/noderouter/api'));
 //---------------------------------------------------------------------------------------------------------
 // Install the mongodb api middleware
-app.use('/mongo', require('./modules/core/noderouter/mongoapi'));
+app.use(require('./modules/core/noderouter/mongoapi'));
 //---------------------------------------------------------------------------------------------------------
 // get my logger
 const logparams = logger.getLoggerInfo();
+logger.info('***************************************************************');
 logger.info('********************** RESTART ********************************');
+logger.info('***************************************************************');
 logger.info(Version);
 logger.info('Logger version    : ' + logparams.version);
 logger.info('Log level         : ' + logparams.loglevel);
