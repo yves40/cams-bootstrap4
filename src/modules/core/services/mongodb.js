@@ -24,7 +24,6 @@ const mongoose = require('mongoose');
 const properties = require('./properties');
 const logger = require('./logger');
 
-// mongoose.connect(properties.mongodbserver, {useNewUrlParser: true});
 //----------------------------------------------------------------------------
 // Const variables
 //----------------------------------------------------------------------------
@@ -52,7 +51,7 @@ function getMongoDBURI() {
 //----------------------------------------------------------------------------
 // Open mongo connection
 //----------------------------------------------------------------------------
-function getMongoDBConnection(traceflag = false) {
+function getMongoDBConnection(traceflag = properties.MONGOTRACE) {
   if(traceflag) logger.debug(Version + 'Connect to : ' + properties.mongodbserver);
     mongoose.connect(properties.mongodbserver,{
       useNewUrlParser: true, 
@@ -64,7 +63,17 @@ function getMongoDBConnection(traceflag = false) {
     .then(function(MongooseObject) {
       if(traceflag) logger.info(Version + 'Mongoose now ready');
       DB = mongoose.connection;
-    })
+      // Set up handlers
+      DB.on('error',function (err) {  
+        if(traceflag) logger.error(Version + 'Mongoose error: ' + err);
+        }); 
+      DB.on('disconnected',function () {  
+        if(traceflag) logger.debug(Version + 'Mongoose disconnected');
+        }); 
+      DB.on('connected',function () {  
+        if(traceflag) logger.debug(Version + 'Mongoose connected');
+        });     
+      })
     .catch(function(reason) {
       logger.info(reason.message);
       DB = mongoose.connection;
@@ -87,7 +96,7 @@ function closeMongoDBConnection() {
 //----------------------------------------------------------------------------
 function getMongoDBStatus() {
   if (!DB) {
-    DB = getMongoDBConnection();
+    getMongoDBConnection();
   }
   return DB.readyState;
 };
@@ -140,10 +149,7 @@ function getMongoDBFlag() {
 // TRUE if disconnected
 //----------------------------------------------------------------------------
 function IsMongoDown() {
-  if (!DB) {
-    getMongoDBConnection();
-  }
-  else {
+  if (DB !== null) {
     switch ( DB.readyState ) {
       case DISCONNECTED:
       case CONNECTING:
@@ -155,7 +161,7 @@ function IsMongoDown() {
         return true;
     }
   }
-  return true;
+  return true; // Status unknown, something is wrong
 };
 
 module.exports =  {

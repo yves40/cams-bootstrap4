@@ -24,7 +24,7 @@
       <b-row>
         <b-col cols="2"></b-col>
         <b-col>
-          <p>{{version}} / Mongo status {{MongoStatus}}</p>
+          <p>{{version}} / Mongo down ? {{IsMongoDown}}</p>
         </b-col>
         <b-col cols="2"></b-col>
       </b-row>
@@ -78,7 +78,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Login 1.42, Oct 23 2019 ",
+        version: "Login 1.45, Oct 23 2019 ",
         email: '',
         password: '',
       };
@@ -110,8 +110,6 @@ export default {
   },  
   created() {
     this.$parent.disableMe('login');
-  },
-  mounted() {
   },
   beforeDestroy() {
     this.$parent.enableMe('login');

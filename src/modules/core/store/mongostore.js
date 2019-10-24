@@ -21,8 +21,6 @@ const logger = require('../services/logger');
 const axiosutility = require('../services/axios');
 const axiosinstance = axiosutility.getAxios();
 
-const DOWN = 0;
-const UP = 1;
 const MONGODELAYCHECK = require('../services/properties').MONGODELAYCHECK;
 let failures = 0;
 
@@ -70,8 +68,8 @@ const mutations = { // Synchronous
                 }
                 else {
                     if (failures !== 0) {
+                        logger.debug(state.Version + 'mongodb  service is back after ' + failures*MONGODELAYCHECK/1000 + ' seconds');
                         failures = 0;     // Back to normal status
-                        logger.debug(state.Version + 'mongodb status service is back');
                     }
                     else {
                         logger.debug(state.Version + 'mongodb is up');
