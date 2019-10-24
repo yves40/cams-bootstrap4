@@ -12,6 +12,7 @@
                     Suppress unnecessary log messages
     Mar 13 2019     Reduce log messages
     Oct 23 2019     cams-bootstrap project
+    Oct 24 2019     Remove one timer, add log
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -22,8 +23,7 @@ const axiosinstance = axiosutility.getAxios();
 
 const DOWN = 0;
 const UP = 1;
-const TIMEDELAYCHECK = 1000;
-const MONGODELAYCHECK = 2000;
+const MONGODELAYCHECK = require('../services/properties').MONGODELAYCHECK;
 let failures = 0;
 
 Vue.use(Vuex);
@@ -32,10 +32,8 @@ Vue.use(Vuex);
     VUEX states
 ----------------------------------------------------------------------------*/
 const state =  {
-    Version: 'mongoStore:1.67, Oct 23 2019 ',
-    clock: '',
+    Version: 'mongoStore:1.73, Oct 24 2019 ',
     MAXLOG:16,
-    mongostatus: DOWN,
     mongodown: true,        // TRUE if mongodb is down
 };
 /*----------------------------------------------------------------------------
@@ -45,11 +43,8 @@ const getters = {
     getVersion(state) {
         return state.Version;
     },
-    getTime(state) {
-        return state.clock;
-    },
     getMongoStatus(state) {
-        return state.mongostatus===UP ? 'Mongo running': 'Mongo Down';
+        return state.mongodown ? 'Mongo Down': 'Mongo Running';
     },
     IsMongoDown(state) {
         return state.mongodown;
@@ -62,29 +57,32 @@ const mutations = { // Synchronous
     clearlog(state) {
         state.logs = [];
     },
-    updateTime(state) {
-        state.clock = new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1");
-    },
-    updateMongoStatus(state) {  // Check mongo status every 2 seconds
+    updateMongoStatus(state) {  // Check mongo status every 5 seconds
         return axiosinstance({
             url: '/mongo/status',
             method: 'get',
             })
             .then((response) => {
-            if (failures !== 0) {
-                failures = 0;     // Back to normal status
-                logger.debug(state.Version + 'mongodb status service is back');
-
-            }
-            state.mongostatus = response.data.mongostatus;
-            state.mongodown = response.data.mongodown;
+                state.mongodown = response.data.isdown;
+                if(state.mongodown) {
+                    ++failures;
+                    logger.debug(state.Version + 'Mongo is down');
+                }
+                else {
+                    if (failures !== 0) {
+                        failures = 0;     // Back to normal status
+                        logger.debug(state.Version + 'mongodb status service is back');
+                    }
+                    else {
+                        logger.debug(state.Version + 'mongodb is up');
+                    }
+                }
             })
             .catch(() => {
-            ++failures;
-            state.mongostatus = DOWN;
-            if ((failures % 10 === 0)||(failures === 1)) {
-                logger.error(state.Version + ' Error when calling mongodb status service ');
-            }
+                ++failures;
+                if ((failures % 10 === 0)||(failures === 1)) {
+                    logger.error(state.Version + ' Error when calling mongodb status service ');
+                }
             });
     },
 };
@@ -94,11 +92,6 @@ const mutations = { // Synchronous
 const actions = { // Asynchronous
     clearlog(context) {
         context.commit('clearlog');
-    },
-    setClockTimer(context) {
-        setInterval(() => {
-            context.commit('updateTime')
-            }, TIMEDELAYCHECK);
     },
     setMongoTimer(context) {
         setInterval(() => {

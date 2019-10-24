@@ -8,8 +8,9 @@
 //                  mongodb URL set to local host
 //    Oct 22 2019   Axios URL prefix
 //    Oct 23 2019   Wrong nodeserver URL
+//    Oct 24 2019   Centralize mongodb checking delay
 //----------------------------------------------------------------------------
-const Version = 'properties:1.14, Oct 23 2019';
+const Version = 'properties:1.15, Oct 24 2019';
 
 const logger = require('./logger');
 // The webpack dev server
@@ -22,6 +23,8 @@ const nodeserverport = process.env.NODESERVERPORT || 8081;
 const nodeserver =  process.env.NODESERVER || 'http://localhost:8081';
 // CORS site list to enable cross server requests
 const corsclientorigin = 'http://localhost:8080';  
+// Mongo DB check delay (ms)
+const MONGODELAYCHECK = 5000;
 
 const loggerlevel = logger.DEBUG;
 
@@ -33,4 +36,5 @@ module.exports = {
     loggerlevel: loggerlevel,
     nodeserver: nodeserver,
     corsclientorigin: corsclientorigin,
+    MONGODELAYCHECK: MONGODELAYCHECK,
 }

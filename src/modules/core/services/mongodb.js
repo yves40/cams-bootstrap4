@@ -15,8 +15,10 @@
 //                  Fix warning message on connect with useUnifiedTopology: true
 //                  Look here : https://mongoosejs.com/docs/deprecations.html
 //    Oct 22 2019   Change some log messages and set mongoose options
+//    Oct 24 2019   Checking mongo status, return boolean
+//                  Simplify !!
 //----------------------------------------------------------------------------
-const Version = "mongodb:1.35, Oct 22 2019 ";
+const Version = "mongodb:1.45, Oct 24 2019 ";
 
 const mongoose = require('mongoose');
 const properties = require('./properties');
@@ -52,38 +54,21 @@ function getMongoDBURI() {
 //----------------------------------------------------------------------------
 function getMongoDBConnection(traceflag = false) {
   if(traceflag) logger.debug(Version + 'Connect to : ' + properties.mongodbserver);
-  try {
     mongoose.connect(properties.mongodbserver,{
       useNewUrlParser: true, 
       keepAlive: false, 
       useFindAndModify: false,
       useCreateIndex: true,
       useUnifiedTopology: true,
-    } )
+    })
     .then(function(MongooseObject) {
-      if(traceflag) logger.info(Version + 'Mongoose now ready [' + MongooseObject.connection.readyState + ']');
-      return MongooseObject.connection;
+      if(traceflag) logger.info(Version + 'Mongoose now ready');
+      DB = mongoose.connection;
     })
     .catch(function(reason) {
       logger.info(reason.message);
-    });
-  
-    DB = mongoose.connection;
-    // Set up handlers
-    DB.on('error',function (err) {  
-    if(traceflag) logger.error(Version + 'Mongoose error: ' + err);
-    }); 
-    DB.on('disconnected',function () {  
-    if(traceflag) logger.debug(Version + 'Mongoose disconnected');
-    }); 
-    DB.on('connected',function () {  
-    if(traceflag) logger.debug(Version + 'Mongoose connected');
-    }); 
-    return DB;
-  }
-  catch(error) {
-    throw error;
-  }
+      DB = mongoose.connection;
+    })
 };
 //----------------------------------------------------------------------------
 // Close mongo connection
@@ -102,7 +87,7 @@ function closeMongoDBConnection() {
 //----------------------------------------------------------------------------
 function getMongoDBStatus() {
   if (!DB) {
-    getMongoDBConnection(getMongoDBURI());
+    DB = getMongoDBConnection();
   }
   return DB.readyState;
 };
@@ -111,53 +96,66 @@ function getMongoDBStatus() {
 //----------------------------------------------------------------------------
 function getMongoDBStatusText() {
   if (!DB) {
-    getMongoDBConnection(getMongoDBURI());
+    getMongoDBConnection();
   }
-  switch ( DB.readyState ) {
-    case DISCONNECTED:
-      return('Disconnected');
-    case CONNECTED:
-      return( 'Connected');
-    case CONNECTING:
-      return( 'Connecting');
-    case DISCONNECTING:
-      return( 'Disconnecting');
-    default: return('Unknown')
+  else {
+    switch ( DB.readyState ) {
+      case DISCONNECTED:
+        return('Disconnected');
+      case CONNECTED:
+        return( 'Connected');
+      case CONNECTING:
+        return( 'Connecting');
+      case DISCONNECTING:
+        return( 'Disconnecting');
+      default: return('Unknown')
+    }
   }
+  return('Unknown');
 };
 //----------------------------------------------------------------------------
 // Get mongo runnable status
 // TRUE if connected
 //----------------------------------------------------------------------------
 function getMongoDBFlag() {
-  switch ( DB.readyState ) {
-    case DISCONNECTED:
-    case CONNECTING:
-    case DISCONNECTING:
-      return false;
-      break;
-    case CONNECTED:
-      return true;
-      break;
-    default:
-      return false;
+  if (!DB) {
+    getMongoDBConnection();
   }
+  else {
+    switch ( DB.readyState ) {
+      case DISCONNECTED:
+      case CONNECTING:
+      case DISCONNECTING:
+        return false;
+      case CONNECTED:
+        return true;
+      default:
+        return false;
+    }
+  }
+  return false;
 };
 //----------------------------------------------------------------------------
 // mongo is down ? 
 // TRUE if disconnected
 //----------------------------------------------------------------------------
 function IsMongoDown() {
-  switch ( DB.readyState ) {
-    case DISCONNECTED:
-    case CONNECTING:
-    case DISCONNECTING:
-      return true;
-    case CONNECTED:
-      return false;
-    default:
-      return true;
+  if (!DB) {
+    getMongoDBConnection();
   }
+  else {
+    switch ( DB.readyState ) {
+      case DISCONNECTED:
+      case CONNECTING:
+      case DISCONNECTING:
+        return true;
+      case CONNECTED:
+        return false;
+      default:
+        return true;
+    }
+  }
+  return true;
 };
 
 module.exports =  {
