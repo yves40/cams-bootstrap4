@@ -16,7 +16,7 @@
         <b-row>
           <b-col cols="2"></b-col>
           <b-col>
-            <img src="../../../assets/WIP.png" />
+            <img src="../../../assets/process.png" />
           </b-col>
           <b-col cols="2"></b-col>
         </b-row>
