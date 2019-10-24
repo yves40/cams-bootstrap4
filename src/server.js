@@ -22,7 +22,7 @@ const properties =  require('./modules/core/services/properties');
 const corshelper = require('./modules/core/services/corshelper');
 const cors = require('cors');
 
-const Version = 'server.js:1.22, Oct 23 2019';
+const Version = 'server.js:1.23, Oct 23 2019';
 
 const app = express();
 //---------------------------------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ app.use('/style', express.static(path.join(__dirname, 'css')));
 //---------------------------------------------------------------------------------------------------------
 // Test a simple middleware function tracking requests made on the server : see the httplogger.js source file
 // The imported function is installed in the MW chain
-app.use(httplogger);
+if (properties.httptrace) app.use(httplogger);
 //---------------------------------------------------------------------------------------------------------
 // Install middleware responsible for response header settings
 app.use(responseheader);
