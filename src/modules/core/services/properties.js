@@ -10,9 +10,10 @@
 //    Oct 23 2019   Wrong nodeserver URL
 //    Oct 24 2019   Centralize mongodb checking delay
 //----------------------------------------------------------------------------
-const Version = 'properties:1.16, Oct 24 2019';
+const Version = 'properties:1.17, Oct 24 2019';
 
 const logger = require('./logger');
+
 // The webpack dev server
 const webserver = process.env.WEBSERVER || "http://localhost:8080";
 const webserverport = process.env.WEBSERVERPORT || 8080;
@@ -21,11 +22,13 @@ const mongodbserver =  process.env.MONGOSERVER || 'mongodb://localhost:27017/adm
 const nodeserverport = process.env.NODESERVERPORT || 8081;
 // The node server
 const nodeserver =  process.env.NODESERVER || 'http://localhost:8081';
-// CORS site list to enable cross server requests
+// CORS site enabled for cross server requests
 const corsclientorigin = 'http://localhost:8080';  
 // Mongo DB check delay (ms)
 const MONGODELAYCHECK = 10000;
 const MONGOTRACE = true;
+// Trace HTTP calls to express
+const httptrace = false;
 
 const loggerlevel = logger.DEBUG;
 
@@ -39,4 +42,5 @@ module.exports = {
     corsclientorigin: corsclientorigin,
     MONGODELAYCHECK: MONGODELAYCHECK,
     MONGOTRACE: MONGOTRACE,
+    httptrace: httptrace,
 }

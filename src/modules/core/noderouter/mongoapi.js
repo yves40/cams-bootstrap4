@@ -22,7 +22,6 @@ router.get('/mongo/status', (req, res) => {
         apiversion: Version,
         checktime: datetime.getTime(),
     });
-    logger.debug(Version + '/mongostatus served');
   });
 
 router.get('/mongo/close', (req, res) => {
@@ -31,7 +30,6 @@ router.get('/mongo/close', (req, res) => {
         message: 'Requested closing of mongo connection',
         apiversion: Version,
     });
-    logger.debug(Version + '/mongoclose served');
 });
 
 module.exports = router ;

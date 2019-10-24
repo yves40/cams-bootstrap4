@@ -24,7 +24,7 @@
       <b-row>
         <b-col cols="2"></b-col>
         <b-col>
-          <p>{{version}} / Mongo down ? {{IsMongoDown}}</p>
+          <p>{{version}} / Mongo down ? {{MongoDown}}</p>
         </b-col>
         <b-col cols="2"></b-col>
       </b-row>
@@ -78,7 +78,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Login 1.45, Oct 23 2019 ",
+        version: "Login 1.55, Oct 23 2019 ",
         email: '',
         password: '',
       };
@@ -98,13 +98,12 @@ export default {
         return this.emailstate === true ? 'Mail format OK': ''
       },
       checkall() {
-        return ! ((this.emailstate && this.passwordstate));
+        const mongodown = this.$store.getters['mongostore/IsMongoDown'];
+        return ! (this.emailstate && this.passwordstate && !mongodown);
       },
     ...mapGetters (
         'mongostore', { 
-            MongoStatus: 'getMongoStatus',
-            mongostoreversion: 'getVersion',
-            IsMongoDown:  'IsMongoDown',
+            MongoDown:  'IsMongoDown',
         },
     ),
   },  
