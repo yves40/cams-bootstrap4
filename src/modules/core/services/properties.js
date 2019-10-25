@@ -9,10 +9,9 @@
 //    Oct 22 2019   Axios URL prefix
 //    Oct 23 2019   Wrong nodeserver URL
 //    Oct 24 2019   Centralize mongodb checking delay
+//    Oct 25 2019   Define logger levels here.
 //----------------------------------------------------------------------------
-const Version = 'properties:1.17, Oct 24 2019';
-
-const logger = require('./logger');
+const Version = 'properties:1.19, Oct 25 2019';
 
 // The webpack dev server
 const webserver = process.env.WEBSERVER || "http://localhost:8080";
@@ -29,8 +28,13 @@ const MONGODELAYCHECK = 10000;
 const MONGOTRACE = true;
 // Trace HTTP calls to express
 const httptrace = false;
-
-const loggerlevel = logger.DEBUG;
+// Define the logger level
+const DEBUG = 0;
+const INFORMATIONAL = 1;
+const WARNING = 2;
+const ERROR = 3;
+const FATAL = 4;
+const loggerlevel = INFORMATIONAL;  // This one sets the tracing level of the app
 
 module.exports = {
     webserver: webserver,
@@ -43,4 +47,9 @@ module.exports = {
     MONGODELAYCHECK: MONGODELAYCHECK,
     MONGOTRACE: MONGOTRACE,
     httptrace: httptrace,
+    DEBUG,
+    INFORMATIONAL,
+    WARNING,
+    ERROR,
+    FATAL,
 }

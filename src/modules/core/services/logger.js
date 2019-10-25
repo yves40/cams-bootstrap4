@@ -16,10 +16,10 @@
 //    Oct 12 2019   Change import to require for node
 //                  export default is also a problem
 //    Oct 16 2019   Report log level on 1st call
+//    Oct 25 2019   Move logger level definitions into properties
 //----------------------------------------------------------------------------
-const Version = 'logger:1.44, Oct 16 2019';
+const Version = 'logger:1.48, Oct 25 2019';
 
-//import datetime from './datetime';
 const datetime = require('./datetime'); 
 const properties = require('./properties'); 
 
@@ -35,12 +35,12 @@ let OUTFILE = process.env.LOGFILE || '/tmp/' + Version.replace(/[,:]/g,'_').repl
 //----------------------------------------------------------------------------
 // Constants
 //----------------------------------------------------------------------------
-const DEBUG = 0;
-const INFORMATIONAL = 1;
-const WARNING = 2;
-const ERROR = 3;
-const FATAL = 4;
-const LOGGERLEVEL = properties.loggerlevel || process.env.LOGGERLEVEL || DEBUG;
+const DEBUG = parseInt(properties.DEBUG);
+const INFORMATIONAL = parseInt(properties.INFORMATIONAL);
+const WARNING = parseInt(properties.WARNING);
+const ERROR = parseInt(properties.ERROR);
+const FATAL = parseInt(properties.FATAL);
+const LOGGERLEVEL = parseInt(properties.loggerlevel || process.env.LOGGERLEVEL || DEBUG);
 
 const MAXLOGS = 10;
 //----------------------------------------------------------------------------
@@ -114,7 +114,6 @@ function getLoggerInfo() {
     loggerinfo = {};
     loggerinfo.version = Version;
     loggerinfo.loglevel = LOGGERLEVEL;
-    loggerinfo.loglevel = levelToString(LOGGERLEVEL);
 
     if (process.env.LOGFILE) {
         loggerinfo.logfiledefiner = 'Shell defined';
@@ -207,11 +206,6 @@ module.exports = {
     warning: warning, 
     error: error, 
     fatal: fatal,
-    DEBUG,
-    INFORMATIONAL,
-    WARNING,
-    ERROR,
-    FATAL,
     levelToString,
     getLoggerInfo,
 }
