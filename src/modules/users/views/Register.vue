@@ -7,6 +7,8 @@
   Oct 04 2019   Start work to get register implementation
   Oct 05 2019   Add buttons, handle requests, reorg folders
   Oct 11 2019   Add b-container to be bootstrap4 compliant
+  Oct 25 2019   Fix button overlap problem when resizing to small window
+                Manage mongodb down detection as in login vue
 -->
 <template>
   <div>
@@ -90,9 +92,11 @@
             <b-form-group
               label-cols-sm="4"
             >
+              <div class="btn-group">
                 <b-button :disabled="checkall" v-on:click="register">Register</b-button>
                 <b-button  v-on:click="clear">Clear</b-button>
                 <b-button  v-on:click="register" v-bind:to="{ name: 'home' }">Cancel</b-button>
+              </div>
             </b-form-group>
         </div>
       </b-col>
@@ -105,11 +109,12 @@
 <script>
 
 const Logger = require('../../core/services/logger');
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   data() {
     return {
-      version: "Register 1.21, Oct 11 2019",
+      version: "Register 1.24, Oct 25 2019",
       name: '',
       email: '',
       userdescription: '',
@@ -153,9 +158,15 @@ export default {
         return (this.password1 === this.password2 )&&( this.password1.length > 0) ? true : false
       },
       checkall() {
+        const mongodown = this.$store.getters['mongostore/IsMongoDown'];
         return ! ((this.namestate && this.emailstate && this.descstate && this.password1state
-         && this.password2state));
-      }
+         && this.password2state && !mongodown));
+      },
+      ...mapGetters (
+          'mongostore', { 
+              MongoDown:  'IsMongoDown',
+          },
+      ),
   },  
   created() {
     this.$parent.disableMe('register');

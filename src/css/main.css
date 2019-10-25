@@ -4,6 +4,7 @@
     Sep 29 2019   Initial
     Sep 30 2019   new sections
     Oct 03 2019   new sections
+    Oct 25 2019   Add a class for button group
 
 */
 
@@ -35,3 +36,6 @@
 .viewframe { border: 1px solid lightgray};
 
 li {margin: 0 0.8em;}
+
+.btn-group button { margin: 0 7px; border-radius: 4px; }
+

@@ -10,6 +10,7 @@
   Oct 11 2019   Add b-container to be bootstrap4 compliant
   Oct 22 2019   Mongodb status
   Oct 23 2019   Change mongodb status checking : use Vuex with mongostore
+  Oct 25 2019   Fix button overlap problem when resizing to small window
 -->
 <template>
   <div>
@@ -55,9 +56,11 @@
               <b-form-group
                 label-cols-sm="3"
               >
-                <b-button :disabled="checkall" v-on:click="login">Login</b-button>
-                <b-button  v-on:click="clear">Clear</b-button>
-                <b-button  v-bind:to="{ name: 'home' }">Cancel</b-button>
+                <div class="btn-group">
+                  <b-button :disabled="checkall" v-on:click="login">Login</b-button>
+                  <b-button  v-on:click="clear">Clear</b-button>
+                  <b-button  v-bind:to="{ name: 'home' }">Cancel</b-button>
+                </div>
               </b-form-group>
               <b-form-group label-cols-sm="3">
                 <b-link  v-bind:to="{ name: 'register' }">New to the site ? Register</b-link>
@@ -78,7 +81,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Login 1.55, Oct 23 2019 ",
+        version: "Login 1.56, Oct 25 2019 ",
         email: '',
         password: '',
       };
