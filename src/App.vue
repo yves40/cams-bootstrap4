@@ -10,6 +10,7 @@
   Oct 09 2019   About, date in header bar
   Oct 10 2019   About, date in Menu bar.
   Oct 11 2019   Date / hour in Menu bar. Change meun look 
+  Oct 25 2019   Header content
 -->
 
 <template>
@@ -49,8 +50,12 @@
         <b-row>
           <b-col cols="2"></b-col>
           <b-col>
-            <h3>{{ mongostoreversion }}</h3>
-            <h3>{{ corestoreversion}}</h3>
+            <b-form-invalid-feedback :state="checkmongo">
+                MongoDB server is down.
+            </b-form-invalid-feedback>
+            <b-form-valid-feedback :state="checkmongo">
+                MongoDB server is up.
+            </b-form-valid-feedback>
           </b-col>
           <b-col cols="2"></b-col>
         </b-row>
@@ -87,7 +92,7 @@ export default {
   data() {
       return {
         headermsg: "Placeholder for future use, i.e, info on logged user",
-        version: "Cams Manager 1.90, Oct 23 2019",
+        version: "Cams Manager 1.91, Oct 25 2019",
         copyright: "oldtimerSoft",
         // These arrays are defining the displayed menus
         // enableflag drives the visibility of the URL
@@ -136,6 +141,9 @@ export default {
             mongostoreversion: 'getVersion',
         },
     ),
+    checkmongo() {
+      return !this.$store.getters['mongostore/IsMongoDown'];
+    },
   },
 
   mounted() {

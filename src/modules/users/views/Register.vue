@@ -95,7 +95,7 @@
               <div class="btn-group">
                 <b-button :disabled="checkall" v-on:click="register">Register</b-button>
                 <b-button  v-on:click="clear">Clear</b-button>
-                <b-button  v-on:click="register" v-bind:to="{ name: 'home' }">Cancel</b-button>
+                <b-button variant="danger" v-on:click="gotohome">Cancel</b-button>
               </div>
             </b-form-group>
         </div>
@@ -114,7 +114,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      version: "Register 1.24, Oct 25 2019",
+      version: "Register 1.25, Oct 25 2019",
       name: '',
       email: '',
       userdescription: '',
@@ -175,12 +175,15 @@ export default {
     this.$parent.enableMe('register');
   },
   methods: {
-      register() {
-        Logger.info('Requesting registration of ' + this.name); 
-      },
-      clear() {
-        this.name = this.userdescription = this.email = this.password1 = this.password2 = '';
-      },
+    register() {
+      Logger.info('Requesting registration of ' + this.name); 
+    },
+    clear() {
+      this.name = this.userdescription = this.email = this.password1 = this.password2 = '';
+    },
+    gotohome() {
+      this.$router.push({ name: 'home' });
+    },
   }
 };
 </script>

@@ -11,7 +11,7 @@
 //    Oct 24 2019   Centralize mongodb checking delay
 //    Oct 25 2019   Define logger levels here.
 //----------------------------------------------------------------------------
-const Version = 'properties:1.19, Oct 25 2019';
+const Version = 'properties:1.21, Oct 25 2019';
 
 // The webpack dev server
 const webserver = process.env.WEBSERVER || "http://localhost:8080";
@@ -24,8 +24,10 @@ const nodeserver =  process.env.NODESERVER || 'http://localhost:8081';
 // CORS site enabled for cross server requests
 const corsclientorigin = 'http://localhost:8080';  
 // Mongo DB check delay (ms)
-const MONGODELAYCHECK = 10000;
+const MONGODELAYCHECK = 2000;
 const MONGOTRACE = true;
+const MONGOUP = 1;
+const MONGODOWN = 0;
 // Trace HTTP calls to express
 const httptrace = false;
 // Define the logger level
@@ -34,7 +36,7 @@ const INFORMATIONAL = 1;
 const WARNING = 2;
 const ERROR = 3;
 const FATAL = 4;
-const loggerlevel = INFORMATIONAL;  // This one sets the tracing level of the app
+const loggerlevel = DEBUG;  // This one sets the tracing level of the app
 
 module.exports = {
     webserver: webserver,
@@ -52,4 +54,6 @@ module.exports = {
     WARNING,
     ERROR,
     FATAL,
+    MONGOUP,
+    MONGODOWN,
 }

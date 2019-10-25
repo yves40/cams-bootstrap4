@@ -13,6 +13,7 @@
     Mar 13 2019     Reduce log messages
     Oct 23 2019     cams-bootstrap project
     Oct 24 2019     Remove one timer, add log
+    Oct 25 2019     Log a message only when mongo state has changed 
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -22,7 +23,11 @@ const axiosutility = require('../services/axios');
 const axiosinstance = axiosutility.getAxios();
 
 const MONGODELAYCHECK = require('../services/properties').MONGODELAYCHECK;
-let failures = 0;
+const MONGOUP = require('../services/properties').MONGOUP;
+const MONGODOWN = require('../services/properties').MONGODOWN;
+
+let failures = 0;       // Nbr of times the mongo server does not respond
+let previousmongostate = MONGODOWN;
 
 Vue.use(Vuex);
 
@@ -30,7 +35,7 @@ Vue.use(Vuex);
     VUEX states
 ----------------------------------------------------------------------------*/
 const state =  {
-    Version: 'mongoStore:1.73, Oct 24 2019 ',
+    Version: 'mongoStore:1.76, Oct 25 2019 ',
     MAXLOG:16,
     mongodown: true,        // TRUE if mongodb is down
 };
@@ -64,7 +69,10 @@ const mutations = { // Synchronous
                 state.mongodown = response.data.isdown;
                 if(state.mongodown) {
                     ++failures;
-                    logger.debug(state.Version + 'Mongo is down');
+                    if( previousmongostate !== MONGODOWN) {
+                        logger.debug(state.Version + 'Mongo is down');
+                        previousmongostate = MONGODOWN;
+                    }
                 }
                 else {
                     if (failures !== 0) {
@@ -72,7 +80,10 @@ const mutations = { // Synchronous
                         failures = 0;     // Back to normal status
                     }
                     else {
-                        logger.debug(state.Version + 'mongodb is up');
+                        if( previousmongostate !== MONGOUP) {
+                            logger.debug(state.Version + 'mongodb is up');
+                            previousmongostate = MONGOUP;
+                        }
                     }
                 }
             })

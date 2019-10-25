@@ -25,7 +25,7 @@
       <b-row>
         <b-col cols="2"></b-col>
         <b-col>
-          <p>{{version}} / Mongo down ? {{MongoDown}}</p>
+          <p>{{version}}</p>
         </b-col>
         <b-col cols="2"></b-col>
       </b-row>
@@ -58,8 +58,9 @@
               >
                 <div class="btn-group">
                   <b-button :disabled="checkall" v-on:click="login">Login</b-button>
-                  <b-button  v-on:click="clear">Clear</b-button>
-                  <b-button  v-bind:to="{ name: 'home' }">Cancel</b-button>
+                  <b-button v-on:click="clear">Clear</b-button>
+                  <!-- Have to route through a method call to avoid button oversizing -->
+                  <b-button  variant="danger" v-on:click="gotohome" >Cancel</b-button>
                 </div>
               </b-form-group>
               <b-form-group label-cols-sm="3">
@@ -81,7 +82,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Login 1.56, Oct 25 2019 ",
+        version: "Login 1.65, Oct 25 2019 ",
         email: '',
         password: '',
       };
@@ -122,6 +123,9 @@ export default {
     },
     clear() {
       this.email = this.password = '';
+    },
+    gotohome() {
+      this.$router.push({ name: 'home' });
     },
   }
 };
