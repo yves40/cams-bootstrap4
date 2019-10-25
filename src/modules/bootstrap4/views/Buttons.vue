@@ -32,19 +32,21 @@
         <b-row>
           <b-col cols="2"></b-col>
           <b-col>
-            <div>
-              <b-button v-on:click="standard">Standard </b-button>
-              <b-button variant="danger" v-on:click="danger" >Danger</b-button>
-              <b-button variant="success" v-on:click="success">Success</b-button>
-              <b-button variant="outline-primary" v-on:click="outline">Outline</b-button>
-              <b-dropdown id="dropdown-1" text="Dropdown" class="m-md-2">
-                <b-dropdown-item v-on:click="first">First Action</b-dropdown-item>
-                <b-dropdown-item v-on:click="second">Second Action</b-dropdown-item>
-                <b-dropdown-item v-on:click="third">Third Action</b-dropdown-item>
-                <b-dropdown-divider></b-dropdown-divider>
-                <b-dropdown-item  v-on:click="active" active>Active action</b-dropdown-item>
-                <b-dropdown-item  v-on:click="disabled" disabled>Disabled action</b-dropdown-item>
-              </b-dropdown>
+            <div class="mt-3">
+              <b-button-group>
+                <b-button pill v-on:click="standard">Standard </b-button>
+                <b-button pill variant="danger" v-on:click="danger" >Danger</b-button>
+                <b-button pill variant="success" v-on:click="success">Success</b-button>
+                <b-button pill variant="outline-primary" v-on:click="outline">Outline</b-button>
+                <b-dropdown id="dropdown-1" text="Dropdown" class="m-md-2">
+                  <b-dropdown-item v-on:click="first">First Action</b-dropdown-item>
+                  <b-dropdown-item v-on:click="second">Second Action</b-dropdown-item>
+                  <b-dropdown-item v-on:click="third">Third Action</b-dropdown-item>
+                  <b-dropdown-divider></b-dropdown-divider>
+                  <b-dropdown-item  v-on:click="active" active>Active action</b-dropdown-item>
+                  <b-dropdown-item  v-on:click="disabled" disabled>Disabled action</b-dropdown-item>
+                </b-dropdown>
+              </b-button-group>
             </div>              
           </b-col>
         </b-row>
@@ -59,7 +61,7 @@ export default {
   data() {
     return {
       msg: "bootstrap4 button widgets",
-      version: "buttons 1.22, Oct 05 2019"
+      version: "buttons 1.23, Oct 05 2019"
     };
   },
   methods: {

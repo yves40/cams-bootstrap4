@@ -93,9 +93,9 @@
               label-cols-sm="4"
             >
               <div class="btn-group">
-                <b-button :disabled="checkall" v-on:click="register">Register</b-button>
-                <b-button  v-on:click="clear">Clear</b-button>
-                <b-button variant="danger" v-on:click="gotohome">Cancel</b-button>
+                <b-button pill :disabled="checkall" v-on:click="register">Register</b-button>
+                <b-button pill  v-on:click="clear">Clear</b-button>
+                <b-button pill variant="danger" v-on:click="gotohome">Cancel</b-button>
               </div>
             </b-form-group>
         </div>
