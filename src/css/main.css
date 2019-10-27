@@ -39,3 +39,9 @@ li {margin: 0 0.8em;}
 
 .btn-group button { margin: 0 7px; border-radius: 4px; }
 
+.navbar-nav .btn {
+  margin-bottom:5px;
+  margin-left:2px;
+}
+
+

@@ -29,27 +29,27 @@
             <b-col cols="2 "></b-col>
           </b-row>
         </div>
-        <b-row>
-          <b-col cols="2"></b-col>
-          <b-col>
-            <div class="mt-3">
-              <b-button-group>
-                <b-button pill v-on:click="standard">Standard </b-button>
-                <b-button pill variant="danger" v-on:click="danger" >Danger</b-button>
-                <b-button pill variant="success" v-on:click="success">Success</b-button>
-                <b-button pill variant="outline-primary" v-on:click="outline">Outline</b-button>
-                <b-dropdown id="dropdown-1" text="Dropdown" class="m-md-2">
-                  <b-dropdown-item v-on:click="first">First Action</b-dropdown-item>
-                  <b-dropdown-item v-on:click="second">Second Action</b-dropdown-item>
-                  <b-dropdown-item v-on:click="third">Third Action</b-dropdown-item>
-                  <b-dropdown-divider></b-dropdown-divider>
-                  <b-dropdown-item  v-on:click="active" active>Active action</b-dropdown-item>
-                  <b-dropdown-item  v-on:click="disabled" disabled>Disabled action</b-dropdown-item>
-                </b-dropdown>
-              </b-button-group>
-            </div>              
-          </b-col>
-        </b-row>
+        <div>
+          <b-navbar toggleable="sm">
+            <b-navbar-toggle target="collapsemenu"></b-navbar-toggle>
+            <b-collapse id=collapsemenu is-nav>
+              <b-navbar-nav class="mr-auto">
+                  <b-button pill v-on:click="standard">Standard </b-button>
+                  <b-button pill variant="danger" v-on:click="danger" >Danger</b-button>
+                  <b-button pill variant="success" v-on:click="success">Success</b-button>
+                  <b-button pill variant="outline-primary" v-on:click="outline">Outline</b-button>
+                  <b-dropdown id="dropdown-1" text="Dropdown" class="m-md-2">
+                    <b-dropdown-item v-on:click="first">First Action</b-dropdown-item>
+                    <b-dropdown-item v-on:click="second">Second Action</b-dropdown-item>
+                    <b-dropdown-item v-on:click="third">Third Action</b-dropdown-item>
+                    <b-dropdown-divider></b-dropdown-divider>
+                    <b-dropdown-item  v-on:click="active" active>Active action</b-dropdown-item>
+                    <b-dropdown-item  v-on:click="disabled" disabled>Disabled action</b-dropdown-item>
+                  </b-dropdown>
+              </b-navbar-nav>
+            </b-collapse>
+          </b-navbar>
+        </div>              
       </b-container>
   </div>
 </template>
