@@ -6,6 +6,7 @@
   Oct 03 2019   Grid setup
   Oct 04 2019   Elements positions
   Oct 05 2019   Elements positions
+  Oct 27 2019   Buttons positions when window resized to minimum
 -->
 <template>
   <div class="bootstrap" id="buttons">
@@ -61,7 +62,7 @@ export default {
   data() {
     return {
       msg: "bootstrap4 button widgets",
-      version: "buttons 1.23, Oct 05 2019"
+      version: "buttons 1.25, Oct 27 2019"
     };
   },
   methods: {

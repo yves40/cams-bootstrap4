@@ -5,6 +5,7 @@
     Sep 30 2019   new sections
     Oct 03 2019   new sections
     Oct 25 2019   Add a class for button group
+    Oct 27 2019   Class for vertical menu buttons 
 
 */
 
@@ -40,8 +41,12 @@ li {margin: 0 0.8em;}
 .btn-group button { margin: 0 7px; border-radius: 4px; }
 
 .navbar-nav .btn {
-  margin-bottom:5px;
-  margin-left:2px;
+  margin-bottom:10px;
+  margin-left:5px;
+}
+
+ul {
+  margin-top: 6px;
 }
 
 

@@ -11,6 +11,7 @@
   Oct 22 2019   Mongodb status
   Oct 23 2019   Change mongodb status checking : use Vuex with mongostore
   Oct 25 2019   Fix button overlap problem when resizing to small window
+  Oct 27 2019   Buttons positions when window resized to minimum
 -->
 <template>
   <div>
@@ -53,16 +54,20 @@
                 <b-form-input id="password" v-model="password" :state="passwordstate" trim></b-form-input>
               </b-form-group>
 
-              <b-form-group
-                label-cols-sm="3"
-              >
-                <div class="btn-group">
-                  <b-button pill :disabled="checkall" v-on:click="login">Login</b-button>
-                  <b-button pill v-on:click="clear">Clear</b-button>
-                  <!-- Have to route through a method call to avoid button oversizing -->
-                  <b-button pill  variant="danger" v-on:click="gotohome" >Cancel</b-button>
-                </div>
-              </b-form-group>
+              <div>
+                <b-navbar toggleable="sm">
+                  <b-navbar-toggle target="collapsemenu"></b-navbar-toggle>
+                  <b-collapse id=collapsemenu is-nav>
+                    <b-navbar-nav class="mr-auto">
+                        <b-button pill :disabled="checkall" v-on:click="login">Login</b-button>
+                        <b-button pill v-on:click="clear">Clear</b-button>
+                        <!-- Have to route through a method call to avoid button oversizing -->
+                        <b-button pill  variant="danger" v-on:click="gotohome" >Cancel</b-button>
+                    </b-navbar-nav>
+                  </b-collapse>
+                </b-navbar>
+              </div>
+
               <b-form-group label-cols-sm="3">
                 <b-link  v-bind:to="{ name: 'register' }">New to the site ? Register</b-link>
               </b-form-group>
@@ -82,7 +87,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Login 1.65, Oct 25 2019 ",
+        version: "Login 1.66, Oct 25 2019 ",
         email: '',
         password: '',
       };
