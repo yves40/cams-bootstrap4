@@ -10,14 +10,15 @@
 //    Oct 23 2019   Wrong nodeserver URL
 //    Oct 24 2019   Centralize mongodb checking delay
 //    Oct 25 2019   Define logger levels here.
+//    Oct 28 2019   Start using the mongo cams schema.
 //----------------------------------------------------------------------------
-const Version = 'properties:1.21, Oct 25 2019';
+const Version = 'properties:1.22, Oct 28 2019';
 
 // The webpack dev server
 const webserver = process.env.WEBSERVER || "http://localhost:8080";
 const webserverport = process.env.WEBSERVERPORT || 8080;
 // const mongodbserver =  process.env.MONGOSERVER || 'mongodb://vboxweb:4100/cams';
-const mongodbserver =  process.env.MONGOSERVER || 'mongodb://localhost:27017/admin';
+const mongodbserver =  process.env.MONGOSERVER || 'mongodb://localhost:27017/cams';
 const nodeserverport = process.env.NODESERVERPORT || 8081;
 // The node server
 const nodeserver =  process.env.NODESERVER || 'http://localhost:8081';
