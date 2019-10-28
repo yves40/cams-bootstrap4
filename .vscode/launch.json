@@ -10,6 +10,20 @@
       "name": "server",
       "program": "${workspaceFolder}\\src\\server.js",
       "args": [  ] 
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "useradmin -list",
+      "program": "${workspaceFolder}\\src\\modules\\users\\batch\\useradmin.js",
+      "args": [ "-list" ] 
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "useradmin -add",
+      "program": "${workspaceFolder}\\src\\modules\\users\\batch\\useradmin.js",
+      "args": [ "-add",  "-f" , "d:\\ALL\\LAB\\GIT\\cams-bootstrap4\\src\\modules\\users\\data\\childs.json"] 
     }
   ]
 }
