@@ -1,0 +1,25 @@
+
+  {
+    "l" : {
+      "email": "ludo.ludo@free.fr",
+      "name": "Ludo",
+      "password": "manager",
+      "profilecode": 0,
+      "description": "V4 ! This is Ludo : top level Oracle cloud architect"
+    } ,
+    "h" : {
+      "email": "hlo.hlo@free.fr",
+      "name": "hakim Loumaille, laloum",
+      "password": "manager",
+      "profilecode": 0,
+      "description": "V4 ! Security PM, Oracle Colombus TLS"
+    },
+    "dummy" : {
+      "email": "dummy@free.fr",
+      "name": "TEst user, never used",
+      "password": "manager",
+      "profilecode": 0,
+      "description": "V4 ! Test user, will not be updated if not inserted before"
+    }  
+  }
+

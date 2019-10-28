@@ -1,0 +1,32 @@
+
+  {
+    "B1" : {
+      "email": "benj@free.fr",
+      "name": "Benjamin",
+      "password": "manager",
+      "profilecode": 0,
+      "description": "V3 ! Benj, Banker and tennisman"
+    },
+    "B2" : {
+      "email": "bintoul@free.fr",
+      "name": "Bintoul",
+      "password": "manager",
+      "profilecode": 0,
+      "description": "V3 ! The boss is outstanding"
+    } ,
+    "B4" : {
+      "email": "barbilec@free.fr",
+      "name": "Baptiste",
+      "password": "manager",
+      "profilecode": 0,
+      "description": "V3 ! Sup Op engineer"
+    },
+    "B3" : {
+      "email": "ratoon@free.fr",
+      "name": "Bastien",
+      "password": "manager",
+      "profilecode": 0,
+      "description": "V3 ! Master Centrale Engineer"
+    }  
+  }
+
