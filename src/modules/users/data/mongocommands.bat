@@ -22,7 +22,10 @@ rem ----------------------------------------------------------------------------
 db.createUser({ user:'yves', pwd:'manager1', roles: [ "readWrite", "dbAdmin"], })
 rem -------------------------------------------------------------------------------------------
 rem List users from the camsusers collection
+rem And some other commands to demonstrate simple mongo syntax
 rem -------------------------------------------------------------------------------------------
 db.camsusers.find();
 db.camsusers.find().pretty();
-
+db.camsusers.update({"email" : "yves@free.fr"}, {"adminflag" : "true"});
+db.camsusers.update({"email" : "yves@free.fr"}, {"adminflag" : "false"});
+db.camsusers.find({"email" : "yves@free.fr"}).pretty();
