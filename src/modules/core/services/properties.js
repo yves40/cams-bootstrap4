@@ -11,8 +11,9 @@
 //    Oct 24 2019   Centralize mongodb checking delay
 //    Oct 25 2019   Define logger levels here.
 //    Oct 28 2019   Start using the mongo cams schema.
+//    Oct 29 2019   Add a user / password for later use with mongo.
 //----------------------------------------------------------------------------
-const Version = 'properties:1.22, Oct 28 2019';
+const Version = 'properties:1.23, Oct 29 2019';
 
 // The webpack dev server
 const webserver = process.env.WEBSERVER || "http://localhost:8080";
@@ -23,12 +24,15 @@ const nodeserverport = process.env.NODESERVERPORT || 8081;
 // The node server
 const nodeserver =  process.env.NODESERVER || 'http://localhost:8081';
 // CORS site enabled for cross server requests
+// The web app on 8080 calls the node services on 8081
 const corsclientorigin = 'http://localhost:8080';  
-// Mongo DB check delay (ms)
+// Mongo DB params
 const MONGODELAYCHECK = 2000;
 const MONGOTRACE = true;
 const MONGOUP = 1;
 const MONGODOWN = 0;
+const MONGOUSER = process.env.MONGOUSER ||'yves';
+const MONGOPASSWORD = process.env.MONGOPASSWORD || 'manager1';
 // Trace HTTP calls to express
 const httptrace = false;
 // Define the logger level
@@ -57,4 +61,6 @@ module.exports = {
     FATAL,
     MONGOUP,
     MONGODOWN,
+    MONGOUSER,
+    MONGOPASSWORD,
 }
