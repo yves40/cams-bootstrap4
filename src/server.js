@@ -10,10 +10,12 @@
                   install cors
     Oct 23 2019   Initial log trace
                   Install a response header middleware
+    Oct 31 2019   Start work on users apis
 ----------------------------------------------------------------------------*/
 const mongoose = require('mongoose');
 const express = require('express');
 const path = require('path');
+const passport = require('passport');
 
 const logger =  require('./modules/core/services/logger');
 const httplogger = require('./modules/core/services/httplogger');
@@ -22,7 +24,7 @@ const properties =  require('./modules/core/services/properties');
 const corshelper = require('./modules/core/services/corshelper');
 const cors = require('cors');
 
-const Version = 'server.js:1.23, Oct 23 2019';
+const Version = 'server.js:1.25, Oct 31 2019';
 
 const app = express();
 //---------------------------------------------------------------------------------------------------------
@@ -46,11 +48,15 @@ if (properties.httptrace) app.use(httplogger);
 // Install middleware responsible for response header settings
 app.use(responseheader);
 //---------------------------------------------------------------------------------------------------------
-// Install the api testing middleware
-app.use(require('./modules/core/noderouter/api'));
+// passport middleware
+app.use(passport.initialize()); 
+app.use(passport.session());
 //---------------------------------------------------------------------------------------------------------
-// Install the mongodb api middleware
-app.use(require('./modules/core/noderouter/mongoapi'));
+// Load api routes from various providers
+//---------------------------------------------------------------------------------------------------------
+app.use(require('./modules/core/noderouter/api'));      // api testing middleware
+app.use(require('./modules/core/noderouter/mongoapi')); // mongodb services
+app.use(require('./modules/users/noderouter/userapi')); // users services
 //---------------------------------------------------------------------------------------------------------
 // get my logger
 const logparams = logger.getLoggerInfo();
@@ -69,9 +75,8 @@ logger.info('CORS Security setting: webserver node');
 logger.info("---------------------------------------------------------");
 logger.info('Site : ' + properties.corsclientorigin);
 app.use(cors(corshelper.getCORS()));
-
 // Let's start the server
 app.listen(properties.nodeserverport, ()=>{
-  logger.debug('nodejs now listening on port ' + properties.nodeserverport);
+  logger.info('nodejs now listening on port ' + properties.nodeserverport);
 });
 

@@ -12,6 +12,7 @@
   Oct 23 2019   Change mongodb status checking : use Vuex with mongostore
   Oct 25 2019   Fix button overlap problem when resizing to small window
   Oct 27 2019   Buttons positions when window resized to minimum
+  Oct 31 2019   Install the login handler now and test
 -->
 <template>
   <div>
@@ -82,12 +83,14 @@
 <script>
 
 const logger = require('../../core/services/logger');
+const axiosinstance = require('../../core/services/axios').getAxios();
+
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   data() {
       return {
-        version: "Login 1.66, Oct 25 2019 ",
+        version: "Login 1.70, Oct 31 2019 ",
         email: '',
         password: '',
       };
@@ -98,7 +101,7 @@ export default {
         return re.test(this.email.toLowerCase());
       },
       passwordstate () {
-        return (this.password.length >= 8 ) ? true : false;
+        return (this.password.length >= 6 ) ? true : false;
       },
       invalidEmail() {
           return ''
@@ -125,6 +128,26 @@ export default {
   methods: {
     login() {
       logger.debug(this.version + 'login requested');
+      return axiosinstance(
+        {
+            url: '/users/login',
+            method: 'post',
+            headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
+            data: {
+                email: this.email,
+                password: this.password,
+            },
+        },
+      )
+      .then((response) => {
+          window.localStorage.setItem('jwt', response.data.token);
+          this.$router.push({ name: 'home' });
+        },
+      )
+      .catch((error) => {
+          this.$router.push({ name: 'login' });
+        },
+      );
     },
     clear() {
       this.email = this.password = '';
