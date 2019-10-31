@@ -12,8 +12,9 @@
 //    Oct 25 2019   Define logger levels here.
 //    Oct 28 2019   Start using the mongo cams schema.
 //    Oct 29 2019   Add a user / password for later use with mongo.
+//                  Start work on JWT
 //----------------------------------------------------------------------------
-const Version = 'properties:1.23, Oct 29 2019';
+const Version = 'properties:1.25, Oct 29 2019';
 
 // The webpack dev server
 const webserver = process.env.WEBSERVER || "http://localhost:8080";
@@ -42,6 +43,13 @@ const WARNING = 2;
 const ERROR = 3;
 const FATAL = 4;
 const loggerlevel = DEBUG;  // This one sets the tracing level of the app
+// JWT stuff
+jwtconfig = {  
+    jwtSecret: process.env.NODESECRET || 'thisisthesecretkey' ,
+    jwtSession: {
+        session: false
+    },
+};
 
 module.exports = {
     webserver: webserver,
@@ -63,4 +71,5 @@ module.exports = {
     MONGODOWN,
     MONGOUSER,
     MONGOPASSWORD,
+    jwtconfig
 }
