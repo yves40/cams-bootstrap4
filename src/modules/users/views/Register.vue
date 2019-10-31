@@ -9,7 +9,7 @@
   Oct 11 2019   Add b-container to be bootstrap4 compliant
   Oct 25 2019   Fix button overlap problem when resizing to small window
                 Manage mongodb down detection as in login vue
--->
+  Oct 31 2019   Fix button overlap problem when resizing to small window-->
 <template>
   <div>
     <b-container>
@@ -88,16 +88,18 @@
               <b-form-input id="userdescription" v-model="userdescription" :state="descstate" trim></b-form-input>
             </b-form-group>
 
-
-            <b-form-group
-              label-cols-sm="4"
-            >
-              <div class="btn-group">
-                <b-button pill :disabled="checkall" v-on:click="register">Register</b-button>
-                <b-button pill  v-on:click="clear">Clear</b-button>
-                <b-button pill variant="danger" v-on:click="gotohome">Cancel</b-button>
-              </div>
-            </b-form-group>
+            <div>
+              <b-navbar toggleable="sm">
+                <b-navbar-toggle target="collapsemenu"></b-navbar-toggle>
+                <b-collapse id="collapsemenu" is-nav>
+                  <b-navbar-nav class="mr-auto">
+                    <b-button pill :disabled="checkall" v-on:click="register">Register</b-button>
+                    <b-button pill  v-on:click="clear">Clear</b-button>
+                    <b-button pill variant="danger" v-on:click="gotohome">Cancel</b-button>
+                  </b-navbar-nav>
+                </b-collapse>
+              </b-navbar>
+            </div>
         </div>
       </b-col>
       <b-col cols="2"></b-col>
@@ -114,7 +116,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      version: "Register 1.25, Oct 25 2019",
+      version: "Register 1.27, Oct 31 2019",
       name: '',
       email: '',
       userdescription: '',
