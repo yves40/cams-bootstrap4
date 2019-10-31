@@ -2,14 +2,14 @@
     Oct 16 2019   Initial
     Oct 23 2019   Change PATH
     Oct 24 2019   Add results to the status service
+    Oct 31 2019   Unused logger
 ----------------------------------------------------------------------------*/
 const express = require('express');
 const router = express.Router();
-const logger = require('../services/logger');
 const mongodb = require('../services/mongodb');
 const datetime = require('../services/datetime');
 
-const Version = 'mongoapi.js:1.07, Oct 24 2019';
+const Version = 'mongoapi.js:1.08, Oct 31 2019';
 
 // Few dummy routes APIs tests
 router.get('/mongo/status', (req, res) => {
