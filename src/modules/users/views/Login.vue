@@ -13,6 +13,7 @@
   Oct 25 2019   Fix button overlap problem when resizing to small window
   Oct 27 2019   Buttons positions when window resized to minimum
   Oct 31 2019   Install the login handler now and test
+  Nov 02 2019   Start Vuex integration, with userstore
 -->
 <template>
   <div>
@@ -90,7 +91,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Login 1.70, Oct 31 2019 ",
+        version: "Login 1.76, Nov 02 2019 ",
         email: '',
         password: '',
       };
@@ -126,8 +127,14 @@ export default {
     this.$parent.enableMe('login');
   },
   methods: {
+    ...mapActions (
+      'userstore', {
+        loginVuex: 'login'
+      }
+    ),
     login() {
       logger.debug(this.version + 'login requested');
+      this.loginVuex({EMAIL: this.email, PASSWORD: this.password});
       return axiosinstance(
         {
             url: '/users/login',
@@ -145,7 +152,7 @@ export default {
         },
       )
       .catch((error) => {
-          this.$router.push({ name: 'login' });
+          logger.error(this.version + error);
         },
       );
     },

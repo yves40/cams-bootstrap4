@@ -3,6 +3,7 @@
 
     Oct 04 2019   Initial
     Oct 06 2019   Vuex tests
+    Nov 01 2019   Start using the store and improve my Vuex knowledge
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -17,8 +18,8 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.04, Oct 06 2019 ',
-        clock: '',
+        Version: 'userstore:1.10, Nov 01 2019 ',
+        callcount: 0,
     },
     /*----------------------------------------------------------------------------
         VUEX Getters
@@ -32,11 +33,18 @@ export default {
         VUEX mutations
     ----------------------------------------------------------------------------*/
     mutations: { // Synchronous
+        updateloginstate(state, payload) {
+            logger.debug('userStore/mutation/updateloginstate for ' + payload.EMAIL + '/' + payload.PASSWORD);
+        }
     },
     /*----------------------------------------------------------------------------
         VUEX actions
     ----------------------------------------------------------------------------*/
     actions:  {
+        login(context, payload) {
+            logger.debug('userStore/action/login lfor ' + payload.EMAIL + ' with password ' + payload.PASSWORD);
+            context.commit('updateloginstate', payload);
+        }
     },
 }
 
