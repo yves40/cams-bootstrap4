@@ -52,11 +52,12 @@
 //    May 15 2019  user class for 'register'...
 //    Oct 29 2019  cams-bootstrap4 project
 //    Oct 31 2019  Source renamed. 1st login tests
+//    Nov 02 2019  Reorg
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.02, Oct 31 2019 ';
+const Version = 'userapi:3.03, Nov 02 2019 ';
 
 // CORS
 const corsutility = require("../../core/services/corshelper");
@@ -65,7 +66,6 @@ const User = require('../model/userModel')
 // User class
 const userclass = require('../classes/userclass');
 // To access mongodb status
-const mongo = require("../../core/services/mongodb");
 const logger = require("../../core/services/logger");
 const helpers = require('../../core/services/helpers');
 const userlogger = require("../services/userlogger");
