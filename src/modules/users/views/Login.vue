@@ -14,6 +14,7 @@
   Oct 27 2019   Buttons positions when window resized to minimum
   Oct 31 2019   Install the login handler now and test
   Nov 02 2019   Start Vuex integration, with userstore
+  Nov 03 2019   More tests with Vuex. 
 -->
 <template>
   <div>
@@ -91,7 +92,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Login 1.76, Nov 02 2019 ",
+        version: "Login 1.79, Nov 03 2019 ",
         email: '',
         password: '',
       };
@@ -134,27 +135,13 @@ export default {
     ),
     login() {
       logger.debug(this.version + 'login requested');
-      this.loginVuex({EMAIL: this.email, PASSWORD: this.password});
-      return axiosinstance(
-        {
-            url: '/users/login',
-            method: 'post',
-            headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
-            data: {
-                email: this.email,
-                password: this.password,
-            },
-        },
-      )
-      .then((response) => {
-          window.localStorage.setItem('jwt', response.data.token);
-          this.$router.push({ name: 'home' });
-        },
-      )
-      .catch((error) => {
-          logger.error(this.version + error);
-        },
-      );
+      this.loginVuex({email: this.email, password: this.password, router: this.$router})
+      .then((result) => {
+        this.$swal('OK!', result, 'success');
+      })
+      .catch((err) => {
+        this.$swal('KO!', err, 'error');
+      });
     },
     clear() {
       this.email = this.password = '';
