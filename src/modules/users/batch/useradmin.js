@@ -192,6 +192,36 @@ function removeUsers(jsonContent) {
     })();
   });
 }
+
+//----------------------------------------------------------------------------
+// Update users
+//----------------------------------------------------------------------------
+function updateUsers(jsonContent) {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const userlistsize = Object.keys(jsonContent).length;
+      let userupdated = 0;
+      console.log('____________________________________________');
+      console.log('Processing UPDATE list of ' + userlistsize + ' user(s)\n');
+      let i = 0;
+      for (i in jsonContent) {
+        let newuser = new user(jsonContent[i].email);  
+        (async () => {
+          await newuser.updateUser(jsonContent[i]).then( (status) => {
+            console.log(status);
+            if (++userupdated === userlistsize)
+              resolve('\nProcessed ' + userlistsize + ' user(s)');
+          })
+          .catch( (status) => {
+            console.log('\t' + status);
+            reject('KO');
+          })
+        })();
+      }
+    })();
+  });
+}
+
 //----------------------------------------------------------------------------
 // List users
 // Quick and dirty implementation : Will not be cool if 1000 users
@@ -218,32 +248,3 @@ function listUsers() {
     })();
   });
 }
-//----------------------------------------------------------------------------
-// Update users
-//----------------------------------------------------------------------------
-function updateUsers(jsonContent) {
-  return new Promise((resolve, reject) => {
-    (async () => {
-      const userlistsize = Object.keys(jsonContent).length;
-      let userupdated = 0;
-      console.log('____________________________________________');
-      console.log('Processing UPDATE list of ' + userlistsize + ' user(s)\n');
-      let i = 0;
-      for (i in jsonContent) {
-        let newuser = new user();  
-        (async () => {
-          await newuser.updateUser(jsonContent[i]).then( (status) => {
-            console.log(status);
-            if (++userupdated === userlistsize)
-              resolve('\nProcessed ' + userlistsize + ' user(s)');
-          })
-          .catch( (status) => {
-            console.log('\t' + status);
-            reject('KO');
-          })
-        })();
-      }
-    })();
-  });
-}
-
