@@ -14,6 +14,7 @@
     Oct 23 2019     cams-bootstrap project
     Oct 24 2019     Remove one timer, add log
     Oct 25 2019     Log a message only when mongo state has changed 
+    Nov 03 2019     No longer use the developped axios module
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -22,9 +23,10 @@ const logger = require('../services/logger');
 const axiosutility = require('../services/axios');
 const axiosinstance = axiosutility.getAxios();
 
-const MONGODELAYCHECK = require('../services/properties').MONGODELAYCHECK;
-const MONGOUP = require('../services/properties').MONGOUP;
-const MONGODOWN = require('../services/properties').MONGODOWN;
+const properties = require('../services/properties');
+const MONGODELAYCHECK = properties.MONGODELAYCHECK;
+const MONGOUP = properties.MONGOUP;
+const MONGODOWN = properties.MONGODOWN;
 
 let failures = 0;       // Nbr of times the mongo server does not respond
 let previousmongostate = MONGODOWN;
@@ -35,7 +37,7 @@ Vue.use(Vuex);
     VUEX states
 ----------------------------------------------------------------------------*/
 const state =  {
-    Version: 'mongoStore:1.76, Oct 25 2019 ',
+    Version: 'mongoStore:1.78, Nov 03 2019 ',
     MAXLOG:16,
     mongodown: true,        // TRUE if mongodb is down
 };
@@ -61,11 +63,13 @@ const mutations = { // Synchronous
         state.logs = [];
     },
     updateMongoStatus(state) {  // Check mongo status every 5 seconds
-        return axiosinstance({
-            url: '/mongo/status',
-            method: 'get',
-            })
-            .then((response) => {
+        properties.axioscall(
+            {
+                url: '/mongo/status',
+                method: 'get',
+            }
+        )
+        .then((response) => {
                 state.mongodown = response.data.isdown;
                 if(state.mongodown) {
                     ++failures;
@@ -86,13 +90,13 @@ const mutations = { // Synchronous
                         }
                     }
                 }
-            })
-            .catch(() => {
+        })
+        .catch(() => {
                 ++failures;
                 if ((failures % 10 === 0)||(failures === 1)) {
                     logger.error(state.Version + ' Error when calling mongodb status service ');
                 }
-            });
+        });
     },
 };
 /*----------------------------------------------------------------------------
