@@ -13,8 +13,11 @@
 //    Oct 28 2019   Start using the mongo cams schema.
 //    Oct 29 2019   Add a user / password for later use with mongo.
 //                  Start work on JWT
+//    Nov 03 2019   Axios
 //----------------------------------------------------------------------------
-const Version = 'properties:1.25, Oct 29 2019';
+const Version = 'properties:1.28, Nov 03 2019';
+
+const axios = require('axios');
 
 // The webpack dev server
 const webserver = process.env.WEBSERVER || "http://localhost:8080";
@@ -44,12 +47,16 @@ const ERROR = 3;
 const FATAL = 4;
 const loggerlevel = DEBUG;  // This one sets the tracing level of the app
 // JWT stuff
-jwtconfig = {  
+const jwtconfig = {  
     jwtSecret: process.env.NODESECRET || 'thisisthesecretkey' ,
-    jwtSession: {
-        session: false
-    },
+    jwtSession: {session: false},
 };
+// Some axios params
+const axioscall = axios.create({
+    baseURL: nodeserver,
+    timeout: 1000,
+    withCredentials: true,
+  });  
 
 module.exports = {
     webserver: webserver,
@@ -71,5 +78,6 @@ module.exports = {
     MONGODOWN,
     MONGOUSER,
     MONGOPASSWORD,
-    jwtconfig
+    jwtconfig,
+    axioscall,
 }
