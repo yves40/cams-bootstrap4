@@ -24,6 +24,20 @@
       "name": "useradmin -add",
       "program": "${workspaceFolder}\\src\\modules\\users\\batch\\useradmin.js",
       "args": [ "-add",  "-f" , "d:\\ALL\\LAB\\GIT\\cams-bootstrap4\\src\\modules\\users\\data\\childs.json"] 
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "useradmin -delete",
+      "program": "${workspaceFolder}\\src\\modules\\users\\batch\\useradmin.js",
+      "args": [ "-delete",  "-f" , "d:\\ALL\\LAB\\GIT\\cams-bootstrap4\\src\\modules\\users\\data\\yves.json"] 
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "useradmin -update",
+      "program": "${workspaceFolder}\\src\\modules\\users\\batch\\useradmin.js",
+      "args": [ "-update",  "-f" , "d:\\ALL\\LAB\\GIT\\cams-bootstrap4\\src\\modules\\users\\data\\yves.json"] 
     }
   ]
 }
