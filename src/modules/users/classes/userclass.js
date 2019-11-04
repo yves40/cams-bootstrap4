@@ -9,34 +9,41 @@
 //                  Create user
 //    May 10 2019   Properly manage delete message when user does not exist 
 //    May 15 2019   1st tests in the WEB app
-//    Oct 27 2019    Integrate cams-bootstrap4
-//    Oct 28 2019    Reorg
+//    Oct 27 2019   Integrate cams-bootstrap4
+//    Oct 28 2019   Reorg
+//    Nov 03 2019   Use the class now from userStore
+//                  Fix some problems with OOP 
 //----------------------------------------------------------------------------
 
-const User = require('../model/userModel');
+const UserModel = require('../model/userModel').UserModel;    // Mongoose stuff
 const bcryptjs = require('bcryptjs');
 const logger = require('../../core/services/logger');
 
 module.exports = class user {
     constructor (usermail = "dummy@free.fr") {
-        this.Version = 'userclass:1.36, Oct 28 2019 ';
-        this.User = new(User);
-        this.User.email = usermail;
+        this.Version = 'userclass:1.42, Nov 04 2019 ';
+        this.model = new(UserModel);
+        this.model.email = usermail;
+        this.model.name = 'Not logged';
+        this.model.password = '';
+        this.model.profilecode = UserModel.STDUSER;
+        this.model.description = '';
+        this.model.lastlogin = null;
+        this.model.lastlogout = null;
     };
 
     // Setters & getters
     getVersion() { return this.Version; }
-    getemail() {return this.User.email;}
-    setname(name) { this.User.name = name; }
-    getname() { return this.User.name; }
-    setemail(email) { this.User.email = email; }
-    getemail() { return this.User.email; }
-    setpassword(password) { this.User.password =  hashPassword(password);;}
-    getpassword() { return this.User.password; }
-    setprofilecode(profilecode) { this.User.profilecode = profilecode;  }
-    getprofilecode() { return this.User.profilecode; }
-    setdescription(description) { this.User.description = description;  }
-    getdescription() { return this.User.description; }   
+    setemail(email) { this.model.email = email; }
+    getemail() {return this.model.email;}
+    setname(name) { this.model.name = name; }
+    getname() { return this.model.name; }
+    setpassword(password) { this.model.password =  hashPassword(password);;}
+    getpassword() { return this.model.password; }
+    setprofilecode(profilecode) { this.model.profilecode = profilecode;  }
+    getprofilecode() { return this.model.profilecode; }
+    setdescription(description) { this.model.description = description;  }
+    getdescription() { return this.model.description; }   
 
     //-------------------------------------
     // Get a user object and save it
@@ -44,7 +51,7 @@ module.exports = class user {
     //  Default is ASYNC
     //-------------------------------------
     S_createUser(user) {
-        User.find( { email: user.email }, (err, found) => {
+        UserModel.find( { email: user.email }, (err, found) => {
             if (err) {
                 console.log(err);
                 throw new Error(err);
@@ -52,12 +59,12 @@ module.exports = class user {
             else {
                 if (found.length !== 0) throw new Error('User ' + user.email + ' already exist')
                 else {
-                    this.User.email = user.email;
-                    this.User.name = user.name;
-                    this.User.password = hashPassword(user.password);
-                    this.User.profilecode = user.profilecode;
-                    this.User.description = user.description;
-                    this.User.save(this.User, (err, inserteduser) => {
+                    this.model.email = user.email;
+                    this.model.name = user.name;
+                    this.model.password = hashPassword(user.password);
+                    this.model.profilecode = user.profilecode;
+                    this.model.description = user.description;
+                    this.model.save(this.model, (err, inserteduser) => {
                         if (err){
                             throw new Error(err);
                         } 
@@ -80,20 +87,20 @@ module.exports = class user {
             /* 
                 Check user does not exist yet
             */
-           User.find( { email: user.email }, (err, found) => {
+           UserModel.find( { email: user.email }, (err, found) => {
                 if (err) {
                     reject(err);
                 } 
                 else {
                     if (found.length !== 0) reject('User ' + user.email + ' already exist')
                     else {
-                        this.User.email = user.email;
-                        this.User.name = user.name;
-                        this.User.password = hashPassword(user.password);
-                        this.User.profilecode = user.profilecode;
-                        this.User.description = user.description;
+                        this.model.email = user.email;
+                        this.model.name = user.name;
+                        this.model.password = hashPassword(user.password);
+                        this.model.profilecode = user.profilecode;
+                        this.model.description = user.description;
                         if (ASYNC) {
-                            this.User.save(this.User, (err, inserteduser) => {
+                            this.model.save(this.model, (err, inserteduser) => {
                                 logger.debug(this.Version + 'ASYNC user creation');
                                 if (err){
                                     logger.debug(this.Version + 'Error here');
@@ -106,7 +113,7 @@ module.exports = class user {
                         }
                         else {  // SYNC mode, must wait before sending response
                             (async () => {
-                                this.User.save(this.User, (err, inserteduser) => {
+                                this;this.model.save(this.model, (err, inserteduser) => {
                                     if (err){
                                         logger.debug(this.Version + 'Error here');
                                         reject(err);
@@ -128,27 +135,27 @@ module.exports = class user {
     removeUser(ASYNC = true) {
         return new Promise((resolve, reject) => {
             if (ASYNC) {
-                User.findOneAndRemove( {email: this.User.email},
+                UserModel.findOneAndRemove( {email: this.model.email},
                     (err, userupdated) => {
                         if (err) reject(err);
                         else {
                             if (userupdated === null)
-                                resolve(this.User.email + ' does not exists');
+                                resolve(this.model.email + ' does not exists');
                             else
-                                resolve('User ' + this.User.email + ' deleted');
+                                resolve('User ' + this.model.email + ' deleted');
                         } 
                     });
             }
             else {
                 (async () => {
-                    User.findOneAndRemove( {email: this.User.email},
+                    UserModel.findOneAndRemove( {email: this.model.email},
                         (err, userupdated) => {
                             if (err) reject(err);
                             else {
                                 if (userupdated === null)
-                                    resolve(this.User.email + ' does not exists');
+                                    resolve(this.model.email + ' does not exists');
                                 else
-                                    resolve('User ' + this.User.email + ' deleted');
+                                    resolve('User ' + this.model.email + ' deleted');
                             } 
                         });
                 })();                    
@@ -158,27 +165,27 @@ module.exports = class user {
     //-------------------------------------
     // Get a user object and update it
     //-------------------------------------
-    updateUser(user) {
+    updateUser(jsonuser) {
         return new Promise((resolve, reject) => {
-            this.User.email = user.email;
-            this.User.name = user.name;
-            this.User.password = hashPassword(user.password);
-            this.User.profilecode = user.profilecode;
-            this.User.description = user.description;
-            User.findOneAndUpdate( {email: this.User.email}, 
+            this.model.email = jsonuser.email;
+            this.model.name = jsonuser.name;
+            this.model.password = hashPassword(jsonuser.password);
+            this.model.profilecode = jsonuser.profilecode;
+            this.model.description = jsonuser.description;
+            UserModel.findOneAndUpdate( {email: this.model.email}, 
                 {
-                    email: this.User.email,
-                    name: this.User.name,
-                    password: this.User.password,
-                    profilecode: this.User.profilecode,
-                    description: this.User.description,
+                    email: this.model.email,
+                    name: this.model.name,
+                    password: this.model.password,
+                    profilecode: this.model.profilecode,
+                    description: this.model.description,
                 },
                 { upsert: false, new: true }, // Do not update a non existing user
                 (err, userupdated) => {
                     if (err) reject(err);
                     else{
                         if(userupdated === null) {
-                            resolve('User ' + this.User.email + ' does not exist');
+                            resolve('User ' + this.model.email + ' does not exist');
                         }
                         else {
                             resolve('User ' + userupdated.email + ' updated');
@@ -193,7 +200,7 @@ module.exports = class user {
     //-------------------------------------
     listUser() {
         return new Promise((resolve, reject) => {
-            let querylog = User.find({});
+            let querylog = UserModel.find({});
             (async () => {
                 await querylog.exec(function(err, userlist) {
                     if (err) console.log(err);

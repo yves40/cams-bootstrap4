@@ -14,7 +14,7 @@
   Oct 27 2019   Buttons positions when window resized to minimum
   Oct 31 2019   Install the login handler now and test
   Nov 02 2019   Start Vuex integration, with userstore
-  Nov 03 2019   More tests with Vuex. 
+  Nov 03 2019   More tests with Vuex. Use promise, and externalize the axios call in vues store module 
 -->
 <template>
   <div>
@@ -83,20 +83,22 @@
 </template>
 
 <script>
-
+// ------------------------------------------------------------------------------------------------------------
+// The script
+// ------------------------------------------------------------------------------------------------------------
 const logger = require('../../core/services/logger');
-const axiosinstance = require('../../core/services/axios').getAxios();
 
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   data() {
       return {
-        version: "Login 1.79, Nov 03 2019 ",
-        email: '',
-        password: '',
+        version: "Login 1.80, Nov 03 2019 ",
+        email: 'y@free.fr',
+        password: 'manager',
       };
   },
+  // ------------------------------------------------------------------------------------------------------------
   computed: {
       emailstate() {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -121,12 +123,14 @@ export default {
         },
     ),
   },  
+  // ------------------------------------------------------------------------------------------------------------
   created() {
     this.$parent.disableMe('login');
   },
   beforeDestroy() {
     this.$parent.enableMe('login');
   },
+  // ------------------------------------------------------------------------------------------------------------
   methods: {
     ...mapActions (
       'userstore', {
@@ -136,12 +140,12 @@ export default {
     login() {
       logger.debug(this.version + 'login requested');
       this.loginVuex({email: this.email, password: this.password, router: this.$router})
-      .then((result) => {
-        this.$swal('OK!', result, 'success');
-      })
-      .catch((err) => {
-        this.$swal('KO!', err, 'error');
-      });
+        .then((result) => {
+          this.$swal('OK!', result, 'success');
+        })
+        .catch((err) => {
+          this.$swal('KO!', err, 'error');
+        });
     },
     clear() {
       this.email = this.password = '';

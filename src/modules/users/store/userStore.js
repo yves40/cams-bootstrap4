@@ -6,9 +6,11 @@
     Nov 01 2019   Start using the store and improve my Vuex knowledge
     Nov 02 2019   actions new syntax
     Nov 03 2019   router and axios calls
+    Nov 04 2019   Manage the state after login
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
+import { generateCodeFrame } from 'vue-template-compiler';
 
 const logger = require('../../core/services/logger');
 const properties = require('../../core/services/properties');
@@ -21,23 +23,25 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.27, Nov 03 2019 ',
-        callcount: 0,
+        Version: 'userstore:1.33, Nov 04 2019 ',
+        theuser: null,
     },
     /*----------------------------------------------------------------------------
         VUEX Getters
     ----------------------------------------------------------------------------*/
     getters: {
-        getVersion(state) {
-            return state.Version;
-        },
+        getVersion(state) {return state.Version;},
+        getEmail(state) {return state.theuser === null ? 'Not logged' : state.theuser.email;},
+        getName(state) {return state.theuser === null ? 'Not logged' : state.theuser.name;},
+        getDescription(state) {return state.theuser === null ? 'Not logged' : state.theuser.description;},
+        getLastlogin(state) {return state.theuser === null ? 'Not logged' : state.theuser.lastlogin;},
     },
     /*----------------------------------------------------------------------------
         VUEX mutations
     ----------------------------------------------------------------------------*/
     mutations: { // Synchronous
-        updateloginstate(state, payload) {
-            logger.debug(state.Version + 'userStore/mutation/updateloginstate for ' + payload.email + '/' + payload.password);
+        updateloginstate(state, theuser) {
+            state.theuser = theuser;
         }
     },
     /*----------------------------------------------------------------------------
@@ -47,7 +51,6 @@ export default {
         // Login action : payload contains credentials and the global router to 
         // be able to call another vue
         login({commit, state}, payload) {
-            logger.debug(state.Version + 'userStore/action/login for ' + payload.email + ' with password ' + payload.password);
             return new Promise((resolve, reject) => {
                 properties.axioscall(
                     {
@@ -61,7 +64,7 @@ export default {
                 )
                 .then((response) => {
                     window.localStorage.setItem('jwt', response.data.token);
-                    commit('updateloginstate', payload);
+                    commit('updateloginstate', response.data.theuser);
                     resolve('User ' + payload.email + ' logged');
                     payload.router.push({ name: 'home' });
                     },

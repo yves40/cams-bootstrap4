@@ -77,24 +77,21 @@ const cors = require('cors');
 //-----------------------------------------------------------------------------------
 // login a user : local strategy
 //-----------------------------------------------------------------------------------
-router.post('/users/login', cors(corsutility.getCORS()),passport.authenticate('login'), (req, res) => {
-    const payload = { id: req.user.id, email: req.user.email };
-    const token = auth.signToken(payload);
-    logger.debug(Version + 'User ' + req.user.email + ' logged');
-    const userdecodedtoken = auth.decodeToken(token);
-    const tokendata = auth.getTokenTimeMetrics(userdecodedtoken);
-    //logger.debug(Version + 'User decoded token : ' + JSON.stringify(userdecodedtoken));
-    // let userlog = new userlogger(req.user.email, req.user.id, req.connection.remoteAddress);
-    let userlog = new userlogger(req.user.email, req.user.id, helpers.getIP(req));
-    userlog.informational('LOGIN');
-    res.json( { message: req.user.email + ' logged', 
-        token: token, 
-        userdecodedtoken: userdecodedtoken,
-        logintime: tokendata.logintime,
-        remainingtime: tokendata.remainingtime,
-        tokenstatus: tokendata.tokenstatus, 
-        time: tokendata.time,
-        tokenstatusString: tokendata.tokenstatusString, } );
+router.post('/users/login', cors(corsutility.getCORS()),passport.authenticate('login'),
+    (req, res) => {
+        const payload = { id: req.user.id, email: req.user.email };
+        const token = auth.signToken(payload);
+        logger.debug(Version + 'User ' + req.user.email + ' logged');
+        const userdecodedtoken = auth.decodeToken(token);
+        const tokendata = auth.getTokenTimeMetrics(userdecodedtoken);
+        let userlog = new userlogger(req.user.email, req.user.id, helpers.getIP(req));
+        userlog.informational('LOGIN');
+        res.json( { message: req.user.email + ' logged', 
+            token: token, 
+            userdecodedtoken: userdecodedtoken,
+            remainingtime: tokendata.remainingtime,
+            theuser: req.user,      // Send back the identified user object
+         } );
 });
 
 module.exports = router;

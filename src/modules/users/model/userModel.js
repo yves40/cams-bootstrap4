@@ -17,15 +17,17 @@
 //    Mar 23 2019   Login / logout properties
 //    Oct 27 2019    Integrate cams-bootstrap4
 //    Oct 28 2019    Reorg
+//    Nov 03 2019    Change module declaration, export constants
+//    Nov 04 2019    Problem with declarations
 //----------------------------------------------------------------------------
-const Version = 'userModel:1.36, Oct 28 2019 ';
+const Version = 'userModel:1.41, Nov 04 2019 ';
 
 const objectid = require('mongodb').ObjectId;
 const mongoose = require('mongoose');
 const bcryptjs = require('bcryptjs');
 const STDUSER = 0;
 const ADMINUSER = 100;
-const CAMADMIN = 50;
+const CAMADMINUSER = 50;
 const logger = require('../../core/services/logger');
 
 const schema = mongoose.Schema;
@@ -35,20 +37,18 @@ const userschema = new schema(
         name: String,
         email: String,
         password: String,
-        profilecode: STDUSER,
+        profilecode: Number,
         description: String,
         lastlogin: Date,
         lastlogout: Date,
     }
 );
-const User = mongoose.model("camsusers", userschema);
-
-module.exports = User;
+const UserModel = mongoose.model("camsusers", userschema);
 
 //-----------------------------------------------------------------------------------
 // Create a user
 //-----------------------------------------------------------------------------------
-module.exports.createUser = (newuser, callback) => {
+function createUser(newuser, callback) {
     bcryptjs.genSalt(10, (err, salt) => {
         bcryptjs.hash(newuser.password, salt, (error, hash) => {
             // Store the hashed password
@@ -66,31 +66,31 @@ module.exports.createUser = (newuser, callback) => {
 //-----------------------------------------------------------------------------------
 // List users
 //-----------------------------------------------------------------------------------
-module.exports.listUsers = (callback) => {
-    User.find({}, 'name email password profilecode', callback); 
+function listUsers(callback) {
+    UserModel.find({}, 'name email password profilecode', callback); 
 };
 
 //-----------------------------------------------------------------------------------
 // Get a user by ID
 //-----------------------------------------------------------------------------------
-module.exports.getUserByID = (ID, callback) => {
+function getUserByID(ID, callback) {
     // User.collection.findOne({ "_id": objectid(ID) }, callback);
-    User.findById(ID, callback);
+    UserModel.findById(ID, callback);
 };
 
 //-----------------------------------------------------------------------------------
 // Get a user by email
 //-----------------------------------------------------------------------------------
-module.exports.getUserByEmail = (email, callback) => {
+function getUserByEmail(email, callback) {
     const query = { email };
-    User.findOne(query, callback);
+    UserModel.findOne(query, callback);
 };
 
 
 //-----------------------------------------------------------------------------------
 // Password checking
 //-----------------------------------------------------------------------------------
-module.exports.comparePassword = (candidatePassword, hash, callback) => {
+function comparePassword(candidatePassword, hash, callback) {
     bcryptjs.compare(candidatePassword, hash, (err, isMatch) => {
         if (err) throw err;
         callback(null, isMatch);
@@ -100,9 +100,9 @@ module.exports.comparePassword = (candidatePassword, hash, callback) => {
 //-----------------------------------------------------------------------------------
 // Delete one user with its ID
 //-----------------------------------------------------------------------------------
-module.exports.deleteoneUserByID = (id, callback) => {
+function deleteoneUserByID (id, callback) {
     try {
-        User.collection.deleteOne( { "_id": objectid(id) }, callback );
+        UserModel.collection.deleteOne( { "_id": objectid(id) }, callback );
     }
     catch(e) {
         logger.error(e);
@@ -112,9 +112,9 @@ module.exports.deleteoneUserByID = (id, callback) => {
 //-----------------------------------------------------------------------------------
 // Delete one user with its name
 //-----------------------------------------------------------------------------------
-module.exports.deleteoneUserByName = (name, callback) => {
+function deleteoneUserByName (name, callback) {
     try {
-        User.collection.deleteOne( { "name":  name }, callback );
+        UserModel.collection.deleteOne( { "name":  name }, callback );
     }
     catch(e) {
         logger.error(e);
@@ -124,8 +124,23 @@ module.exports.deleteoneUserByName = (name, callback) => {
 //-----------------------------------------------------------------------------------
 // Delete all users
 //-----------------------------------------------------------------------------------
-module.exports.deleteallUsers = (callback) => {
-    // User.collection.remove(callback);
-    User.collection.deleteMany(callback);
+function deleteallUsers  (callback)  {
+    UserModel.collection.deleteMany(callback);
 };
+
+module.exports = { 
+    UserModel,
+    STDUSER,
+    ADMINUSER,
+    CAMADMINUSER,
+    createUser,
+    listUsers,
+    getUserByID,
+    getUserByEmail,
+    comparePassword,
+    deleteoneUserByID,
+    deleteoneUserByName,
+    deleteallUsers,
+}
+
 

@@ -11,6 +11,7 @@
   Oct 10 2019   About, date in Menu bar.
   Oct 11 2019   Date / hour in Menu bar. Change meun look 
   Oct 25 2019   Header content
+  Nov 04 2019   Display user info
 -->
 
 <template>
@@ -56,6 +57,12 @@
             <b-form-valid-feedback :state="checkmongo">
                 MongoDB server is up.
             </b-form-valid-feedback>
+
+            <ul class="list-group list-group-horizontal">
+              <li class="list-group-item">{{email}}</li>
+              <li class="list-group-item">{{name}}</li>
+              <li class="list-group-item">{{lastlogin}}</li>
+            </ul>
           </b-col>
           <b-col cols="2"></b-col>
         </b-row>
@@ -92,7 +99,7 @@ export default {
   data() {
       return {
         headermsg: "Placeholder for future use, i.e, info on logged user",
-        version: "Cams Manager 1.91, Oct 25 2019",
+        version: "Cams Manager 1.93, Nov 04 2019",
         copyright: "oldtimerSoft",
         // These arrays are defining the displayed menus
         // enableflag drives the visibility of the URL
@@ -140,6 +147,14 @@ export default {
         'mongostore', { 
             mongostoreversion: 'getVersion',
         },
+    ),
+    ...mapGetters(
+        'userstore', {
+          email: 'getEmail',
+          name: 'getName',
+          description: 'getDescription',
+          lastlogin: 'getLastlogin'
+        }
     ),
     checkmongo() {
       return !this.$store.getters['mongostore/IsMongoDown'];

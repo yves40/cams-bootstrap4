@@ -17,15 +17,16 @@
 //    Apr 10 2019  Unknown user error log improved
 //    Oct 29 2019  cams-bootstrap4 project
 //    Oct 31 2019  Reorg
+//    Nov 04 2019  User to UserModel. 
 //----------------------------------------------------------------------------
-const Version = 'auth.js:1.45, Oct 31 2019 ';
+const Version = 'auth.js:1.46, Nov 04 2019 ';
 
 const jwtconfig = require('../../core/services/properties').jwtconfig;
 const logger = require('../../core/services/logger');
 const userlogger = require('./userlogger');
 const datetime = require('../../core/services/datetime');
 const helpers = require('../../core/services/helpers');
-const User = require('../model/userModel');
+const UserModel = require('../model/userModel');
 
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
@@ -54,7 +55,7 @@ module.exports.signToken = function signToken(payload) {
 //-----------------------------------------------------------------------------------
 module.exports.invalidateToken = function invalidateToken(payload) {
     logger.debug(Version + 'Update logout time for ID ' + payload.id)
-    User.findById(payload.id, (err, loggeduser) => {
+    UserModel.findById(payload.id, (err, loggeduser) => {
         if (err) {
             logger.error(Version + ' Cannot get user data for ID : ' + payload.id);
         }
@@ -107,7 +108,7 @@ module.exports.getTokenTimeMetrics = function getTokenTimeMetrics(thetoken) {
 passport.use('jwt', new JwtStrategy(jwtOptions,
     (token, done) => {
         try {
-            User.findById(token.id, (err, loggeduser) => {
+            UserModel.findById(token.id, (err, loggeduser) => {
                 if(loggeduser.lastlogout === null) {
                     return done(null, token);
                 }
@@ -132,14 +133,14 @@ passport.use('login',  new LocalStrategy({
     passReqToCallback: true,        // Used to access the client IP in case of bad password
     }, 
     (req, email, password, done) => {
-        User.getUserByEmail(email, (err, loggeduser) => {
+        UserModel.getUserByEmail(email, (err, loggeduser) => {
             if(err) { return done(err); }
             if ( !loggeduser ) { 
                 let userlog = new userlogger(email, undefined, helpers.getIP(req));
                 userlog.error('Unknown user : ' + email);
                 return done(null, false, {message: 'Unknown User'}) 
-            }  // Error
-            User.comparePassword(password, loggeduser.password, (error, isMatch ) => {
+            }
+            UserModel.comparePassword(password, loggeduser.password, (error, isMatch ) => {
                 if (isMatch) {
                     logger.debug(Version + email + ' identified');
                     loggeduser.lastlogin = Date.now();
@@ -169,7 +170,7 @@ passport.serializeUser((loggeduser, done) => {
 
 passport.deserializeUser((id, done) => { 
     // logger.debug(Version + 'deserializeUser with ID : ' + id);
-    User.findById(id, (err, loggeduser) => {
+    UserModel.findById(id, (err, loggeduser) => {
         done(err, loggeduser);
     });
 });

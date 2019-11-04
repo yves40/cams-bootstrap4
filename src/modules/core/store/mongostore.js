@@ -20,8 +20,6 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 const logger = require('../services/logger');
-const axiosutility = require('../services/axios');
-const axiosinstance = axiosutility.getAxios();
 
 const properties = require('../services/properties');
 const MONGODELAYCHECK = properties.MONGODELAYCHECK;
