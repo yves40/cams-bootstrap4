@@ -99,7 +99,7 @@ export default {
   data() {
       return {
         headermsg: "Placeholder for future use, i.e, info on logged user",
-        version: "Cams Manager 1.93, Nov 04 2019",
+        version: "Cams Manager 1.94, Nov 04 2019",
         copyright: "oldtimerSoft",
         // These arrays are defining the displayed menus
         // enableflag drives the visibility of the URL
