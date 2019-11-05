@@ -14,11 +14,15 @@
 //    Oct 29 2019   Add a user / password for later use with mongo.
 //                  Start work on JWT
 //    Nov 03 2019   Axios
+//    Nov 05 2019   Shorten the mongo monitoring delay
+//                  Parameter for the timer in corestore
 //----------------------------------------------------------------------------
-const Version = 'properties:1.28, Nov 03 2019';
+const Version = 'properties:1.30, Nov 05 2019';
 
 const axios = require('axios');
 
+// Core timer used to display the hour in the bottom bar
+const COREDELAY = 5000;
 // The webpack dev server
 const webserver = process.env.WEBSERVER || "http://localhost:8080";
 const webserverport = process.env.WEBSERVERPORT || 8080;
@@ -31,7 +35,7 @@ const nodeserver =  process.env.NODESERVER || 'http://localhost:8081';
 // The web app on 8080 calls the node services on 8081
 const corsclientorigin = 'http://localhost:8080';  
 // Mongo DB params
-const MONGODELAYCHECK = 2000;
+const MONGODELAYCHECK = 1000;
 const MONGOTRACE = true;
 const MONGOUP = 1;
 const MONGODOWN = 0;
@@ -66,6 +70,7 @@ module.exports = {
     loggerlevel: loggerlevel,
     nodeserver: nodeserver,
     corsclientorigin: corsclientorigin,
+    COREDELAY,
     MONGODELAYCHECK: MONGODELAYCHECK,
     MONGOTRACE: MONGOTRACE,
     httptrace: httptrace,

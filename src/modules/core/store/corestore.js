@@ -7,6 +7,7 @@
     Oct 09 2019     Getter for date
     Oct 10 2019     Getter for hour minutes
     Oct 11 2019     Vuex integration
+    Nov 05 2019     Reduce timer delay to 5 sec
 ----------------------------------------------------------------------------*/
 
 import Vue from 'vue';
@@ -19,7 +20,7 @@ Vue.use(Vuex);
     VUEX states
 ----------------------------------------------------------------------------*/
 const state = {
-    Version: 'corestore.js:1.17, Oct 11 2019',
+    Version: 'corestore.js:1.22, Nov 05 2019',
     today: datetime.getDate(),
     hourminute: datetime.getShortTime(),
 };
@@ -41,17 +42,19 @@ const getters = {
     VUEX mutations
 ----------------------------------------------------------------------------*/
 const mutations = { // Synchronous
-    armtimer(state) {
-        setInterval(updateHM, 60000);
-        logger.debug(state.Version + ' Timer armed');
+    updatetime(state) {
+        state.hourminute = datetime.getShortTime();
     },
 };
 /*----------------------------------------------------------------------------
     VUEX actions
 ----------------------------------------------------------------------------*/
 const actions = { 
-    settimer(context) {
-        context.commit('armtimer'); 
+    settimer({ commit, dispatch }) {
+        setInterval(() => {
+            commit('updatetime');  
+            dispatch('userstore/updateTokenTime',null, {root:true});
+        }, require('../services/properties').COREDELAY);
     },
 };
 
@@ -62,10 +65,4 @@ export default {
     mutations,
     actions,
 };
-/*----------------------------------------------------------------------------
-    Internal
-----------------------------------------------------------------------------*/
-function updateHM() {
-    state.hourminute = datetime.getShortTime();
-}
 

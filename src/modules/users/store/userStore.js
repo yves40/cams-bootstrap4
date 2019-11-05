@@ -16,7 +16,7 @@ import { generateCodeFrame } from 'vue-template-compiler';
 const logger = require('../../core/services/logger');
 const properties = require('../../core/services/properties');
 const datetime = require('../../core/services/datetime')
-const jwthelper = require('../../users/services/jwthelper');
+const jwthelper = require('../services/jwthelper');
 
 Vue.use(Vuex);
 
@@ -26,7 +26,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.44, Nov 05 2019 ',
+        Version: 'userstore:1.48, Nov 05 2019 ',
         theuser: null,
         token: null,
         tokenobject: '{}',
@@ -45,6 +45,7 @@ export default {
             return state.theuser === null ? 'Not logged' : datetime.getDateTime(state.theuser.lastlogin);
         },
         isLogged(state) {return state.theuser === null ? false : true ;},
+        
     },
     /*----------------------------------------------------------------------------
         VUEX mutations
@@ -56,9 +57,18 @@ export default {
             state.tokenobject = jwthelper.decodeToken(payload.token);
             const tokendata = jwthelper.getTokenTimeMetrics(state.tokenobject);
             state.tokenremainingtime = tokendata.remainingtime;
-            },
+        },
         deleteloginstate(state) {
             state.theuser = null;
+        },
+        refreshtokentime(state) {
+            if (state.theuser) {
+                const decodedtoken = jwthelper.decodeToken(state.token);
+                logger.debug(JSON.stringify(decodedtoken))
+                const tokendata = jwthelper.getTokenTimeMetrics(decodedtoken);
+                state.tokenremainingtime = tokendata.remainingtime;
+                logger.debug('Token time : ' + state.tokenremainingtime);
+            }
         }
     },
     /*----------------------------------------------------------------------------
@@ -119,6 +129,11 @@ export default {
                 );
             })
         },
+        // Update the remaining session time
+        // This action is triggered from corestore timer action : settimer
+        updateTokenTime({commit}) {
+            commit('refreshtokentime');
+        } 
     },
 }
 
