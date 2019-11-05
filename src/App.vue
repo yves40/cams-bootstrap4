@@ -41,7 +41,8 @@
             </div>
           </b-navbar-nav>
           <b-navbar-nav class="ml-auto">
-            <b-nav-item v-bind:to="{ name: 'login' }">Login</b-nav-item>
+            <b-nav-item v-if="!logged" v-bind:to="{ name: 'login' }">Login</b-nav-item>
+            <b-nav-item v-if="logged" v-on:click="logout">Logout</b-nav-item>
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
@@ -55,8 +56,7 @@
             <ul class="list-group list-group-horizontal-sm">
               <li class="list-group-item list-group-item-dark">{{mongostate}}</li>
               <li class="list-group-item list-group-item-dark">{{email}}</li>
-              <li class="list-group-item list-group-item-dark">{{name}}</li>
-              <li class="list-group-item list-group-item-dark">{{lastlogin}}</li>
+              <li class="list-group-item list-group-item-dark">Log time: {{lastlogin}}</li>
             </ul>
           </b-col>
           <b-col cols="2"></b-col>
@@ -94,7 +94,7 @@ export default {
   data() {
       return {
         headermsg: "Placeholder for future use, i.e, info on logged user",
-        version: "Cams Manager 1.94, Nov 04 2019",
+        version: "Cams Manager 1.96, Nov 05 2019",
         copyright: "oldtimerSoft",
         // These arrays are defining the displayed menus
         // enableflag drives the visibility of the URL
@@ -149,7 +149,8 @@ export default {
           email: 'getEmail',
           name: 'getName',
           description: 'getDescription',
-          lastlogin: 'getLastlogin'
+          lastlogin: 'getLastlogin',
+          logged: 'isLogged',
         }
     ),
     checkmongo() {
@@ -167,6 +168,11 @@ methods: {
         'corestore', { 
           settimer: 'settimer',
         }
+    ),
+    ...mapActions(
+      'userstore', {
+        logout: 'logout',
+      }
     ),
     // These methods are used by application pages to disable their menu entries
     // No need to display a login entry in a menu if you're on the login page

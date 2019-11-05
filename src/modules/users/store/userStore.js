@@ -7,6 +7,7 @@
     Nov 02 2019   actions new syntax
     Nov 03 2019   router and axios calls
     Nov 04 2019   Manage the state after login
+    Nov 05 2019   Some date format, logout action and mutation
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -14,6 +15,7 @@ import { generateCodeFrame } from 'vue-template-compiler';
 
 const logger = require('../../core/services/logger');
 const properties = require('../../core/services/properties');
+const datetime = require('../../core/services/datetime')
 
 Vue.use(Vuex);
 
@@ -23,7 +25,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.33, Nov 04 2019 ',
+        Version: 'userstore:1.39, Nov 05 2019 ',
         theuser: null,
     },
     /*----------------------------------------------------------------------------
@@ -34,7 +36,10 @@ export default {
         getEmail(state) {return state.theuser === null ? 'Not logged' : state.theuser.email;},
         getName(state) {return state.theuser === null ? 'Not logged' : state.theuser.name;},
         getDescription(state) {return state.theuser === null ? 'Not logged' : state.theuser.description;},
-        getLastlogin(state) {return state.theuser === null ? 'Not logged' : state.theuser.lastlogin;},
+        getLastlogin(state) {
+            return state.theuser === null ? 'Not logged' : datetime.getDateTime(state.theuser.lastlogin);
+        },
+        isLogged(state) {return state.theuser === null ? false : true ;},
     },
     /*----------------------------------------------------------------------------
         VUEX mutations
@@ -42,6 +47,9 @@ export default {
     mutations: { // Synchronous
         updateloginstate(state, theuser) {
             state.theuser = theuser;
+        },
+        deleteloginstate(state) {
+            state.theuser = null;
         }
     },
     /*----------------------------------------------------------------------------
@@ -75,7 +83,27 @@ export default {
                     },
                 );
             })
-        }
+        },
+        // Logout action
+        logout({commit, state}) {
+            properties.axioscall(
+                {
+                    method: 'post',
+                    url: '/users/logout',
+                    headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
+                 }
+            )
+            .then((response) => {
+                window.localStorage.setItem('jwt', response.data.token);
+                commit('deleteloginstate', response.data.theuser);
+                payload.router.push({ name: 'home' });
+                },
+            )
+            .catch((error) => {
+                logger.error(state.Version + error);
+                },
+            );
+    }
     },
 }
 

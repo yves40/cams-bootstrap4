@@ -53,11 +53,12 @@
 //    Oct 29 2019  cams-bootstrap4 project
 //    Oct 31 2019  Source renamed. 1st login tests
 //    Nov 02 2019  Reorg
+//    Nov 05 2019  Put the logout service back into camms-bootstrap4
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.03, Nov 02 2019 ';
+const Version = 'userapi:3.04, Nov 05 2019 ';
 
 // CORS
 const corsutility = require("../../core/services/corshelper");
@@ -92,6 +93,33 @@ router.post('/users/login', cors(corsutility.getCORS()),passport.authenticate('l
             remainingtime: tokendata.remainingtime,
             theuser: req.user,      // Send back the identified user object
          } );
+});
+//-----------------------------------------------------------------------------------
+// logout a user
+//-----------------------------------------------------------------------------------
+router.post('/users/logout', cors(corsutility.getCORS()), passport.authenticate('jwt'), (req, res) => {
+    if (req.user) {
+        const message = 'logging ' + req.user.email +  ' out';
+        logger.debug(Version + message);
+        const token = auth.invalidateToken({id: req.user.id, email: req.user.email});
+        let userlog = new userlogger(req.user.email, req.user.id, helpers.getIP(req));
+        userlog.informational('LOGOUT');
+        req.logout();
+        const userdecodedtoken = auth.decodeToken(token);
+        const tokendata = auth.getTokenTimeMetrics(userdecodedtoken);
+        // logger.debug(Version + 'User decoded token : ' + JSON.stringify(userdecodedtoken));    
+        res.json( { message: message, 
+            token: token, 
+            userdecodedtoken: userdecodedtoken, 
+            logintime: tokendata.logintime,
+            remainingtime: tokendata.remainingtime,
+            tokenstatus: tokendata.tokenstatus, 
+            time: tokendata.time,
+            tokenstatusString: tokendata.tokenstatusString, } );
+    }
+    else {
+        res.json( { message: 'Not logged '});
+    }
 });
 
 module.exports = router;

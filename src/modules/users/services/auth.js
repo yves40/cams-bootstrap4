@@ -18,8 +18,9 @@
 //    Oct 29 2019  cams-bootstrap4 project
 //    Oct 31 2019  Reorg
 //    Nov 04 2019  User to UserModel. 
+//    Nov 05 2019  Date format for lastlogin. 
 //----------------------------------------------------------------------------
-const Version = 'auth.js:1.46, Nov 04 2019 ';
+const Version = 'auth.js:1.48, Nov 05 2019 ';
 
 const jwtconfig = require('../../core/services/properties').jwtconfig;
 const logger = require('../../core/services/logger');
@@ -55,7 +56,7 @@ module.exports.signToken = function signToken(payload) {
 //-----------------------------------------------------------------------------------
 module.exports.invalidateToken = function invalidateToken(payload) {
     logger.debug(Version + 'Update logout time for ID ' + payload.id)
-    UserModel.findById(payload.id, (err, loggeduser) => {
+    UserModel.getUserByID(payload.id, (err, loggeduser) => {
         if (err) {
             logger.error(Version + ' Cannot get user data for ID : ' + payload.id);
         }
@@ -108,7 +109,7 @@ module.exports.getTokenTimeMetrics = function getTokenTimeMetrics(thetoken) {
 passport.use('jwt', new JwtStrategy(jwtOptions,
     (token, done) => {
         try {
-            UserModel.findById(token.id, (err, loggeduser) => {
+            UserModel.getUserByID(token.id, (err, loggeduser) => {
                 if(loggeduser.lastlogout === null) {
                     return done(null, token);
                 }
@@ -170,7 +171,7 @@ passport.serializeUser((loggeduser, done) => {
 
 passport.deserializeUser((id, done) => { 
     // logger.debug(Version + 'deserializeUser with ID : ' + id);
-    UserModel.findById(id, (err, loggeduser) => {
+    UserModel.getUserByID(id, (err, loggeduser) => {
         done(err, loggeduser);
     });
 });
