@@ -54,11 +54,12 @@
 //    Oct 31 2019  Source renamed. 1st login tests
 //    Nov 02 2019  Reorg
 //    Nov 05 2019  Put the logout service back into camms-bootstrap4
+//                 Security modules reorg
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.04, Nov 05 2019 ';
+const Version = 'userapi:3.06, Nov 05 2019 ';
 
 // CORS
 const corsutility = require("../../core/services/corshelper");
@@ -71,6 +72,7 @@ const logger = require("../../core/services/logger");
 const helpers = require('../../core/services/helpers');
 const userlogger = require("../services/userlogger");
 const auth = require('../services/auth');
+const jwthelper = require('../services/jwthelper');
 
 const passport = require('passport');
 const cors = require('cors');
@@ -81,10 +83,10 @@ const cors = require('cors');
 router.post('/users/login', cors(corsutility.getCORS()),passport.authenticate('login'),
     (req, res) => {
         const payload = { id: req.user.id, email: req.user.email };
-        const token = auth.signToken(payload);
+        const token = jwthelper.signToken(payload);
         logger.debug(Version + 'User ' + req.user.email + ' logged');
-        const userdecodedtoken = auth.decodeToken(token);
-        const tokendata = auth.getTokenTimeMetrics(userdecodedtoken);
+        const userdecodedtoken = jwthelper.decodeToken(token);
+        const tokendata = jwthelper.getTokenTimeMetrics(userdecodedtoken);
         let userlog = new userlogger(req.user.email, req.user.id, helpers.getIP(req));
         userlog.informational('LOGIN');
         res.json( { message: req.user.email + ' logged', 
@@ -105,8 +107,8 @@ router.post('/users/logout', cors(corsutility.getCORS()), passport.authenticate(
         let userlog = new userlogger(req.user.email, req.user.id, helpers.getIP(req));
         userlog.informational('LOGOUT');
         req.logout();
-        const userdecodedtoken = auth.decodeToken(token);
-        const tokendata = auth.getTokenTimeMetrics(userdecodedtoken);
+        const userdecodedtoken = jwthelper.decodeToken(token);
+        const tokendata = jwthelper.getTokenTimeMetrics(userdecodedtoken);
         // logger.debug(Version + 'User decoded token : ' + JSON.stringify(userdecodedtoken));    
         res.json( { message: message, 
             token: token, 

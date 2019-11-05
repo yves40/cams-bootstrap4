@@ -18,43 +18,31 @@
 //    Oct 29 2019  cams-bootstrap4 project
 //    Oct 31 2019  Reorg
 //    Nov 04 2019  User to UserModel. 
-//    Nov 05 2019  Date format for lastlogin. 
+//    Nov 05 2019  Date format for lastlogin. Security modules reorg
 //----------------------------------------------------------------------------
-const Version = 'auth.js:1.48, Nov 05 2019 ';
-
-const jwtconfig = require('../../core/services/properties').jwtconfig;
-const logger = require('../../core/services/logger');
-const userlogger = require('./userlogger');
-const datetime = require('../../core/services/datetime');
-const helpers = require('../../core/services/helpers');
-const UserModel = require('../model/userModel');
+const Version = 'auth.js:1.51, Nov 05 2019 ';
 
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const passportJWT = require('passport-jwt');
-const JwtStrategy = passportJWT.Strategy;
 const ExtractJwt = passportJWT.ExtractJwt;
+const JwtStrategy = passportJWT.Strategy;
 
-const tokenexpirationdelay = 1800;
-
+const jwtconfig = require('../../core/services/properties').jwtconfig;
 const jwtOptions = {};
 jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme('jwt');
 jwtOptions.secretOrKey = jwtconfig.jwtSecret;
 
-//-----------------------------------------------------------------------------------
-// Sign a token
-//-----------------------------------------------------------------------------------
-module.exports.signToken = function signToken(payload) {
-    logger.debug(Version + 'signing the token with a ' + tokenexpirationdelay + ' seconds expiration time');
-    const token = jwt.sign(payload, jwtOptions.secretOrKey, {expiresIn: tokenexpirationdelay}); // 30 mn
-    return token;
-};
+const logger = require('../../core/services/logger');
+const userlogger = require('./userlogger');
+const helpers = require('../../core/services/helpers');
+const UserModel = require('../model/userModel');
 
 //-----------------------------------------------------------------------------------
 // Invalidate a token during logout
 //-----------------------------------------------------------------------------------
-module.exports.invalidateToken = function invalidateToken(payload) {
+function invalidateToken(payload) {
     logger.debug(Version + 'Update logout time for ID ' + payload.id)
     UserModel.getUserByID(payload.id, (err, loggeduser) => {
         if (err) {
@@ -72,34 +60,9 @@ module.exports.invalidateToken = function invalidateToken(payload) {
     return token;
 };
 
-//-----------------------------------------------------------------------------------
-// Decode a token
-//-----------------------------------------------------------------------------------
-module.exports.decodeToken = function decodeToken(thetoken) {
-    return jwt.decode(thetoken, jwtconfig.jwtSecret);
-};
-
-//-----------------------------------------------------------------------------------
-// get token time characteristics
-//-----------------------------------------------------------------------------------
-module.exports.getTokenTimeMetrics = function getTokenTimeMetrics(thetoken) {
-    let tokenmetrics = {};
-    let remainingtime = Math.floor(thetoken.exp - Date.now()/1000); // Remaining time in seconds
-    tokenmetrics.tokenstatus = true;
-    tokenmetrics.tokenstatusString = '';
-    if (remainingtime <= 0) {
-        tokenmetrics.tokenstatusString = datetime.convertDateTime(thetoken.exp*1000);
-        remainingtime = 0;
-        tokenmetrics.tokenstatus = false; 
-    }
-    else{
-        tokenmetrics.tokenstatusString = datetime.convertDateTime(thetoken.exp*1000);
-    }
-    tokenmetrics.logintime = datetime.convertDateTime(thetoken.iat*1000);
-    tokenmetrics.remainingtime = datetime.convertSecondsToHMS(remainingtime);
-    tokenmetrics.time = datetime.getDateTime(Date.now());
-    return tokenmetrics;
-};
+module.exports = {
+    invalidateToken,
+}
 
 //-----------------------------------------------------------------------------------
 // passport initialization stuff
