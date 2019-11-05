@@ -12,6 +12,7 @@
   Oct 11 2019   Date / hour in Menu bar. Change meun look 
   Oct 25 2019   Header content
   Nov 04 2019   Display user info
+  Nov 05 2019   WIP on header area
 -->
 
 <template>
@@ -51,17 +52,11 @@
         <b-row>
           <b-col cols="2"></b-col>
           <b-col>
-            <b-form-invalid-feedback :state="checkmongo">
-                MongoDB server is down.
-            </b-form-invalid-feedback>
-            <b-form-valid-feedback :state="checkmongo">
-                MongoDB server is up.
-            </b-form-valid-feedback>
-
-            <ul class="list-group list-group-horizontal">
-              <li class="list-group-item">{{email}}</li>
-              <li class="list-group-item">{{name}}</li>
-              <li class="list-group-item">{{lastlogin}}</li>
+            <ul class="list-group list-group-horizontal-sm">
+              <li class="list-group-item list-group-item-dark">{{mongostate}}</li>
+              <li class="list-group-item list-group-item-dark">{{email}}</li>
+              <li class="list-group-item list-group-item-dark">{{name}}</li>
+              <li class="list-group-item list-group-item-dark">{{lastlogin}}</li>
             </ul>
           </b-col>
           <b-col cols="2"></b-col>
@@ -146,6 +141,7 @@ export default {
     ...mapGetters (
         'mongostore', { 
             mongostoreversion: 'getVersion',
+            mongostate: 'getMongoStatus',
         },
     ),
     ...mapGetters(

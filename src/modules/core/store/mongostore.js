@@ -15,6 +15,7 @@
     Oct 24 2019     Remove one timer, add log
     Oct 25 2019     Log a message only when mongo state has changed 
     Nov 03 2019     No longer use the developped axios module
+    Nov 05 2019     Mongo status service, send back the string. Check
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -35,7 +36,7 @@ Vue.use(Vuex);
     VUEX states
 ----------------------------------------------------------------------------*/
 const state =  {
-    Version: 'mongoStore:1.78, Nov 03 2019 ',
+    Version: 'mongoStore:1.80, Nov 05 2019 ',
     MAXLOG:16,
     mongodown: true,        // TRUE if mongodb is down
 };

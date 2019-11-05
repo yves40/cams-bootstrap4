@@ -13,7 +13,7 @@
         <b-row>
           <b-col cols="2"></b-col>
           <b-col>
-            <img src="../../../assets/bootstrap.png" />
+            <img src="../../../assets/bootstrap-vue.png" />
           </b-col>
           <b-col cols="2"></b-col>
         </b-row>
