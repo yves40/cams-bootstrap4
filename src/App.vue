@@ -55,8 +55,8 @@
           <b-col>
             <ul class="list-group list-group-horizontal-sm">
               <li class="list-group-item list-group-item-dark">{{mongostate}}</li>
-              <li class="list-group-item list-group-item-dark">{{email}}</li>
-              <li class="list-group-item list-group-item-dark">Log time: {{lastlogin}}</li>
+              <li class="list-group-item list-group-item-primary" v-if="logged">{{email}}</li>
+              <li class="list-group-item list-group-item-primary" v-if="logged">Log time: {{lastlogin}}</li>
             </ul>
           </b-col>
           <b-col cols="2"></b-col>
@@ -94,7 +94,7 @@ export default {
   data() {
       return {
         headermsg: "Placeholder for future use, i.e, info on logged user",
-        version: "Cams Manager 1.96, Nov 05 2019",
+        version: "Cams Manager 1.99, Nov 05 2019",
         copyright: "oldtimerSoft",
         // These arrays are defining the displayed menus
         // enableflag drives the visibility of the URL
@@ -171,9 +171,18 @@ methods: {
     ),
     ...mapActions(
       'userstore', {
-        logout: 'logout',
+        logoutVuex: 'logout',
       }
     ),
+    logout() {
+      this.logoutVuex({router: this.$router, path: this.$route.path})
+        .then((result) => {
+          this.$swal('You are disconnected!', result, 'success');
+        })
+        .catch((err) => {
+          this.$swal('KO!', err, 'error');
+        });
+    },
     // These methods are used by application pages to disable their menu entries
     // No need to display a login entry in a menu if you're on the login page
     // See the created() and beforeDestroy() methods in slave pages

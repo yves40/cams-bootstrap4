@@ -25,7 +25,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.39, Nov 05 2019 ',
+        Version: 'userstore:1.41, Nov 05 2019 ',
         theuser: null,
     },
     /*----------------------------------------------------------------------------
@@ -85,25 +85,31 @@ export default {
             })
         },
         // Logout action
-        logout({commit, state}) {
-            properties.axioscall(
-                {
-                    method: 'post',
-                    url: '/users/logout',
-                    headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
-                 }
-            )
-            .then((response) => {
-                window.localStorage.setItem('jwt', response.data.token);
-                commit('deleteloginstate', response.data.theuser);
-                payload.router.push({ name: 'home' });
-                },
-            )
-            .catch((error) => {
-                logger.error(state.Version + error);
-                },
-            );
-    }
+        logout({commit, state}, payload) {
+            return new Promise((resolve, reject) => {
+                properties.axioscall(
+                    {
+                        method: 'post',
+                        url: '/users/logout',
+                        headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
+                    }
+                )
+                .then((response) => {
+                        window.localStorage.setItem('jwt', response.data.token);
+                        commit('deleteloginstate', response.data.theuser);
+                        resolve('User disconnected');
+                        if(payload.path !== '/home') {
+                            payload.router.push({ name: 'home' });
+                        }
+                    },
+                )
+                .catch((error) => {
+                    logger.error(state.Version + error);
+                    reject('An error occured');
+                    },
+                );
+            })
+        },
     },
 }
 
