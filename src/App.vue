@@ -57,6 +57,7 @@
               <li class="list-group-item list-group-item-dark">{{mongostate}}</li>
               <li class="list-group-item list-group-item-primary" v-if="logged">{{email}}</li>
               <li class="list-group-item list-group-item-primary" v-if="logged">Log time: {{lastlogin}}</li>
+              <li class="list-group-item list-group-item-primary" v-if="logged">Time remaining : {{sessiontime}}</li>
             </ul>
           </b-col>
           <b-col cols="2"></b-col>
@@ -94,7 +95,7 @@ export default {
   data() {
       return {
         headermsg: "Placeholder for future use, i.e, info on logged user",
-        version: "Cams Manager 1.99, Nov 05 2019",
+        version: "Cams Manager 2.00, Nov 05 2019",
         copyright: "oldtimerSoft",
         // These arrays are defining the displayed menus
         // enableflag drives the visibility of the URL
@@ -151,6 +152,7 @@ export default {
           description: 'getDescription',
           lastlogin: 'getLastlogin',
           logged: 'isLogged',
+          sessiontime: 'getSessionTime',
         }
     ),
     checkmongo() {

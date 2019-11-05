@@ -26,7 +26,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.48, Nov 05 2019 ',
+        Version: 'userstore:1.49, Nov 05 2019 ',
         theuser: null,
         token: null,
         tokenobject: '{}',
@@ -44,6 +44,7 @@ export default {
         getLastlogin(state) {
             return state.theuser === null ? 'Not logged' : datetime.getDateTime(state.theuser.lastlogin);
         },
+        getSessionTime(state) { return state.tokenremainingtime; },
         isLogged(state) {return state.theuser === null ? false : true ;},
         
     },
@@ -64,7 +65,6 @@ export default {
         refreshtokentime(state) {
             if (state.theuser) {
                 const decodedtoken = jwthelper.decodeToken(state.token);
-                logger.debug(JSON.stringify(decodedtoken))
                 const tokendata = jwthelper.getTokenTimeMetrics(decodedtoken);
                 state.tokenremainingtime = tokendata.remainingtime;
                 logger.debug('Token time : ' + state.tokenremainingtime);
