@@ -16,6 +16,7 @@ import { generateCodeFrame } from 'vue-template-compiler';
 const logger = require('../../core/services/logger');
 const properties = require('../../core/services/properties');
 const datetime = require('../../core/services/datetime')
+const auth = require('../../users/services/auth')
 
 Vue.use(Vuex);
 
@@ -25,8 +26,12 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.41, Nov 05 2019 ',
+        Version: 'userstore:1.43, Nov 05 2019 ',
         theuser: null,
+        token: null,
+        tokenobject: '{}',
+        tokenvalidtime: null,
+        tokenremainingtime: null,
     },
     /*----------------------------------------------------------------------------
         VUEX Getters
@@ -45,9 +50,13 @@ export default {
         VUEX mutations
     ----------------------------------------------------------------------------*/
     mutations: { // Synchronous
-        updateloginstate(state, theuser) {
-            state.theuser = theuser;
-        },
+        updateloginstate(state, payload) {
+            state.theuser = payload.theuser;
+            state.token = payload.token;
+            state.tokenobject = auth.decodeToken(payload.token);
+            const tokendata = auth.getTokenTimeMetrics(userdecodedtoken);
+            state.tokenremainingtime = tokendata.remainingtime;
+            },
         deleteloginstate(state) {
             state.theuser = null;
         }
@@ -72,7 +81,7 @@ export default {
                 )
                 .then((response) => {
                     window.localStorage.setItem('jwt', response.data.token);
-                    commit('updateloginstate', response.data.theuser);
+                    commit('updateloginstate', { theuser: response.data.theuser, token:response.data.token });
                     resolve('User ' + payload.email + ' logged');
                     payload.router.push({ name: 'home' });
                     },
