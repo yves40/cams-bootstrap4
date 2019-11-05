@@ -1,0 +1,464 @@
+{
+	"info": {
+		"_postman_id": "f4bfca1b-bc0c-4f16-a13b-c25de541e766",
+		"name": "Cams",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "List all users",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://vboxweb:8081/users/list",
+					"protocol": "http",
+					"host": [
+						"vboxweb"
+					],
+					"port": "8081",
+					"path": [
+						"users",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete all users",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://vboxweb:8081/users/deleteall",
+					"protocol": "http",
+					"host": [
+						"vboxweb"
+					],
+					"port": "8081",
+					"path": [
+						"users",
+						"deleteall"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register a few users",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"allusers\": \n\t[\n\t\t{\n\t\t\t\"name\": \"Isabelle\",\n\t\t\t\"email\": \"i.toubhans@zorg.com\",\n\t\t\t\"password\": \"manager1\"\n\t\t},\n\t\t{\n\t\t\t\"name\": \"Nini\",\n\t\t\t\"email\": \"barbul@zorg.com\",\n\t\t\t\"password\": \"manager1\"\n\t\t},\n\t\t{\n\t\t\t\"name\": \"Boss\",\n\t\t\t\"email\": \"boss.toubhans@zorg.com\",\n\t\t\t\"password\": \"manager1\"\n\t\t},\n\t\t{\n\t\t\t\"name\": \"Ratoon\",\n\t\t\t\"email\": \"rat.toubhans@zorg.com\",\n\t\t\t\"password\": \"manager1\"\n\t\t}\n\t]\n}\n"
+				},
+				"url": {
+					"raw": "http://vboxweb:8081/users/registers",
+					"protocol": "http",
+					"host": [
+						"vboxweb"
+					],
+					"port": "8081",
+					"path": [
+						"users",
+						"registers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register a user",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"aaaa\",\n\t\"email\": \"aaaa@free.fr\",\n\t\"password\": \"manager\"\n}"
+				},
+				"url": {
+					"raw": "http://vboxweb:8081/users/register",
+					"protocol": "http",
+					"host": [
+						"vboxweb"
+					],
+					"port": "8081",
+					"path": [
+						"users",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register a user / localhost",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"aaaa\",\n\t\"email\": \"aaaa@free.fr\",\n\t\"password\": \"manager\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8081/users/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"users",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get One user by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://vboxweb:8081/users/find/ID/5c46f5660e120378e4f72b5b",
+					"protocol": "http",
+					"host": [
+						"vboxweb"
+					],
+					"port": "8081",
+					"path": [
+						"users",
+						"find",
+						"ID",
+						"5c46f5660e120378e4f72b5b"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get One user by email",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://vboxweb:8081/users/find/email/ludo@free.fr",
+					"protocol": "http",
+					"host": [
+						"vboxweb"
+					],
+					"port": "8081",
+					"path": [
+						"users",
+						"find",
+						"email",
+						"ludo@free.fr"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login a user",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"ludo@free.fr\",\n\t\"password\": \"manager\"\n}"
+				},
+				"url": {
+					"raw": "http://vboxweb:8081/users/login",
+					"protocol": "http",
+					"host": [
+						"vboxweb"
+					],
+					"port": "8081",
+					"path": [
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login a user localhost",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"y@free.fr\",\n\t\"password\": \"manager\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8081/users/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Identity (needs a token)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjNWJmNmQ0ZDhlMjBkMzY4NWFkMjljYSIsImVtYWlsIjoieUBmcmVlLmZyIiwiaWF0IjoxNTQ5Nzg4OTc5LCJleHAiOjE1NDk3OTk3Nzl9.od0rk-O7fXvU8Zv8qw8y3aTHM_IpHW0OXxy9VNIH0FE",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://vboxweb:8081/users/current_user",
+					"protocol": "http",
+					"host": [
+						"vboxweb"
+					],
+					"port": "8081",
+					"path": [
+						"users",
+						"current_user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout user",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjNDZmNTY2MGUxMjAzNzhlNGY3MmI1YiIsImVtYWlsIjoibHVkb0BmcmVlLmZyIiwiaWF0IjoxNTQ4OTIxNjE0LCJleHAiOjE1NDg5MzI0MTR9.epTi_5rz0gDxPErZZBuhv0Dcn65cXtvW_qjpd1wD0m4",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://vboxweb:8081/users/logout",
+					"protocol": "http",
+					"host": [
+						"vboxweb"
+					],
+					"port": "8081",
+					"path": [
+						"users",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout user localhost",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjNDZmNTY2MGUxMjAzNzhlNGY3MmI1YiIsImVtYWlsIjoibHVkb0BmcmVlLmZyIiwiaWF0IjoxNTQ4OTIxNjE0LCJleHAiOjE1NDg5MzI0MTR9.epTi_5rz0gDxPErZZBuhv0Dcn65cXtvW_qjpd1wD0m4"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8081/users/logout",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"users",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check mongodb status",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjNWJmNmQ0ZDhlMjBkMzY4NWFkMjljYSIsImVtYWlsIjoieUBmcmVlLmZyIiwiaWF0IjoxNTQ5Nzg4OTc5LCJleHAiOjE1NDk3OTk3Nzl9.od0rk-O7fXvU8Zv8qw8y3aTHM_IpHW0OXxy9VNIH0FE",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://vboxweb:8081/mongo/status",
+					"protocol": "http",
+					"host": [
+						"vboxweb"
+					],
+					"port": "8081",
+					"path": [
+						"mongo",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List all users localhost",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8081/users/list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"users",
+						"list"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
