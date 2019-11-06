@@ -49,10 +49,10 @@ export default {
   },  
   // ------------------------------------------------------------------------------------------------------------
   created() {
-    this.$parent.disableMe('identity');
+    this.$parent.disableMenu('identity');
   },
   beforeDestroy() {
-    this.$parent.enableMe('identity');
+    this.$parent.enableMenu('identity');
   },
   // ------------------------------------------------------------------------------------------------------------
   methods: {

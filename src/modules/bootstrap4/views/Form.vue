@@ -129,10 +129,10 @@ export default {
     }
   },
   created() {
-    this.$parent.disableMe("form");
+    this.$parent.disableMenu("form");
   },
   beforeDestroy() {
-    this.$parent.enableMe("form");
+    this.$parent.enableMenu("form");
   }
 };
 </script>

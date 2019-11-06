@@ -72,10 +72,10 @@ export default {
     };
   },
   created() {
-    this.$parent.disableMe('template');
+    this.$parent.disableMenu('template');
   },
   beforeDestroy() {
-    this.$parent.enableMe('template');
+    this.$parent.enableMenu('template');
   },
 };
 </script>

@@ -55,10 +55,10 @@ export default {
     };
   },
   created() {
-    this.$parent.enableMe('about');
+    this.$parent.enableMenu('about');
   },
   beforeDestroy() {
-    this.$parent.enableMe('about');
+    this.$parent.enableMenu('about');
   },
 };
 </script>

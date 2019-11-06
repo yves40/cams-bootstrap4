@@ -171,10 +171,10 @@ export default {
       ),
   },  
   created() {
-    this.$parent.disableMe('register');
+    this.$parent.disableMenu('register');
   },
   beforeDestroy() {
-    this.$parent.enableMe('register');
+    this.$parent.enableMenu('register');
   },
   methods: {
     register() {

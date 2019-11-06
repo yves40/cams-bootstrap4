@@ -13,6 +13,8 @@
   Oct 25 2019   Header content
   Nov 04 2019   Display user info
   Nov 05 2019   WIP on header area
+  Nov 06 2019   Drop Menus for login/logout
+                Change menu management for login/logout/register...
 -->
 
 <template>
@@ -32,10 +34,11 @@
               >
                 <div v-for="submenu in entry.navoptions" :key="submenu.id">
                   <b-dropdown-item
-                    v-bind:to="submenu.url"
-                    :disabled="submenu.disableflag"
-                    v-show="submenu.enableflag"
-                  >{{ submenu.text }}</b-dropdown-item>
+                      v-bind:to="submenu.url"
+                      :disabled="submenu.disableflag"
+                      v-show="submenu.enableflag"
+                    >{{ submenu.text }}
+                  </b-dropdown-item>
                 </div>
               </b-nav-item-dropdown>
             </div>
@@ -94,8 +97,7 @@ export default {
   name: "app",
   data() {
       return {
-        headermsg: "Placeholder for future use, i.e, info on logged user",
-        version: "Cams Manager 2.00, Nov 05 2019",
+        version: "Cams Manager 2.11, Nov 06 2019",
         copyright: "oldtimerSoft",
         // These arrays are defining the displayed menus
         // enableflag drives the visibility of the URL
@@ -105,26 +107,27 @@ export default {
             text: "User",
             enableflag: true,
             navoptions: [
-              {url: "login",text: "Login",enableflag: true,disableflag: false},
-              {url: "register",text: "Register",enableflag: true,disableflag: false}
+              {url: "login",text: "Login", enableflag: true, disableflag: false, },
+              {url: "logout",text: "Logout", enableflag: false, disableflag: false,},
+              {url: "register",text: "Register", enableflag: true, disableflag: false, },
             ]
           },
           {
             text: "Bootstrap4",
             enableflag: true,
             navoptions: [
-              {url: "buttons",text: "buttons",enableflag: true,disableflag: false},
-              { url: "tabs", text: "tabs", enableflag: true, disableflag: false },
-              { url: "form", text: "form", enableflag: true, disableflag: false },
-              {url: "pagination",text: "pagination",enableflag: true,disableflag: false},
-              {url: "template",text: "template",enableflag: true,disableflag: false}
+              {url: "buttons",text: "buttons",enableflag: true,disableflag: false, },
+              { url: "tabs", text: "tabs", enableflag: true, disableflag: false,  },
+              { url: "form", text: "form", enableflag: true, disableflag: false,  },
+              {url: "pagination",text: "pagination",enableflag: true,disableflag: false, },
+              {url: "template",text: "template",enableflag: true,disableflag: false, }
             ]
           },
           {
             text: "About",
             enableflag: true,
             navoptions: [
-              {url: "about",text: "about",enableflag: true,disableflag: false},
+              {url: "about",text: "about",enableflag: true,disableflag: false, },
             ]
           }
         ]
@@ -180,6 +183,9 @@ methods: {
       this.logoutVuex({router: this.$router, path: this.$route.path})
         .then((result) => {
           this.$swal('You are disconnected!', result, 'success');
+          this.disableMenu('logout');
+          this.enableMenu('login');
+          this.enableMenu('register');
         })
         .catch((err) => {
           this.$swal('KO!', err, 'error');
@@ -188,7 +194,7 @@ methods: {
     // These methods are used by application pages to disable their menu entries
     // No need to display a login entry in a menu if you're on the login page
     // See the created() and beforeDestroy() methods in slave pages
-    disableMe(label) {
+    disableMenu(label) {
       let inner,
       outer = 0;
       for (outer in this.topmenu) {
@@ -200,7 +206,7 @@ methods: {
         }
       }
     },
-    enableMe(label) {
+    enableMenu(label) {
       let inner,
       outer = 0;
       for (outer in this.topmenu) {

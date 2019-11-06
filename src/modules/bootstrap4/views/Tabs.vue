@@ -64,10 +64,10 @@ export default {
     };
   },
   created() {
-    this.$parent.disableMe('tabs');
+    this.$parent.disableMenu('tabs');
   },
   beforeDestroy() {
-    this.$parent.enableMe('tabs');
+    this.$parent.enableMenu('tabs');
   },
 };
 </script>

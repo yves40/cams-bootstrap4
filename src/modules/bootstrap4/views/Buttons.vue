@@ -77,10 +77,10 @@ export default {
     disabled() {Logger.debug('disabled here !!!!!!!!!!!!!');},
   },
   created() {
-    this.$parent.disableMe('buttons');
+    this.$parent.disableMenu('buttons');
   },
   beforeDestroy() {
-    this.$parent.enableMe('buttons');
+    this.$parent.enableMenu('buttons');
   },
 };
 </script>

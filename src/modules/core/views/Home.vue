@@ -60,10 +60,10 @@ export default {
     };
   },
   created() {
-    this.$parent.disableMe('home');
+    this.$parent.disableMenu('home');
   },
   beforeDestroy() {
-    this.$parent.enableMe('home');
+    this.$parent.enableMenu('home');
   },
 };
 </script>

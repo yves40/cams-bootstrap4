@@ -15,6 +15,7 @@
   Oct 31 2019   Install the login handler now and test
   Nov 02 2019   Start Vuex integration, with userstore
   Nov 03 2019   More tests with Vuex. Use promise, and externalize the axios call in vues store module 
+  Nov 06 2019   Change menu management for login/logout/register...
 -->
 <template>
   <div>
@@ -93,7 +94,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Login 1.80, Nov 03 2019 ",
+        version: "Login 1.81, Nov 03 2019 ",
         email: 'y@free.fr',
         password: 'manager',
       };
@@ -125,10 +126,10 @@ export default {
   },  
   // ------------------------------------------------------------------------------------------------------------
   created() {
-    this.$parent.disableMe('login');
+    this.$parent.disableMenu('login');
   },
   beforeDestroy() {
-    this.$parent.enableMe('login');
+    this.$parent.enableMenu('login');
   },
   // ------------------------------------------------------------------------------------------------------------
   methods: {
@@ -142,6 +143,9 @@ export default {
       this.loginVuex({email: this.email, password: this.password, router: this.$router})
         .then((result) => {
           this.$swal('OK!', result, 'success');
+          this.$parent.disableMenu('login');
+          this.$parent.disableMenu('register');
+          this.$parent.enableMenu('logout');
         })
         .catch((err) => {
           this.$swal('KO!', err, 'error');

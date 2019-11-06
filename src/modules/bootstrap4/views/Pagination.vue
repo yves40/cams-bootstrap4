@@ -78,10 +78,10 @@ export default {
     }
   },
   created() {
-    this.$parent.disableMe("pagination");
+    this.$parent.disableMenu("pagination");
   },
   beforeDestroy() {
-    this.$parent.enableMe("pagination");
+    this.$parent.enableMenu("pagination");
   }
 };
 </script>
