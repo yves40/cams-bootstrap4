@@ -67,7 +67,6 @@ export default {
                 const decodedtoken = jwthelper.decodeToken(state.token);
                 const tokendata = jwthelper.getTokenTimeMetrics(decodedtoken);
                 state.tokenremainingtime = tokendata.remainingtime;
-                logger.debug('Token time : ' + state.tokenremainingtime);
             }
         }
     },
