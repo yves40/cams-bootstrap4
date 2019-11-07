@@ -55,18 +55,15 @@
 //    Nov 02 2019  Reorg
 //    Nov 05 2019  Put the logout service back into camms-bootstrap4
 //                 Security modules reorg
+//    Nov 07 2019  Put the register service back into camms-bootstrap4
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.06, Nov 05 2019 ';
+const Version = 'userapi:3.07, Nov 07 2019 ';
 
 // CORS
 const corsutility = require("../../core/services/corshelper");
-// User definition
-const User = require('../model/userModel')
-// User class
-const userclass = require('../classes/userclass');
 // To access mongodb status
 const logger = require("../../core/services/logger");
 const helpers = require('../../core/services/helpers');

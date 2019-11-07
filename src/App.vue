@@ -99,7 +99,7 @@ export default {
   name: "app",
   data() {
       return {
-        version: "Cams Manager 2.15, Nov 07 2019",
+        version: "Cams Manager 2.18, Nov 07 2019",
         copyright: "oldtimerSoft",
         // These arrays are defining the displayed menus
         // enableflag drives the visibility of the URL
@@ -179,27 +179,23 @@ export default {
     // These methods are used by application pages to disable their menu entries
     // No need to display a login entry in a menu if you're on the login page
     // See the created() and beforeDestroy() methods in slave pages
-    disableMenu(label) {
-      let inner,
-      outer = 0;
+    enableMenu(label) {
+      let outer = 0;
       for (outer in this.topmenu) {
-        for (inner in this.topmenu[outer].navoptions) {
-          if (this.topmenu[outer].navoptions[inner].url === label) {
-            this.topmenu[outer].navoptions[inner].enableflag = false;
-            break;
-          }
+        let menuentry = this.topmenu[outer].navoptions.find( menu => label === menu.url );
+        if(menuentry) {
+          menuentry.enableflag = true;
+          break;
         }
       }
     },
-    enableMenu(label) {
-      let inner,
-      outer = 0;
+    disableMenu(label) {
+      let outer = 0;
       for (outer in this.topmenu) {
-        for (inner in this.topmenu[outer].navoptions) {
-          if (this.topmenu[outer].navoptions[inner].url === label) {
-            this.topmenu[outer].navoptions[inner].enableflag = true;
-            break;
-          }
+        let menuentry = this.topmenu[outer].navoptions.find( menu => label === menu.url );
+        if(menuentry) {
+          menuentry.enableflag = false;
+          break;
         }
       }
     },
