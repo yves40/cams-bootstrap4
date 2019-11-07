@@ -60,7 +60,7 @@
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.10, Nov 07 2019 ';
+const Version = 'userapi:3.11, Nov 07 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -158,6 +158,57 @@ router.post('/users/register', cors(corsutility.getCORS()), (req, res) => {
         }
     });
 });
+//-----------------------------------------------------------------------------------
+// Remove One user by ID
+//-----------------------------------------------------------------------------------
+router.post('/users/delete/ID/:id', cors(corsutility.getCORS()), passport.authenticate('jwt'), (req, res) => {
+    logger.debug(Version + 'Removing user with ID : ' + req.params.id);
+    usermodel.deleteoneUserByID( req.params.id, (error, deleted) => {
+        if(error) { logger.debug(error); }
+        if(deleted.result.n === 0) { 
+            logger.debug('No user matching this ID :' + req.params.id);
+            res.send( { message: 'No user matching this ID :' + req.params.id });
+        }
+        else{
+            logger.debug(Version + ' Done.' );
+        }
+        res.send(deleted);
+    });
+})
+//-----------------------------------------------------------------------------------
+// Remove One user by name
+//-----------------------------------------------------------------------------------
+router.post('/users/delete/name/:name', cors(corsutility.getCORS()),  (req, res) => {
+    logger.debug(Version + 'Removing user with name : ' + req.params.name);
+    usermodel.deleteoneUserByName( req.params.name, (error, deleted) => {
+        if(error) { logger.debug(error); }
+        if(deleted.result.n === 0) { 
+            logger.debug('No user matching this name :' + req.params.name);
+        }
+        else{
+            logger.debug(Version + ' Done.' );
+        }
+        res.send(deleted);
+    });
+})
+
+//-----------------------------------------------------------------------------------
+// Remove One user by email
+//-----------------------------------------------------------------------------------
+router.post('/users/delete/email/:email', cors(corsutility.getCORS()),  (req, res) => {
+    logger.debug(Version + 'Removing user with email : ' + req.params.email);
+    usermodel.deleteoneUserByEmail( req.params.email, (error, deleted) => {
+        if(error) { logger.debug(error); }
+        if(deleted.result.n === 0) { 
+            logger.debug('No user matching this name :' + req.params.email);
+        }
+        else{
+            logger.debug(Version + ' Done.' );
+        }
+        res.send(deleted);
+    });
+})
+
 //-----------------------------------------------------------------------------------
 // List all users
 // Unprotected function right now

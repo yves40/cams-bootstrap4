@@ -19,6 +19,7 @@
 //    Oct 28 2019    Reorg
 //    Nov 03 2019    Change module declaration, export constants
 //    Nov 04 2019    Problem with declarations
+//    Nov 07 2019    Delete user by email
 //----------------------------------------------------------------------------
 const Version = 'userModel:1.41, Nov 04 2019 ';
 
@@ -122,6 +123,18 @@ function deleteoneUserByName (name, callback) {
 };
 
 //-----------------------------------------------------------------------------------
+// Delete one user with its name
+//-----------------------------------------------------------------------------------
+function deleteoneUserByEmail (email, callback) {
+    try {
+        UserModel.collection.deleteOne( { "email":  email }, callback );
+    }
+    catch(e) {
+        logger.error(e);
+    }
+};
+
+//-----------------------------------------------------------------------------------
 // Delete all users
 //-----------------------------------------------------------------------------------
 function deleteallUsers  (callback)  {
@@ -140,6 +153,7 @@ module.exports = {
     comparePassword,
     deleteoneUserByID,
     deleteoneUserByName,
+    deleteoneUserByEmail,
     deleteallUsers,
 }
 
