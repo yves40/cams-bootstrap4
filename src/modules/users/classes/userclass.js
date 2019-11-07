@@ -198,7 +198,7 @@ module.exports = class user {
     //-------------------------------------
     // List user(s)
     //-------------------------------------
-    listUser() {
+    listUsers() {
         return new Promise((resolve, reject) => {
             let querylog = UserModel.find({});
             (async () => {
