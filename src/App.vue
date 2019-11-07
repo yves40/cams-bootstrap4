@@ -16,6 +16,7 @@
   Nov 06 2019   Drop Menus for login/logout
                 Change menu management for login/logout/register...
   Nov 07 2019   Finally use a logout page...
+                Some work on menus
 -->
 
 <template>
@@ -98,7 +99,7 @@ export default {
   name: "app",
   data() {
       return {
-        version: "Cams Manager 2.12, Nov 07 2019",
+        version: "Cams Manager 2.15, Nov 07 2019",
         copyright: "oldtimerSoft",
         // These arrays are defining the displayed menus
         // enableflag drives the visibility of the URL
@@ -115,7 +116,7 @@ export default {
           },
           {
             text: "Bootstrap4",
-            enableflag: true,
+            enableflag: false,
             navoptions: [
               {url: "buttons",text: "buttons",enableflag: true,disableflag: false, },
               { url: "tabs", text: "tabs", enableflag: true, disableflag: false,  },
@@ -169,7 +170,7 @@ export default {
     this.$store.dispatch('mongostore/setMongoTimer');  // Used to periodically check mongodb server status
   },
 
-methods: {
+  methods: {
     ...mapActions(
         'corestore', { 
           settimer: 'settimer',
@@ -201,6 +202,14 @@ methods: {
           }
         }
       }
+    },
+    enableTopMenu(label) {
+      let menuentry = this.topmenu.find( menu => label === menu.text );
+      if(menuentry) menuentry.enableflag = true;
+    },
+    disableTopMenu(label) {
+      let menuentry = this.topmenu.find( menu => label === menu.text );
+      if(menuentry) menuentry.enableflag = false;
     },
   },
 };

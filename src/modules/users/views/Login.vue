@@ -146,6 +146,7 @@ export default {
           this.$parent.disableMenu('login');
           this.$parent.disableMenu('register');
           this.$parent.enableMenu('logout');
+          this.$parent.enableTopMenu('Bootstrap4');
         })
         .catch((err) => {
           this.$swal('KO!', err, 'error');

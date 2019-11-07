@@ -21,7 +21,7 @@ import { mapActions } from 'vuex'
 
 export default {
   data: () => ({
-    Version: 'Logout:1.19, Nov 07 2019 ',
+    Version: 'Logout:1.20, Nov 07 2019 ',
   }),
   mounted() {
     this.logout();
@@ -40,6 +40,7 @@ export default {
           this.$parent.disableMenu('logout');
           this.$parent.enableMenu('login');
           this.$parent.enableMenu('register');
+          this.$parent.disableTopMenu('Bootstrap4');
         })
         .catch((err) => {
           this.$swal('KO!', err, 'error');
