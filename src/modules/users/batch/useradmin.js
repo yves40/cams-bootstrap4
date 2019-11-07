@@ -12,9 +12,10 @@
 //    May 15 2019    SYNC modewhen calling createUser
 //    Oct 27 2019    Integrate cams-bootstrap4
 //    Oct 28 2019    Reorg
+//    Mov 07 2019    ListUser class method changed to to ListUsers
 //----------------------------------------------------------------------------
 
-const Version = "useradmin.js:1.36 Oct 28 2019 ";
+const Version = "useradmin.js:1.37 Nov 07 2019 ";
 
 const user = require('../classes/userclass');
 const logger = require('../../core/services/logger');
@@ -231,7 +232,7 @@ function listUsers() {
     console.log('____________________________________________');
     let newuser = new user();
     (async () => {
-      await newuser.listUser().then( (allusers) => {
+      await newuser.listUsers().then( (allusers) => {
         console.log(allusers.length + ' user(s) stored in the DB.\n'); 
         allusers.forEach((value, index) => {
           let email = value.email.padEnd(24, ' ');
