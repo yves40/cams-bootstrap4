@@ -15,6 +15,7 @@
   Nov 05 2019   WIP on header area
   Nov 06 2019   Drop Menus for login/logout
                 Change menu management for login/logout/register...
+  Nov 07 2019   Finally use a logout page...
 -->
 
 <template>
@@ -45,7 +46,7 @@
           </b-navbar-nav>
           <b-navbar-nav class="ml-auto">
             <b-nav-item v-if="!logged" v-bind:to="{ name: 'login' }">Login</b-nav-item>
-            <b-nav-item v-if="logged" v-on:click="logout">Logout</b-nav-item>
+            <b-nav-item v-if="logged" v-bind:to="{ name: 'logout' }">Logout</b-nav-item>
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
@@ -97,7 +98,7 @@ export default {
   name: "app",
   data() {
       return {
-        version: "Cams Manager 2.11, Nov 06 2019",
+        version: "Cams Manager 2.12, Nov 07 2019",
         copyright: "oldtimerSoft",
         // These arrays are defining the displayed menus
         // enableflag drives the visibility of the URL
@@ -174,23 +175,6 @@ methods: {
           settimer: 'settimer',
         }
     ),
-    ...mapActions(
-      'userstore', {
-        logoutVuex: 'logout',
-      }
-    ),
-    logout() {
-      this.logoutVuex({router: this.$router, path: this.$route.path})
-        .then((result) => {
-          this.$swal('You are disconnected!', result, 'success');
-          this.disableMenu('logout');
-          this.enableMenu('login');
-          this.enableMenu('register');
-        })
-        .catch((err) => {
-          this.$swal('KO!', err, 'error');
-        });
-    },
     // These methods are used by application pages to disable their menu entries
     // No need to display a login entry in a menu if you're on the login page
     // See the created() and beforeDestroy() methods in slave pages
