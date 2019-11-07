@@ -60,16 +60,16 @@
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.07, Nov 07 2019 ';
+const Version = 'userapi:3.10, Nov 07 2019 ';
 
-// CORS
 const corsutility = require("../../core/services/corshelper");
-// To access mongodb status
 const logger = require("../../core/services/logger");
 const helpers = require('../../core/services/helpers');
 const userlogger = require("../services/userlogger");
 const auth = require('../services/auth');
 const jwthelper = require('../services/jwthelper');
+const usermodel = require('../model/userModel');
+const userclass = require('../classes/userclass');
 
 const passport = require('passport');
 const cors = require('cors');
@@ -119,6 +119,55 @@ router.post('/users/logout', cors(corsutility.getCORS()), passport.authenticate(
     else {
         res.json( { message: 'Not logged '});
     }
+});
+//-----------------------------------------------------------------------------------
+// Register user
+//-----------------------------------------------------------------------------------
+router.post('/users/register', cors(corsutility.getCORS()), (req, res) => {
+
+    usermodel.getUserByEmail(req.body.email, (err, loggeduser) => {
+        if(err) { return done(err); }
+        if ( !loggeduser ) { 
+            const name = req.body.name;
+            const email = req.body.email;
+            const password = req.body.password;
+            const description = req.body.description;
+            let newuser = new userclass();
+            try {
+                newuser.S_createUser({name, email, password, profilecode: 0, description});
+                res.send({
+                    user: {name, email, password, profilecode: 0, description}, 
+                    message: 'User ' + email + ' registered',
+                    status: 'OK',
+                });
+            }
+            catch(error) {
+                logger.debug(Version + 'Oh my god !!');
+                res.status(422).json({
+                    message: 'Something went wrong, try again later',
+                });
+            }
+        }
+        else {
+            logger.debug(Version + 'User ' + req.body.email + ' already registered');
+            res.send({
+                user: null, 
+                message: 'User ' + req.body.email + ' already registered',
+                status: 'KO',
+            });
+        }
+    });
+});
+//-----------------------------------------------------------------------------------
+// List all users
+// Unprotected function right now
+//-----------------------------------------------------------------------------------
+router.get('/users/list', cors(corsutility.getCORS()), (req, res) => {
+    usermodel.listUsers( (error, userlist) => {
+        if(error) { logger.debug(error);}
+        logger.debug(Version + "Fetched " + userlist.length + " users"); 
+        res.send(userlist);   
+    })
 });
 
 module.exports = router;
