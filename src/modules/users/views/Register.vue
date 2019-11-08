@@ -9,7 +9,9 @@
   Oct 11 2019   Add b-container to be bootstrap4 compliant
   Oct 25 2019   Fix button overlap problem when resizing to small window
                 Manage mongodb down detection as in login vue
-  Oct 31 2019   Fix button overlap problem when resizing to small window-->
+  Oct 31 2019   Fix button overlap problem when resizing to small window
+  Nov 08 2019   Perform the axios call (through vuex)
+-->
 <template>
   <div>
     <b-container>
@@ -45,7 +47,7 @@
 
             <b-form-group
               id="password1"
-              description="Your password. At least 8 characters please"
+              description="Your password. At least 7 characters please"
               label="Password"
               label-for="password1"
               label-cols-sm="3"
@@ -116,7 +118,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      version: "Register 1.27, Oct 31 2019",
+      version: "Register 1.28, Nov 08 2019",
       name: '',
       email: '',
       userdescription: '',
@@ -154,7 +156,7 @@ export default {
         return (this.userdescription.length >= 10 && this.userdescription.length <= 40) ? true : false
       },
       password1state() {
-        return (this.password1.length >= 8 ) ? true : false
+        return (this.password1.length >= 7 ) ? true : false
       },
       password2state() {
         return (this.password1 === this.password2 )&&( this.password1.length > 0) ? true : false
@@ -177,8 +179,25 @@ export default {
     this.$parent.enableMenu('register');
   },
   methods: {
+    ...mapActions (
+      'userstore', {
+        registerVuex: 'register'
+      }
+    ),
     register() {
-      Logger.info('Requesting registration of ' + this.name); 
+      this.registerVuex({
+          name: this.name,
+          email: this.email, 
+          userdescription: this.userdescription,
+          password: this.password1,
+        })
+        .then((result) => {
+          this.$swal('User' + this.email + ' registered', result, 'success');
+          this.$router.push({ name: 'login' });
+        })
+        .catch((err) => {
+          this.$swal('KO!', err, 'error');
+        });
     },
     clear() {
       this.name = this.userdescription = this.email = this.password1 = this.password2 = '';

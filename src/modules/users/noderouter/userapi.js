@@ -61,7 +61,7 @@
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.13, Nov 08 2019 ';
+const Version = 'userapi:3.14, Nov 08 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -132,10 +132,18 @@ router.post('/users/register', cors(corsutility.getCORS()), (req, res) => {
             const name = req.body.name;
             const email = req.body.email;
             const password = req.body.password;
-            const description = req.body.description;
+            const description = req.body.userdescription;
             let newuser = new userclass();
             try {
-                newuser.S_createUser({name, email, password, profilecode: 0, description});
+                newuser.S_createUser(
+                    {
+                        name, 
+                        email, 
+                        password, 
+                        profilecode: usermodel.getValidProfile("STD"), 
+                        description
+                    }
+                    );
                 res.send({
                     user: {name, email, password, profilecode: 0, description}, 
                     message: 'User ' + email + ' registered',

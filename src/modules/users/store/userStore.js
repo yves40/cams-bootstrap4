@@ -8,6 +8,7 @@
     Nov 03 2019   router and axios calls
     Nov 04 2019   Manage the state after login
     Nov 05 2019   Some date format, logout action and mutation
+    Nov 08 2019   Register 
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -26,7 +27,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.49, Nov 05 2019 ',
+        Version: 'userstore:1.50, Nov 08 2019 ',
         theuser: null,
         token: null,
         tokenobject: '{}',
@@ -74,7 +75,8 @@ export default {
         VUEX actions
     ----------------------------------------------------------------------------*/
     actions:  {
-        // Login action : payload contains credentials and the global router to 
+        // Login action -------------------------------------------------------------------
+        // Payload contains credentials and the global router to 
         // be able to call another vue
         login({commit, state}, payload) {
             return new Promise((resolve, reject) => {
@@ -102,7 +104,7 @@ export default {
                 );
             })
         },
-        // Logout action
+        // Logout action -------------------------------------------------------------------
         logout({commit, state}, payload) {
             return new Promise((resolve, reject) => {
                 properties.axioscall(
@@ -114,11 +116,38 @@ export default {
                 )
                 .then((response) => {
                         window.localStorage.setItem('jwt', response.data.token);
-                        commit('deleteloginstate', response.data.theuser);
+                        commit('deleteloginstate');
                         resolve('User disconnected');
                         if(payload.path !== '/home') {
                             payload.router.push({ name: 'home' });
                         }
+                    },
+                )
+                .catch((error) => {
+                    logger.error(state.Version + error);
+                    reject('An error occured');
+                    },
+                );
+            })
+        },
+        // Register action -------------------------------------------------------------------
+        register({commit, state}, payload) {
+            return new Promise((resolve, reject) => {
+                properties.axioscall(
+                    {
+                        method: 'post',
+                        url: '/users/register',
+                        data: {
+                            name : payload.name,
+                            email: payload.email,
+                            userdescription: payload.userdescription,
+                            password: payload.password,
+                        },
+                    }
+                )
+                .then((response) => {
+                        commit('deleteloginstate');
+                        resolve('User registered');
                     },
                 )
                 .catch((error) => {
