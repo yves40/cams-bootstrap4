@@ -13,20 +13,21 @@
 //    Oct 28 2019   Reorg
 //    Nov 03 2019   Use the class now from userStore
 //                  Fix some problems with OOP 
+//    Nov 08 2019   Profilecode is now an array of strings
 //----------------------------------------------------------------------------
-
-const UserModel = require('../model/userModel').UserModel;    // Mongoose stuff
+const userM = require('../model/userModel');
+const UserModel = userM.UserModel;    // Mongoose stuff
 const bcryptjs = require('bcryptjs');
 const logger = require('../../core/services/logger');
 
 module.exports = class user {
     constructor (usermail = "dummy@free.fr") {
-        this.Version = 'userclass:1.42, Nov 04 2019 ';
+        this.Version = 'userclass:1.43, Nov 08 2019 ';
         this.model = new(UserModel);
         this.model.email = usermail;
         this.model.name = 'Not logged';
         this.model.password = '';
-        this.model.profilecode = UserModel.STDUSER;
+        this.model.profilecode = userM.getValidProfile("STD");
         this.model.description = '';
         this.model.lastlogin = null;
         this.model.lastlogout = null;
