@@ -20,8 +20,9 @@
 //    Nov 03 2019    Change module declaration, export constants
 //    Nov 04 2019    Problem with declarations
 //    Nov 07 2019    Delete user by email
+//    Nov 08 2019    profilecode is now an array of strings
 //----------------------------------------------------------------------------
-const Version = 'userModel:1.41, Nov 04 2019 ';
+const Version = 'userModel:1.42, Nov 08 2019 ';
 
 const objectid = require('mongodb').ObjectId;
 const mongoose = require('mongoose');
@@ -38,7 +39,7 @@ const userschema = new schema(
         name: String,
         email: String,
         password: String,
-        profilecode: Number,
+        profilecode: [ String ],
         description: String,
         lastlogin: Date,
         lastlogout: Date,

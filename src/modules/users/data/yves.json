@@ -4,15 +4,8 @@
     "email": "yves@free.fr",
     "name": "Yves",
     "password": "manager",
-    "profilecode": 100,
+    "profilecode": [ "STD", "USERADMIN", "CAMADMIN", "SUPERADMIN" ],
     "description": "Account for yves, updated with newest user class"
-  },
-  "yves2" : {
-    "email": "y@free.fr",
-    "name": "Yves",
-    "password": "manager",
-    "profilecode": 100,
-    "description": "Account for yves wtith shorter mail, updated with newest user class "
   }
 }
 

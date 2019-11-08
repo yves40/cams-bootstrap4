@@ -4,7 +4,7 @@
       "email": "jpd@free.fr",
       "name": "Jean Pierre",
       "password": "manager",
-      "profilecode": 100,
+      "profilecode": [ "STD", "USERADMIN" ],
       "description": "The ultra Geek for all IT technologies and some others"
     }
   }
