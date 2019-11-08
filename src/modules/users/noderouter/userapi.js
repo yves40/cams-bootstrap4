@@ -56,11 +56,12 @@
 //    Nov 05 2019  Put the logout service back into camms-bootstrap4
 //                 Security modules reorg
 //    Nov 07 2019  Put the register service back into camms-bootstrap4
+//    Nov 08 2019  Remove an API
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.11, Nov 07 2019 ';
+const Version = 'userapi:3.13, Nov 08 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -175,27 +176,11 @@ router.post('/users/delete/ID/:id', cors(corsutility.getCORS()), passport.authen
         res.send(deleted);
     });
 })
-//-----------------------------------------------------------------------------------
-// Remove One user by name
-//-----------------------------------------------------------------------------------
-router.post('/users/delete/name/:name', cors(corsutility.getCORS()),  (req, res) => {
-    logger.debug(Version + 'Removing user with name : ' + req.params.name);
-    usermodel.deleteoneUserByName( req.params.name, (error, deleted) => {
-        if(error) { logger.debug(error); }
-        if(deleted.result.n === 0) { 
-            logger.debug('No user matching this name :' + req.params.name);
-        }
-        else{
-            logger.debug(Version + ' Done.' );
-        }
-        res.send(deleted);
-    });
-})
 
 //-----------------------------------------------------------------------------------
 // Remove One user by email
 //-----------------------------------------------------------------------------------
-router.post('/users/delete/email/:email', cors(corsutility.getCORS()),  (req, res) => {
+router.post('/users/delete/email/:email', cors(corsutility.getCORS()), passport.authenticate('jwt'), (req, res) => {
     logger.debug(Version + 'Removing user with email : ' + req.params.email);
     usermodel.deleteoneUserByEmail( req.params.email, (error, deleted) => {
         if(error) { logger.debug(error); }
@@ -220,5 +205,18 @@ router.get('/users/list', cors(corsutility.getCORS()), (req, res) => {
         res.send(userlist);   
     })
 });
+
+//-----------------------------------------------------------------------------------
+// Remove all users
+// Very dangerous call ;-) 
+// Will be protected 
+//-----------------------------------------------------------------------------------
+router.post('/users/deleteall', cors(corsutility.getCORS()), (req, res) => {
+    logger.debug(Version + 'Deleting all users !!!');
+    usermodel.deleteallUsers( () => {
+        logger.debug(Version + ' done !!');
+        res.send('success');
+    });
+})
 
 module.exports = router;
