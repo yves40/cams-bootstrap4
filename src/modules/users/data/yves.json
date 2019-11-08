@@ -6,6 +6,13 @@
     "password": "manager",
     "profilecode": [ "STD", "USERADMIN", "CAMADMIN", "SUPERADMIN" ],
     "description": "Account for yves, updated with newest user class"
+  },
+  "y" : {
+    "email": "y@free.fr",
+    "name": "Yves",
+    "password": "manager",
+    "profilecode": [ "STD", "USERADMIN", "CAMADMIN", "SUPERADMIN" ],
+    "description": "Second Account for yves, updated with newest user class"
   }
 }
 
