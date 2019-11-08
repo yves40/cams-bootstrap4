@@ -22,14 +22,12 @@
 //    Nov 07 2019    Delete user by email
 //    Nov 08 2019    profilecode is now an array of strings
 //----------------------------------------------------------------------------
-const Version = 'userModel:1.42, Nov 08 2019 ';
+const Version = 'userModel:1.44, Nov 08 2019 ';
 
 const objectid = require('mongodb').ObjectId;
 const mongoose = require('mongoose');
 const bcryptjs = require('bcryptjs');
-const STDUSER = 0;
-const ADMINUSER = 100;
-const CAMADMINUSER = 50;
+const validprofiles = [ "STD", "USERADMIN", "CAMADMIN", "SUPERADMIN" ];
 const logger = require('../../core/services/logger');
 
 const schema = mongoose.Schema;
@@ -114,18 +112,6 @@ function deleteoneUserByID (id, callback) {
 //-----------------------------------------------------------------------------------
 // Delete one user with its name
 //-----------------------------------------------------------------------------------
-function deleteoneUserByName (name, callback) {
-    try {
-        UserModel.collection.deleteOne( { "name":  name }, callback );
-    }
-    catch(e) {
-        logger.error(e);
-    }
-};
-
-//-----------------------------------------------------------------------------------
-// Delete one user with its name
-//-----------------------------------------------------------------------------------
 function deleteoneUserByEmail (email, callback) {
     try {
         UserModel.collection.deleteOne( { "email":  email }, callback );
@@ -142,20 +128,23 @@ function deleteallUsers  (callback)  {
     UserModel.collection.deleteMany(callback);
 };
 
+//-----------------------------------------------------------------------------------
+// get and check user profile
+//-----------------------------------------------------------------------------------
+function getValidProfile(profcode) {
+    let profile = validprofiles.find(  (prof) => prof === profcode );
+    return profile !== undefined ? profile : validprofiles[0];
+}
+
 module.exports = { 
     UserModel,
-    STDUSER,
-    ADMINUSER,
-    CAMADMINUSER,
+    getValidProfile,
     createUser,
     listUsers,
     getUserByID,
     getUserByEmail,
     comparePassword,
     deleteoneUserByID,
-    deleteoneUserByName,
     deleteoneUserByEmail,
     deleteallUsers,
 }
-
-
