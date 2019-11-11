@@ -23,8 +23,9 @@
 //    Nov 08 2019   profilecode is now an array of strings
 //                  Fix architectural design flaws:1
 //    Nov 09 2019   Fix architectural design flaws:2
+//    Nov 11 2019   Fix architectural design flaws:3
 //----------------------------------------------------------------------------
-const Version = 'userModel:1.45, Nov 09 2019 ';
+const Version = 'userModel:1.46, Nov 11 2019 ';
 
 const objectid = require('mongodb').ObjectId;
 const mongoose = require('mongoose');

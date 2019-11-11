@@ -16,6 +16,7 @@
 //    Nov 08 2019   Profilecode is now an array of strings
 //                  Fix architectural design flaws:1
 //    Nov 09 2019   Fix architectural design flaws:2
+//    Nov 11 2019   Fix architectural design flaws:3
 //----------------------------------------------------------------------------
 const userM = require('../model/userModel');
 const UserModel = userM.UserModel;    // Mongoose stuff
@@ -24,7 +25,7 @@ const logger = require('../../core/services/logger');
 
 module.exports = class user {
     constructor (usermail = "dummy@free.fr") {
-        this.Version = 'userclass:1.44, Nov 09 2019 ';
+        this.Version = 'userclass:1.45, Nov 11 2019 ';
         this.model = new(UserModel);
         this.model.email = usermail;
         this.model.name = 'Not logged';
