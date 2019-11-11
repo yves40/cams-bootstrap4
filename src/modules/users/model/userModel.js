@@ -15,14 +15,16 @@
 //    Mar 06 2019   console.log replaced by logger
 //    Mar 13 2019   BUG: Was disabling the logger console
 //    Mar 23 2019   Login / logout properties
-//    Oct 27 2019    Integrate cams-bootstrap4
-//    Oct 28 2019    Reorg
-//    Nov 03 2019    Change module declaration, export constants
-//    Nov 04 2019    Problem with declarations
-//    Nov 07 2019    Delete user by email
-//    Nov 08 2019    profilecode is now an array of strings
+//    Oct 27 2019   Integrate cams-bootstrap4
+//    Oct 28 2019   Reorg
+//    Nov 03 2019   Change module declaration, export constants
+//    Nov 04 2019   Problem with declarations
+//    Nov 07 2019   Delete user by email
+//    Nov 08 2019   profilecode is now an array of strings
+//                  Fix architectural design flaws:1
+//    Nov 09 2019   Fix architectural design flaws:2
 //----------------------------------------------------------------------------
-const Version = 'userModel:1.44, Nov 08 2019 ';
+const Version = 'userModel:1.45, Nov 09 2019 ';
 
 const objectid = require('mongodb').ObjectId;
 const mongoose = require('mongoose');
