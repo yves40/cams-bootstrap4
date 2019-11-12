@@ -17,7 +17,7 @@
 //    Nov 12 2019    Adapt to heavily rewritten user class: 2
 //----------------------------------------------------------------------------
 
-const Version = "useradmin.js:1.42 Nov 12 2019 ";
+const Version = "useradmin.js:1.43 Nov 12 2019 ";
 
 const userclass = require('../classes/userclass');
 const logger = require('../../core/services/logger');
@@ -209,18 +209,22 @@ function updateUsers(jsonContent) {
       console.log('Processing UPDATE list of ' + userlistsize + ' user(s)\n');
       let i = 0;
       for (i in jsonContent) {
-        let newuser = new userclass(jsonContent[i].email);  
+        let newuser = new userclass( jsonContent[i].email, 
+          jsonContent[i].name,
+          jsonContent[i].password,
+          jsonContent[i].description,
+        );  
         (async () => {
-          await newuser.Update(jsonContent[i]).then( (status) => {
-            console.log(status);
-            if (++userupdated === userlistsize)
-              resolve('\nProcessed ' + userlistsize + ' user(s)');
-          })
-          .catch( (status) => {
-            console.log('\t' + status);
-            reject('KO');
-          })
-        })();
+            await newuser.Update().then( (status) => {
+              console.log(status);
+              if (++userupdated === userlistsize)
+                resolve('\nProcessed ' + userlistsize + ' user(s)');
+            })
+            .catch( (status) => {
+              console.log('\t' + status);
+              reject('KO');
+            })
+          })();
       }
     })();
   });
@@ -238,10 +242,15 @@ function listUsers() {
       await newuser.listUsers().then( (allusers) => {
         console.log(allusers.length + ' user(s) stored in the DB.\n'); 
         allusers.forEach((value, index) => {
-          let email = value.email.padEnd(24, ' ');
-          let name = value.name.padEnd(40, ' ');
+          let email = value.email.padEnd(15, ' ');
+          let name = value.name.padEnd(20, ' ');
+          let password = value.password.padEnd(30, ' ');
           let description = value.description;
-          console.log('%s %s %s', email, name, description);
+          let profilecode = value.profilecode;
+          console.log('%s %s %s', email, name, password, description);
+          for(let i = 0; i < profilecode.length; ++i) { 
+            console.log('\t%s', profilecode[i]);
+          }
         });
         resolve('\n');
       })
