@@ -193,7 +193,7 @@ module.exports = class userclass {
     //-------------------------------------
     // Remove this user
     //-------------------------------------
-    removeUser(ASYNC = true) {
+    Delete(ASYNC = true) {
         return new Promise((resolve, reject) => {
             if (ASYNC) {
                 UserModel.findOneAndRemove( {email: this.model.email},
@@ -226,7 +226,7 @@ module.exports = class userclass {
     //-------------------------------------
     // Get a user object and update it
     //-------------------------------------
-    updateUser(jsonuser) {
+    Update(jsonuser) {
         return new Promise((resolve, reject) => {
             this.model.email = jsonuser.email;
             this.model.name = jsonuser.name;

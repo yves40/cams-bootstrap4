@@ -17,7 +17,7 @@
 //    Nov 12 2019    Adapt to heavily rewritten user class: 2
 //----------------------------------------------------------------------------
 
-const Version = "useradmin.js:1.40 Nov 12 2019 ";
+const Version = "useradmin.js:1.42 Nov 12 2019 ";
 
 const userclass = require('../classes/userclass');
 const logger = require('../../core/services/logger');
@@ -174,15 +174,15 @@ function removeUsers(jsonContent) {
   return new Promise((resolve, reject) => {
     const userlistsize = Object.keys(jsonContent).length;
     let userupdated = 0;
-  console.log('____________________________________________');
+    console.log('____________________________________________');
     (async () => {
       const userlistsize = Object.keys(jsonContent).length;
       console.log('Processing DEL list  of ' + userlistsize + ' user(s)\n');
       let i = 0;
       for (i in jsonContent) {
-        let newuser = new user(jsonContent[i].email);
+        let newuser = new userclass(jsonContent[i].email);
         (async () => {
-          await newuser.removeUser().then( (status) => {
+          await newuser.Delete().then( (status) => {
             console.log(status);
             if (++userupdated === userlistsize)
               resolve('\nProcessed ' + userlistsize + ' user(s)');
@@ -209,9 +209,9 @@ function updateUsers(jsonContent) {
       console.log('Processing UPDATE list of ' + userlistsize + ' user(s)\n');
       let i = 0;
       for (i in jsonContent) {
-        let newuser = new user(jsonContent[i].email);  
+        let newuser = new userclass(jsonContent[i].email);  
         (async () => {
-          await newuser.updateUser(jsonContent[i]).then( (status) => {
+          await newuser.Update(jsonContent[i]).then( (status) => {
             console.log(status);
             if (++userupdated === userlistsize)
               resolve('\nProcessed ' + userlistsize + ' user(s)');
