@@ -38,6 +38,13 @@
       "name": "useradmin -update",
       "program": "${workspaceFolder}\\src\\modules\\users\\batch\\useradmin.js",
       "args": [ "-update",  "-f" , "d:\\ALL\\LAB\\GIT\\cams-bootstrap4\\src\\modules\\users\\data\\yves.json"] 
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "useradmin -z",
+      "program": "${workspaceFolder}\\src\\modules\\users\\batch\\useradmin.js",
+      "args": [ "-z" ] 
     }
   ]
 }
