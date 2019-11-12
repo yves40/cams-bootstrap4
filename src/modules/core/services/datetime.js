@@ -43,16 +43,21 @@ function getHoursMinutesSeconds() {
 }
 
 function convertDateTime(thedate) {
-    let computedate = new Date(thedate);
-    let day = computedate.getDate();
-    let days = '';
-    if (day < 10) days = day.toString().replace(/.*(^\d{1}).*/, "0$1");
-        else days = day.toString();
-    datetime = months[computedate.getMonth()] + '-' + 
-    days + '-' 
-    + computedate.getFullYear() + ' ' 
-    + computedate.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1"); 
-    return datetime;
+    if (thedate) {
+        let computedate = new Date(thedate);
+        let day = computedate.getDate();
+        let days = '';
+        if (day < 10) days = day.toString().replace(/.*(^\d{1}).*/, "0$1");
+            else days = day.toString();
+        datetime = months[computedate.getMonth()] + '-' + 
+            days + '-' 
+            + computedate.getFullYear() + ' ' 
+            + computedate.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1"); 
+        return datetime;
+    }
+    else {
+        return "Unset"
+    }
 }
 
 function convertSecondsToHMS(seconds) {
