@@ -13,11 +13,13 @@
 //    Oct 27 2019    Integrate cams-bootstrap4
 //    Oct 28 2019    Reorg
 //    Mov 07 2019    ListUser class method changed to to ListUsers
+//    Nov 11 2019    Adapt to heavily rewritten user class: 1
+//    Nov 12 2019    Adapt to heavily rewritten user class: 2
 //----------------------------------------------------------------------------
 
-const Version = "useradmin.js:1.37 Nov 07 2019 ";
+const Version = "useradmin.js:1.40 Nov 12 2019 ";
 
-const user = require('../classes/userclass');
+const userclass = require('../classes/userclass');
 const logger = require('../../core/services/logger');
 const mongo = require("../../core/services/mongodb");
 
@@ -31,8 +33,6 @@ let validparam = false;
 //----------------------------------------------------------------------------
 function parseCommandLine() {
     let index = 0;
-    let value = undefined;
-    let nbrargs = process.argv.length - 2;
     for (index = 2; index < process.argv.length; ) {
       let keyword = process.argv[index];
       switch(keyword) {
@@ -70,7 +70,7 @@ function parseCommandLine() {
 
 
 //----------------------------------------------------------------------------
-// ussage
+// usage
 //----------------------------------------------------------------------------
 function usage() {
 
@@ -87,7 +87,6 @@ function usage() {
 // Go
 //----------------------------------------------------------------------------
 try {
-
     console.log('\n\n');
     logger.info(Version + '\n\n');
     
@@ -147,9 +146,13 @@ function createUsers(jsonContent) {
       console.log('Processing ADD list of ' + userlistsize + ' user(s)\n');
       let i = 0;
       for (i in jsonContent) {
-        let newuser = new user();  
+        let newuser = new userclass( jsonContent[i].email, 
+            jsonContent[i].name,
+            jsonContent[i].password,
+            jsonContent[i].description,
+          );  
         (async () => {
-          await newuser.createUser(jsonContent[i], false).then((status) => {
+          await newuser.Add().then((status) => {
             console.log(status);
             if (++userupdated === userlistsize)
               resolve('\nProcessed ' + userlistsize + ' user(s)');
@@ -229,8 +232,8 @@ function updateUsers(jsonContent) {
 //----------------------------------------------------------------------------
 function listUsers() {
   return new Promise((resolve, reject) => {
+    let newuser = new userclass();
     console.log('____________________________________________');
-    let newuser = new user();
     (async () => {
       await newuser.listUsers().then( (allusers) => {
         console.log(allusers.length + ' user(s) stored in the DB.\n'); 

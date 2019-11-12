@@ -29,8 +29,6 @@ const Version = 'userModel:1.46, Nov 11 2019 ';
 
 const objectid = require('mongodb').ObjectId;
 const mongoose = require('mongoose');
-const bcryptjs = require('bcryptjs');
-const validprofiles = [ "STD", "USERADMIN", "CAMADMIN", "SUPERADMIN" ];
 const logger = require('../../core/services/logger');
 
 const schema = mongoose.Schema;
@@ -44,6 +42,7 @@ const userschema = new schema(
         description: String,
         lastlogin: Date,
         lastlogout: Date,
+        created: Date,
     }
 );
 const UserModel = mongoose.model("camsusers", userschema);
@@ -89,17 +88,6 @@ function getUserByEmail(email, callback) {
     UserModel.findOne(query, callback);
 };
 
-
-//-----------------------------------------------------------------------------------
-// Password checking
-//-----------------------------------------------------------------------------------
-function comparePassword(candidatePassword, hash, callback) {
-    bcryptjs.compare(candidatePassword, hash, (err, isMatch) => {
-        if (err) throw err;
-        callback(null, isMatch);
-    });
-};
-
 //-----------------------------------------------------------------------------------
 // Delete one user with its ID
 //-----------------------------------------------------------------------------------
@@ -113,7 +101,7 @@ function deleteoneUserByID (id, callback) {
 };
 
 //-----------------------------------------------------------------------------------
-// Delete one user with its name
+// Delete one user with its email
 //-----------------------------------------------------------------------------------
 function deleteoneUserByEmail (email, callback) {
     try {
@@ -131,23 +119,8 @@ function deleteallUsers  (callback)  {
     UserModel.collection.deleteMany(callback);
 };
 
-//-----------------------------------------------------------------------------------
-// get and check user profile
-//-----------------------------------------------------------------------------------
-function getValidProfile(profcode) {
-    let profile = validprofiles.find(  (prof) => prof === profcode );
-    return profile !== undefined ? profile : validprofiles[0];
-}
 
 module.exports = { 
     UserModel,
-    getValidProfile,
-    createUser,
-    listUsers,
-    getUserByID,
-    getUserByEmail,
-    comparePassword,
-    deleteoneUserByID,
-    deleteoneUserByEmail,
-    deleteallUsers,
+    userschema,
 }

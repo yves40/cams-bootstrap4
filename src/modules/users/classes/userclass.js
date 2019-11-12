@@ -17,24 +17,34 @@
 //                  Fix architectural design flaws:1
 //    Nov 09 2019   Fix architectural design flaws:2
 //    Nov 11 2019   Fix architectural design flaws:3
+//    Nov 12 2019   Fix architectural design flaws:4
 //----------------------------------------------------------------------------
-const userM = require('../model/userModel');
-const UserModel = userM.UserModel;    // Mongoose stuff
+const UserModel = require('../model/userModel').UserModel
 const bcryptjs = require('bcryptjs');
 const logger = require('../../core/services/logger');
 
-module.exports = class user {
-    constructor (usermail = "dummy@free.fr") {
-        this.Version = 'userclass:1.45, Nov 11 2019 ';
-        this.model = new(UserModel);
-        this.model.email = usermail;
-        this.model.name = 'Not logged';
-        this.model.password = '';
-        this.model.profilecode = userM.getValidProfile("STD");
-        this.model.description = '';
-        this.model.lastlogin = null;
-        this.model.lastlogout = null;
-    };
+const validprofiles = [ "STD", "USERADMIN", "CAMADMIN", "SUPERADMIN" ];
+
+module.exports = class userclass {
+    constructor (
+            email = "dummy@free.fr",
+            name = "Unknown",
+            password = "nothingspecial",
+            description = "None",
+        ) 
+    {
+        this.Version = 'userclass:1.55, Nov 12 2019 ';
+        this.model = new UserModel({ name: name, email: email, password: hashPassword(password),
+                            description: description, lastlogin: null, lastlogout: null,
+                            created: null}) ;
+        this.email = email;
+        this.name = name;
+        this.password = hashPassword(password);
+        this.profilecode = getValidProfile("STD");
+        this.description = description;
+        this.lastlogin = null;
+        this.lastlogout = null;
+    }
 
     // Setters & getters
     getVersion() { return this.Version; }
@@ -42,7 +52,7 @@ module.exports = class user {
     getemail() {return this.model.email;}
     setname(name) { this.model.name = name; }
     getname() { return this.model.name; }
-    setpassword(password) { this.model.password =  hashPassword(password);;}
+    setpassword(password) { this.model.password =  hashPassword(password);}
     getpassword() { return this.model.password; }
     setprofilecode(profilecode) { this.model.profilecode = profilecode;  }
     getprofilecode() { return this.model.profilecode; }
@@ -80,7 +90,7 @@ module.exports = class user {
                 }
             }
         })
-}
+    }
     //-------------------------------------
     // Get a user object and save it
     // ASYNC can be true of false ( for batch job useradmin )
@@ -103,6 +113,53 @@ module.exports = class user {
                         this.model.password = hashPassword(user.password);
                         this.model.profilecode = user.profilecode;
                         this.model.description = user.description;
+                        if (ASYNC) {
+                            this.model.save(this.model, (err, inserteduser) => {
+                                logger.debug(this.Version + 'ASYNC user creation');
+                                if (err){
+                                    logger.debug(this.Version + 'Error here');
+                                    reject(err);
+                                } 
+                                else {
+                                    resolve('User ' + inserteduser.email + ' created');
+                                }
+                            });
+                        }
+                        else {  // SYNC mode, must wait before sending response
+                            (async () => {
+                                this;this.model.save(this.model, (err, inserteduser) => {
+                                    if (err){
+                                        logger.debug(this.Version + 'Error here');
+                                        reject(err);
+                                    } 
+                                    else {
+                                        resolve('User ' + inserteduser.email + ' created');
+                                    }
+                                });
+                            })();    
+                        }
+                    }
+                }
+            })
+        })
+    }
+    //-------------------------------------
+    // Get a user object and save it
+    // ASYNC can be true of false ( for batch job useradmin )
+    //  Default is ASYNC
+    //-------------------------------------
+    Add(ASYNC = true ) {
+        return new Promise( (resolve, reject) => {
+            /* 
+                Check user does not exist yet
+            */
+           UserModel.find( { email: this.email }, (err, found) => {
+                if (err) {
+                    reject(err);
+                } 
+                else {
+                    if (found.length !== 0) reject('User ' + user.email + ' already exist')
+                    else {
                         if (ASYNC) {
                             this.model.save(this.model, (err, inserteduser) => {
                                 logger.debug(this.Version + 'ASYNC user creation');
@@ -204,21 +261,33 @@ module.exports = class user {
     //-------------------------------------
     listUsers() {
         return new Promise((resolve, reject) => {
-            let querylog = UserModel.find({});
             (async () => {
-                await querylog.exec(function(err, userlist) {
-                    if (err) console.log(err);
-                    if(userlist.length === 0) {
-                        reject({});
-                    }
-                    else {
-                        resolve(userlist);
-                    }
-                });
+                await UserModel.find({}, (function(err, userlist) {
+                        if (err) { 
+                            logger.debug(err);
+                            reject({});
+                        }
+                        if(userlist.length === 0) {
+                            reject({});
+                        }
+                        else {
+                            resolve(userlist);
+                        }
+                    })
+                )
             })();
         });
-    }
+    }    //-----------------------------------------------------------------------------------
+    // Password checking
+    //-----------------------------------------------------------------------------------
+    comparePassword(candidatePassword, hash, callback) {
+        bcryptjs.compare(candidatePassword, hash, (err, isMatch) => {
+            if (err) throw err;
+            callback(null, isMatch);
+        });
+    };
 }
+
 //----------------------------------------------------------------------------
 // Private 
 // Beware, these functions don't  have access to 'this'
@@ -228,6 +297,18 @@ function hashPassword(password) {
     let hash = bcryptjs.hashSync(password, salt);
     return hash;
 }
+
+//-----------------------------------------------------------------------------------
+// get and check user profile
+//-----------------------------------------------------------------------------------
+function getValidProfile(profcode) {
+    let profile = validprofiles.find(  (prof) => prof === profcode );
+    return profile !== undefined ? profile : validprofiles[0];
+}
+
+//----------------------------------------------------------------------------
+// C O D E    R E S E R V O I R
+//----------------------------------------------------------------------------
 function save(theobject) {
     theobject.User.save();
 }
