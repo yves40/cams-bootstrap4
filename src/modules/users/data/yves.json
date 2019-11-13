@@ -2,17 +2,17 @@
 {
   "yves" : {
     "email": "yves@free.fr",
-    "name": "Yves",
+    "name": "Yves Hugues Richard",
     "password": "manager",
     "profilecode": [ "STD", "USERADMIN", "CAMADMIN", "SUPERADMIN" ],
-    "description": "Account for yves, updated with newest user class"
+    "description": "Yves description: update 7"
   },
   "y" : {
     "email": "y@free.fr",
     "name": "Yves",
     "password": "manager",
     "profilecode": [ "STD", "USERADMIN", "CAMADMIN", "SUPERADMIN" ],
-    "description": "Second Account for yves, updated with newest user class"
+    "description": "Second Account for yves description: update 7"
   }
 }
 
