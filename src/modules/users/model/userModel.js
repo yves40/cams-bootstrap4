@@ -43,6 +43,7 @@ const userschema = new schema(
         lastlogin: Date,
         lastlogout: Date,
         created: Date,
+        updated: Date,
     }
 );
 const UserModel = mongoose.model("camsusers", userschema);
