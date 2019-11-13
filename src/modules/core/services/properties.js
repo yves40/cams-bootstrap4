@@ -16,8 +16,9 @@
 //    Nov 03 2019   Axios
 //    Nov 05 2019   Shorten the mongo monitoring delay
 //                  Parameter for the timer in corestore
+//    Nov 13 2019   No trace for mongo
 //----------------------------------------------------------------------------
-const Version = 'properties:1.30, Nov 05 2019';
+const Version = 'properties:1.31, Nov 13 2019';
 
 const axios = require('axios');
 
@@ -36,7 +37,7 @@ const nodeserver =  process.env.NODESERVER || 'http://localhost:8081';
 const corsclientorigin = 'http://localhost:8080';  
 // Mongo DB params
 const MONGODELAYCHECK = 1000;
-const MONGOTRACE = true;
+const MONGOTRACE = false;
 const MONGOUP = 1;
 const MONGODOWN = 0;
 const MONGOUSER = process.env.MONGOUSER ||'yves';
