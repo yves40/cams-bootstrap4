@@ -18,137 +18,89 @@
 //    Nov 09 2019   Fix architectural design flaws:2
 //    Nov 11 2019   Fix architectural design flaws:3
 //    Nov 12 2019   Fix architectural design flaws:4
+//    Nov 13 2019   Fix architectural design flaws:5
 //----------------------------------------------------------------------------
 const UserModel = require('../model/userModel').UserModel
 const bcryptjs = require('bcryptjs');
 const logger = require('../../core/services/logger');
+const datetime = require('../../core/services/datetime');
 
 const validprofiles = [ "STD", "USERADMIN", "CAMADMIN", "SUPERADMIN" ];
 
 module.exports = class userclass {
+
     constructor (
             email = "dummy@free.fr",
             name = "Unknown",
             password = "nothingspecial",
+            profilecode = undefined,
             description = "None",
         ) 
     {
-        this.Version = 'userclass:1.55, Nov 12 2019 ';
-        this.model = new UserModel({ name: name, email: email, password: hashPassword(password),
-                            description: description, lastlogin: null, lastlogout: null,
-                            created: null}) ;
-        this.email = email;
-        this.name = name;
-        this.password = hashPassword(password);
-        this.profilecode = getValidProfile("STD");
-        this.description = description;
-        this.lastlogin = null;
-        this.lastlogout = null;
+        this.Version = 'userclass:1.74, Nov 13 2019 ';
+        this.model = new UserModel({ 
+                            name: name, 
+                            email: email, 
+                            password: hashPassword(password),
+                            profilecode: profilecode === undefined ? getValidProfile("STD"): profilecode,
+                            description: description, 
+                            lastlogin: null, 
+                            lastlogout: null,
+                            created: null,
+                            updated: null,
+                        }) ;
     }
 
-    // Setters & getters
+    // getters
     getVersion() { return this.Version; }
-    setemail(email) { this.model.email = email; }
     getemail() {return this.model.email;}
-    setname(name) { this.model.name = name; }
     getname() { return this.model.name; }
-    setpassword(password) { this.model.password =  hashPassword(password);}
     getpassword() { return this.model.password; }
-    setprofilecode(profilecode) { this.model.profilecode = profilecode;  }
     getprofilecode() { return this.model.profilecode; }
+    getdescription() { return this.model.description; }
+    //------------------------------------------------------
+    // Read user info from Mongo, based on mail
+    // If no email transmitted, take the one from the object
+    // Returns a promise
+    //------------------------------------------------------
+    get(email = this.model.email) { 
+        return new Promise((resolve, reject) => { 
+            UserModel.findOne( { email: email }, (err, found) => { 
+                if(err) reject (err);
+                if(found) {
+                    const usermetrics =  {
+                        name: found.name, 
+                        email: found.email, 
+                        password: found.password,
+                        profilecode: Array.toString(found.profilecode),
+                        description: found.description, 
+                        lastlogin: datetime.convertDateTime(found.lastlogin) , 
+                        lastlogout: datetime.convertDateTime(found.lastlogout),
+                        created: datetime.convertDateTime(found.created),
+                        updated: datetime.convertDateTime(found.updated),
+                    }
+                    resolve(usermetrics);
+                }
+                else {
+                    reject('User not found');
+                }
+            });
+        })
+    }
+    // setters
+    setname(name) { this.model.name = name; }
+    setemail(email) { this.model.email = email; }
+    setpassword(password) { this.model.password =  hashPassword(password);}
+    setprofilecode(profilecode) { this.model.profilecode = profilecode;  }
     setdescription(description) { this.model.description = description;  }
-    getdescription() { return this.model.description; }   
 
     //-------------------------------------
-    // Get a user object and save it
+    // Add a user
     // ASYNC can be true of false ( for batch job useradmin )
-    //  Default is ASYNC
+    // Default is ASYNC
+    // Returns a promise
     //-------------------------------------
-    S_createUser(user) {
-        UserModel.find( { email: user.email }, (err, found) => {
-            if (err) {
-                console.log(err);
-                throw new Error(err);
-            } 
-            else {
-                if (found.length !== 0) throw new Error('User ' + user.email + ' already exist')
-                else {
-                    this.model.email = user.email;
-                    this.model.name = user.name;
-                    this.model.password = hashPassword(user.password);
-                    this.model.profilecode = user.profilecode;
-                    this.model.description = user.description;
-                    this.model.save(this.model, (err, inserteduser) => {
-                        if (err){
-                            throw new Error(err);
-                        } 
-                        else {
-                            logger.debug('User ' + inserteduser.email + ' created');
-                            return 'OK';
-                        }
-                    });
-                }
-            }
-        })
-    }
-    //-------------------------------------
-    // Get a user object and save it
-    // ASYNC can be true of false ( for batch job useradmin )
-    //  Default is ASYNC
-    //-------------------------------------
-    createUser(user, ASYNC = true ) {
-        return new Promise( (resolve, reject) => {
-            /* 
-                Check user does not exist yet
-            */
-           UserModel.find( { email: user.email }, (err, found) => {
-                if (err) {
-                    reject(err);
-                } 
-                else {
-                    if (found.length !== 0) reject('User ' + user.email + ' already exist')
-                    else {
-                        this.model.email = user.email;
-                        this.model.name = user.name;
-                        this.model.password = hashPassword(user.password);
-                        this.model.profilecode = user.profilecode;
-                        this.model.description = user.description;
-                        if (ASYNC) {
-                            this.model.save(this.model, (err, inserteduser) => {
-                                logger.debug(this.Version + 'ASYNC user creation');
-                                if (err){
-                                    logger.debug(this.Version + 'Error here');
-                                    reject(err);
-                                } 
-                                else {
-                                    resolve('User ' + inserteduser.email + ' created');
-                                }
-                            });
-                        }
-                        else {  // SYNC mode, must wait before sending response
-                            (async () => {
-                                this;this.model.save(this.model, (err, inserteduser) => {
-                                    if (err){
-                                        logger.debug(this.Version + 'Error here');
-                                        reject(err);
-                                    } 
-                                    else {
-                                        resolve('User ' + inserteduser.email + ' created');
-                                    }
-                                });
-                            })();    
-                        }
-                    }
-                }
-            })
-        })
-    }
-    //-------------------------------------
-    // Get a user object and save it
-    // ASYNC can be true of false ( for batch job useradmin )
-    //  Default is ASYNC
-    //-------------------------------------
-    Add(ASYNC = true ) {
+    Add() {
         return new Promise( (resolve, reject) => {
             /* 
                 Check user does not exist yet
@@ -157,41 +109,23 @@ module.exports = class userclass {
                 if (err) {
                     reject(err);
                 } 
-                else {
-                    if (found.length !== 0) reject('User ' + user.email + ' already exist')
+                if (found.length !== 0) reject('User ' + user.email + ' already exist')
+                this.model.created = Date.now();
+                this.model.save(this.model, (err, inserteduser) => {
+                    if (err){
+                        logger.debug(this.Version + 'Error here');
+                        reject(err);
+                    } 
                     else {
-                        if (ASYNC) {
-                            this.model.save(this.model, (err, inserteduser) => {
-                                logger.debug(this.Version + 'ASYNC user creation');
-                                if (err){
-                                    logger.debug(this.Version + 'Error here');
-                                    reject(err);
-                                } 
-                                else {
-                                    resolve('User ' + inserteduser.email + ' created');
-                                }
-                            });
-                        }
-                        else {  // SYNC mode, must wait before sending response
-                            (async () => {
-                                this;this.model.save(this.model, (err, inserteduser) => {
-                                    if (err){
-                                        logger.debug(this.Version + 'Error here');
-                                        reject(err);
-                                    } 
-                                    else {
-                                        resolve('User ' + inserteduser.email + ' created');
-                                    }
-                                });
-                            })();    
-                        }
+                        resolve('User ' + inserteduser.email + ' created');
                     }
-                }
+                });
             })
         })
     }
     //-------------------------------------
     // Remove this user
+    // Returns a promise
     //-------------------------------------
     Delete(ASYNC = true) {
         return new Promise((resolve, reject) => {
@@ -223,23 +157,20 @@ module.exports = class userclass {
             }
         });
     }
-    //-------------------------------------
-    // Get a user object and update it
-    //-------------------------------------
-    Update(jsonuser) {
+
+    //------------------------------------------------------
+    // Get a user object and update it, except the password
+    // Returns a promise
+    //------------------------------------------------------
+    Update() {
         return new Promise((resolve, reject) => {
-            this.model.email = jsonuser.email;
-            this.model.name = jsonuser.name;
-            this.model.password = hashPassword(jsonuser.password);
-            this.model.profilecode = jsonuser.profilecode;
-            this.model.description = jsonuser.description;
             UserModel.findOneAndUpdate( {email: this.model.email}, 
                 {
                     email: this.model.email,
                     name: this.model.name,
-                    password: this.model.password,
                     profilecode: this.model.profilecode,
                     description: this.model.description,
+                    updated: Date.now(),
                 },
                 { upsert: false, new: true }, // Do not update a non existing user
                 (err, userupdated) => {
@@ -257,18 +188,20 @@ module.exports = class userclass {
         })
     }
     //-------------------------------------
+    // MULTI USER METHODES
+    //-------------------------------------
     // List user(s)
+    // Returns a promise
     //-------------------------------------
     listUsers() {
         return new Promise((resolve, reject) => {
             (async () => {
                 await UserModel.find({}, (function(err, userlist) {
                         if (err) { 
-                            logger.debug(err);
-                            reject({});
+                            reject(err);
                         }
                         if(userlist.length === 0) {
-                            reject({});
+                            reject("No user in the DB");
                         }
                         else {
                             resolve(userlist);
@@ -277,7 +210,19 @@ module.exports = class userclass {
                 )
             })();
         });
-    }    //-----------------------------------------------------------------------------------
+    }
+    //-----------------------------------------------------------------------------------
+    // Delete all users
+    // Returns a promise
+    //-----------------------------------------------------------------------------------
+    DeleteAll()  {
+        return new Promise((resolve, reject) => {
+            UserModel.deleteMany({})
+                .then(result => resolve(`Deleted ${result.deletedCount} item(s).`))
+                .catch(err => reject(`Delete failed with error: ${err}`))            
+        })
+    }
+    //-----------------------------------------------------------------------------------
     // Password checking
     //-----------------------------------------------------------------------------------
     comparePassword(candidatePassword, hash, callback) {
@@ -298,6 +243,7 @@ function hashPassword(password) {
     return hash;
 }
 
+
 //-----------------------------------------------------------------------------------
 // get and check user profile
 //-----------------------------------------------------------------------------------
@@ -309,9 +255,95 @@ function getValidProfile(profcode) {
 //----------------------------------------------------------------------------
 // C O D E    R E S E R V O I R
 //----------------------------------------------------------------------------
+//-------------------------------------
+// Get a user object and save it
+// ASYNC can be true of false ( for batch job useradmin )
+//  Default is ASYNC
+//-------------------------------------
+function S_createUser(user) {
+    UserModel.find( { email: user.email }, (err, found) => {
+        if (err) {
+            console.log(err);
+            throw new Error(err);
+        } 
+        else {
+            if (found.length !== 0) throw new Error('User ' + user.email + ' already exist')
+            else {
+                this.model.email = user.email;
+                this.model.name = user.name;
+                this.model.password = hashPassword(user.password);
+                this.model.profilecode = user.profilecode;
+                this.model.description = user.description;
+                this.model.save(this.model, (err, inserteduser) => {
+                    if (err){
+                        throw new Error(err);
+                    } 
+                    else {
+                        logger.debug('User ' + inserteduser.email + ' created');
+                        return 'OK';
+                    }
+                });
+            }
+        }
+    })
+}
+//-------------------------------------
+// Get a user object and save it
+// ASYNC can be true of false ( for batch job useradmin )
+//  Default is ASYNC
+//-------------------------------------
+function createUser(user, ASYNC = true ) {
+    return new Promise( (resolve, reject) => {
+        /* 
+            Check user does not exist yet
+        */
+        UserModel.find( { email: user.email }, (err, found) => {
+            if (err) {
+                reject(err);
+            } 
+            else {
+                if (found.length !== 0) reject('User ' + user.email + ' already exist')
+                else {
+                    this.model.email = user.email;
+                    this.model.name = user.name;
+                    this.model.password = hashPassword(user.password);
+                    this.model.profilecode = user.profilecode;
+                    this.model.description = user.description;
+                    if (ASYNC) {
+                        this.model.save(this.model, (err, inserteduser) => {
+                            logger.debug(this.Version + 'ASYNC user creation');
+                            if (err){
+                                logger.debug(this.Version + 'Error here');
+                                reject(err);
+                            } 
+                            else {
+                                resolve('User ' + inserteduser.email + ' created');
+                            }
+                        });
+                    }
+                    else {  // SYNC mode, must wait before sending response
+                        (async () => {
+                            this;this.model.save(this.model, (err, inserteduser) => {
+                                if (err){
+                                    logger.debug(this.Version + 'Error here');
+                                    reject(err);
+                                } 
+                                else {
+                                    resolve('User ' + inserteduser.email + ' created');
+                                }
+                            });
+                        })();    
+                    }
+                }
+            }
+        })
+    })
+}
+
 function save(theobject) {
     theobject.User.save();
 }
+
 function update(theobject) {
     User.findOneAndUpdate( {email: theobject.User.email}, 
             {

@@ -15,9 +15,10 @@
 //    Mov 07 2019    ListUser class method changed to to ListUsers
 //    Nov 11 2019    Adapt to heavily rewritten user class: 1
 //    Nov 12 2019    Adapt to heavily rewritten user class: 2
+//    Nov 13 2019    Adapt to heavily rewritten user class: 3
 //----------------------------------------------------------------------------
 
-const Version = "useradmin.js:1.43 Nov 12 2019 ";
+const Version = "useradmin.js:1.56 Nov 13 2019 ";
 
 const userclass = require('../classes/userclass');
 const logger = require('../../core/services/logger');
@@ -56,6 +57,10 @@ function parseCommandLine() {
                     thefile = process.argv[++index];
                     validparam = true;
                     break;
+        case '-z': 
+                    command = 'ZAP';
+                    validparam = true;
+                    break;
         default: 
                     validparam = false;
                     break;
@@ -65,7 +70,7 @@ function parseCommandLine() {
       value = keyword = undefined; // Next loop
     }
     if (!command) {throw new Error('No command specified ( add | delete | update ) ');}
-    if(thefile === undefined && command !== 'LIS') {throw new Error('No json file input')}
+    if(thefile === undefined && command !== 'LIS' && command !== 'ZAP') {throw new Error('No json file input')}
 };
 
 
@@ -75,10 +80,11 @@ function parseCommandLine() {
 function usage() {
 
     console.log('\n\n');
-    console.log('Usage : node useradmin -add | -delete | -update  -f jsonuserfile \n');
+    console.log('Usage : node useradmin -add | -delete | -update -f jsonuserfile \n');
     console.log('Usage : node useradmin -list  \n');
+    console.log('Usage : node useradmin -z  \n');
     console.log('[]');
-    console.log('[] Samples');
+    console.log('[] Beware, -z removes all users !!!!!!!!!!!!!!!!!!!');
     console.log('[]');
     console.log('\n\n');
 }
@@ -95,7 +101,7 @@ try {
     mongo.getMongoDBConnection();
     // Get the json file
     let jsonContent = undefined;
-    if (command !== 'LIS') {
+    if (command !== 'LIS' && command !== 'ZAP') {
       let jsondata = fs.readFileSync(thefile);
       jsonContent = JSON.parse(jsondata);
     }
@@ -113,6 +119,9 @@ try {
       case 'LIS':   
         commandFunction = listUsers;
         break;
+      case 'ZAP':   
+        commandFunction = removeAllUsers;
+        break;
     }
     
     // Syntax already checked : If coming here, we have a valid command
@@ -123,7 +132,7 @@ try {
         process.exit(0);
       })
       .catch( (status) => {
-        console.log('\nHmmmm, sorry it seems something went wrong');
+        console.log('\nExit with status : ' + status);
         process.exit(0);
       })
     })();
@@ -139,23 +148,25 @@ catch(Error) {
 //----------------------------------------------------------------------------
 function createUsers(jsonContent) {
   return new Promise((resolve, reject) => {
-    (async () => {
       const userlistsize = Object.keys(jsonContent).length;
       let userupdated = 0;
       console.log('____________________________________________');
       console.log('Processing ADD list of ' + userlistsize + ' user(s)\n');
       let i = 0;
       for (i in jsonContent) {
-        let newuser = new userclass( jsonContent[i].email, 
+        let newuser = new userclass( 
+            jsonContent[i].email, 
             jsonContent[i].name,
             jsonContent[i].password,
+            jsonContent[i].profilecode,
             jsonContent[i].description,
           );  
         (async () => {
           await newuser.Add().then((status) => {
             console.log(status);
-            if (++userupdated === userlistsize)
+            if (++userupdated === userlistsize) {
               resolve('\nProcessed ' + userlistsize + ' user(s)');
+            }
           })
           .catch( (status) => {
             console.log('\t' + status);
@@ -163,8 +174,95 @@ function createUsers(jsonContent) {
           })
         })();
       }
-    })();
+      /*
+      // Check user content from the DB after insert
+      for (i in jsonContent) {
+        let newuser = new userclass( 
+          jsonContent[i].email, 
+        );  
+        (async () => {
+          await newuser.get().then( (theuser) => {
+            if(userupdated === 0 ) {
+              console.log('\n\n____________________________________________');
+              console.log('Check inserted users from the DB');
+              console.log('____________________________________________');
+            }
+            console.log(theuser.email);
+            console.log('====================');
+            console.log('\t', theuser.name);
+            console.log('\t', theuser.password);
+            console.log('\t', theuser.description);
+            console.log('\tCreated: ', theuser.created);
+            console.log('\tUpdated:', theuser.updated);
+            if (++userupdated === userlistsize) {
+              resolve('\nProcessed ' + userlistsize + ' user(s)');
+            }
+          })
+          .catch( (status) => {
+            reject(status);
+          })
+        })()
+      }
+      */
   });
+}
+
+//----------------------------------------------------------------------------
+// Update users
+//----------------------------------------------------------------------------
+function updateUsers(jsonContent) {
+  return new Promise((resolve, reject) => {
+    const userlistsize = Object.keys(jsonContent).length;
+    let userupdated = 0;
+    console.log('____________________________________________');
+    console.log('Processing UPDATE list of ' + userlistsize + ' user(s)');
+    console.log('____________________________________________');
+    for (i in jsonContent) {
+      let newuser = new userclass( 
+        jsonContent[i].email, 
+        jsonContent[i].name,
+        jsonContent[i].password,
+        jsonContent[i].profilecode,
+        jsonContent[i].description,
+      );  
+      (async () => {
+          await newuser.Update().then( (status) => {
+            console.log(status);
+          })
+          .catch( (status) => {
+            reject('KO' + status);
+          })
+      })();
+    }
+    // Check user content from the DB after update
+    for (i in jsonContent) {
+      let newuser = new userclass( 
+        jsonContent[i].email, 
+      );  
+      (async () => {
+        await newuser.get().then( (theuser) => {
+          if(userupdated === 0 ) {
+            console.log('\n\n____________________________________________');
+            console.log('Check updated users from the DB');
+            console.log('____________________________________________');
+          }
+          console.log(theuser.email);
+          console.log('====================');
+          console.log('\t', theuser.name);
+          console.log('\t', theuser.password);
+          console.log('\t', theuser.description);
+          console.log('\tCreated: ', theuser.created);
+          console.log('\tUpdated:', theuser.updated);
+          if (++userupdated === userlistsize) {
+            resolve('\nProcessed ' + userlistsize + ' user(s)');
+          }
+        })
+        .catch( (status) => {
+            reject(status);
+        })
+      })()
+    }
+  })
 }
 
 //----------------------------------------------------------------------------
@@ -198,39 +296,6 @@ function removeUsers(jsonContent) {
 }
 
 //----------------------------------------------------------------------------
-// Update users
-//----------------------------------------------------------------------------
-function updateUsers(jsonContent) {
-  return new Promise((resolve, reject) => {
-    (async () => {
-      const userlistsize = Object.keys(jsonContent).length;
-      let userupdated = 0;
-      console.log('____________________________________________');
-      console.log('Processing UPDATE list of ' + userlistsize + ' user(s)\n');
-      let i = 0;
-      for (i in jsonContent) {
-        let newuser = new userclass( jsonContent[i].email, 
-          jsonContent[i].name,
-          jsonContent[i].password,
-          jsonContent[i].description,
-        );  
-        (async () => {
-            await newuser.Update().then( (status) => {
-              console.log(status);
-              if (++userupdated === userlistsize)
-                resolve('\nProcessed ' + userlistsize + ' user(s)');
-            })
-            .catch( (status) => {
-              console.log('\t' + status);
-              reject('KO');
-            })
-          })();
-      }
-    })();
-  });
-}
-
-//----------------------------------------------------------------------------
 // List users
 // Quick and dirty implementation : Will not be cool if 1000 users
 //----------------------------------------------------------------------------
@@ -253,6 +318,25 @@ function listUsers() {
           }
         });
         resolve('\n');
+      })
+      .catch( (status) => {
+        console.log('\t' + status);
+        reject('KO');
+      })
+    })();
+  });
+}
+//----------------------------------------------------------------------------
+// Delete All users !!!!
+//----------------------------------------------------------------------------
+function removeAllUsers() {
+  return new Promise((resolve, reject) => {
+    console.log('____________________________________________');
+    (async () => {
+      console.log('Deleting all users !!!!!!!!!!!!!!!!!!!\n');
+      let newuser = new userclass();
+      await newuser.DeleteAll().then( (status) => {
+          resolve(status);
       })
       .catch( (status) => {
         console.log('\t' + status);
