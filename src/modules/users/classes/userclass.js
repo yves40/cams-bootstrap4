@@ -19,6 +19,7 @@
 //    Nov 11 2019   Fix architectural design flaws:3
 //    Nov 12 2019   Fix architectural design flaws:4
 //    Nov 13 2019   Fix architectural design flaws:5
+//    Nov 15 2019   Add methd(s)
 //----------------------------------------------------------------------------
 const UserModel = require('../model/userModel').UserModel
 const bcryptjs = require('bcryptjs');
@@ -83,6 +84,22 @@ module.exports = class userclass {
                 }
                 else {
                     reject('User not found');
+                }
+            });
+        })
+    }
+    //------------------------------------------------------
+    // Check a user existence
+    //------------------------------------------------------
+    Exists(email = this.model.email) { 
+        return new Promise((resolve, reject) => { 
+            UserModel.findOne( { email: email }, (err, found) => { 
+                if(err) reject (err);
+                if(found) {
+                    resolve(true);
+                }
+                else {
+                    reject(false);
                 }
             });
         })

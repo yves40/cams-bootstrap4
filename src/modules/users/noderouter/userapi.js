@@ -57,11 +57,12 @@
 //                 Security modules reorg
 //    Nov 07 2019  Put the register service back into camms-bootstrap4
 //    Nov 08 2019  Remove an API
+//    Nov 15 2019  Adapt to the userclass modifications
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.14, Nov 08 2019 ';
+const Version = 'userapi:3.16, Nov 15 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -126,46 +127,42 @@ router.post('/users/logout', cors(corsutility.getCORS()), passport.authenticate(
 //-----------------------------------------------------------------------------------
 router.post('/users/register', cors(corsutility.getCORS()), (req, res) => {
 
-    usermodel.getUserByEmail(req.body.email, (err, loggeduser) => {
-        if(err) { return done(err); }
-        if ( !loggeduser ) { 
-            const name = req.body.name;
-            const email = req.body.email;
-            const password = req.body.password;
-            const description = req.body.userdescription;
-            let newuser = new userclass();
-            try {
-                newuser.S_createUser(
-                    {
-                        name, 
-                        email, 
-                        password, 
-                        profilecode: usermodel.getValidProfile("STD"), 
-                        description
-                    }
-                    );
-                res.send({
-                    user: {name, email, password, profilecode: 0, description}, 
-                    message: 'User ' + email + ' registered',
-                    status: 'OK',
-                });
-            }
-            catch(error) {
-                logger.debug(Version + 'Oh my god !!');
-                res.status(422).json({
-                    message: 'Something went wrong, try again later',
-                });
-            }
-        }
-        else {
-            logger.debug(Version + 'User ' + req.body.email + ' already registered');
+    (async () => {
+        let newuser = new userclass(
+            req.body.email, 
+            req.body.name,
+            req.body.password,
+            ["STD"],
+            req.body.description
+        );
+        await newuser.get("yves@free.fr").then( (theuser) => {
+            console.log(theuser.name);
+        })
+        await newuser.Exists().then( () => {
             res.send({
                 user: null, 
                 message: 'User ' + req.body.email + ' already registered',
                 status: 'KO',
             });
-        }
-    });
+        })
+        .catch( () => {
+            (async () => {
+                await newuser.Add().then(
+                    res.send({
+                        user: {name, email, password, profilecode: 0, description}, 
+                        message: 'User ' + email + ' registered',
+                        status: 'OK',
+                    })
+                )
+                .catch(
+                    res.status(422).json({
+                        message: 'Something went wrong, try again later',
+                    })
+                )
+            })();
+        })
+    })();
+
 });
 //-----------------------------------------------------------------------------------
 // Remove One user by ID
