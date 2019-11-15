@@ -16,13 +16,15 @@
 //    Nov 11 2019    Adapt to heavily rewritten user class: 1
 //    Nov 12 2019    Adapt to heavily rewritten user class: 2
 //    Nov 13 2019    Adapt to heavily rewritten user class: 3
+//    Nov 15 2019    Sync vs async calls
 //----------------------------------------------------------------------------
 
-const Version = "useradmin.js:1.56 Nov 13 2019 ";
+const Version = "useradmin.js:1.58 Nov 15 2019 ";
 
 const userclass = require('../classes/userclass');
 const logger = require('../../core/services/logger');
 const mongo = require("../../core/services/mongodb");
+const datetime = require("../../core/services/datetime");
 
 var fs = require("fs");
 
@@ -174,36 +176,6 @@ function createUsers(jsonContent) {
           })
         })();
       }
-      /*
-      // Check user content from the DB after insert
-      for (i in jsonContent) {
-        let newuser = new userclass( 
-          jsonContent[i].email, 
-        );  
-        (async () => {
-          await newuser.get().then( (theuser) => {
-            if(userupdated === 0 ) {
-              console.log('\n\n____________________________________________');
-              console.log('Check inserted users from the DB');
-              console.log('____________________________________________');
-            }
-            console.log(theuser.email);
-            console.log('====================');
-            console.log('\t', theuser.name);
-            console.log('\t', theuser.password);
-            console.log('\t', theuser.description);
-            console.log('\tCreated: ', theuser.created);
-            console.log('\tUpdated:', theuser.updated);
-            if (++userupdated === userlistsize) {
-              resolve('\nProcessed ' + userlistsize + ' user(s)');
-            }
-          })
-          .catch( (status) => {
-            reject(status);
-          })
-        })()
-      }
-      */
   });
 }
 
@@ -251,8 +223,8 @@ function updateUsers(jsonContent) {
           console.log('\t', theuser.name);
           console.log('\t', theuser.password);
           console.log('\t', theuser.description);
-          console.log('\tCreated: ', theuser.created);
-          console.log('\tUpdated:', theuser.updated);
+          console.log('\t Created: ', datetime.convertDateTime(theuser.created));
+          console.log('\t Updated:', datetime.convertDateTime(theuser.updated));
           if (++userupdated === userlistsize) {
             resolve('\nProcessed ' + userlistsize + ' user(s)');
           }
@@ -312,10 +284,17 @@ function listUsers() {
           let password = value.password.padEnd(30, ' ');
           let description = value.description;
           let profilecode = value.profilecode;
-          console.log('%s %s %s', email, name, password, description);
+          console.log(value.email);
+          console.log('====================');
+          console.log('\t', value.name);
+          console.log('\t', value.password);
+          console.log('\t', value.description);
+          console.log('\t Created: ', datetime.convertDateTime(value.created));
+          console.log('\t Updated:', datetime.convertDateTime(value.updated));
           for(let i = 0; i < profilecode.length; ++i) { 
-            console.log('\t%s', profilecode[i]);
+            console.log('\t\t%s', profilecode[i]);
           }
+          console.log('\n');
         });
         resolve('\n');
       })
