@@ -1,0 +1,7 @@
+http://localhost:8081/users/login
+content-type: application/json
+
+{
+	"email": "bossuk@free.fr",
+	"password": "manager"
+}
