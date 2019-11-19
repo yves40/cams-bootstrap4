@@ -20,13 +20,17 @@
 //    Nov 12 2019   Fix architectural design flaws:4
 //    Nov 13 2019   Fix architectural design flaws:5
 //    Nov 15 2019   Add method(s)
+//    Nov 19 2019   New mongoose usage
 //----------------------------------------------------------------------------
 const UserModel = require('../model/userModel').UserModel
 const bcryptjs = require('bcryptjs');
 const logger = require('../../core/services/logger');
 const datetime = require('../../core/services/datetime');
+const mongo = require ('../../core/services/mongodb');
 
 const validprofiles = [ "STD", "USERADMIN", "CAMADMIN", "SUPERADMIN" ];
+
+mongo.getMongoDBConnection();
 
 module.exports = class userclass {
 
@@ -38,7 +42,7 @@ module.exports = class userclass {
             description = "None",
         ) 
     {
-        this.Version = 'userclass:1.74, Nov 13 2019 ';
+        this.Version = 'userclass:1.76, Nov 19 2019 ';
         this.model = new UserModel({ 
                             name: name, 
                             email: email, 
@@ -86,23 +90,22 @@ module.exports = class userclass {
                     reject('User not found');
                 }
             });
-        })
+        })    
     }
     //------------------------------------------------------
     // Check a user existence
     //------------------------------------------------------
-    Exists(email = this.model.email) { 
-        return new Promise((resolve, reject) => { 
+    exists(email = this.model.email) { 
+        return new Promise( (resolve, reject) => { 
             UserModel.findOne( { email: email }, (err, found) => { 
-                console.log("Check user existence : result :" + found)
                 if(err) reject (err);
                 if(found) {
-                    resolve(true);
+                    resolve({ status: true, message: 'The user is  found : ' + found.name});
                 }
                 else {
-                    reject(false);
+                    resolve({status: false, message: 'The user is not found'});
                 }
-            });
+            });    
         })
     }
     // setters

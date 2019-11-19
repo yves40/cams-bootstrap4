@@ -58,11 +58,12 @@
 //    Nov 07 2019  Put the register service back into camms-bootstrap4
 //    Nov 08 2019  Remove an API
 //    Nov 15 2019  Adapt to the userclass modifications
+//    Nov 19 2019  Adapt to new userclass
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.16, Nov 15 2019 ';
+const Version = 'userapi:3.17, Nov 19 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -125,9 +126,13 @@ router.post('/users/logout', cors(corsutility.getCORS()), passport.authenticate(
 //-----------------------------------------------------------------------------------
 // Register user
 //-----------------------------------------------------------------------------------
-router.post('/users/register', cors(corsutility.getCORS()), (req, res) => {
+const asyncMiddleware = fn =>
+  (req, res, next) => {
+    Promise.resolve(fn(req, res, next))
+      .catch(next);
+  };
 
-    (async () => {
+router.post('/users/register', cors(corsutility.getCORS()), asyncMiddleware(async (req, res, next) => {
         let newuser = new userclass(
             req.body.email, 
             req.body.name,
@@ -135,32 +140,9 @@ router.post('/users/register', cors(corsutility.getCORS()), (req, res) => {
             ["STD"],
             req.body.description
         );
-        await newuser.Exists().then( () => {
-            res.send({
-                user: null, 
-                message: 'User ' + req.body.email + ' already registered',
-                status: 'KO',
-            });
-        })
-        .catch( () => {
-            (async () => {
-                await newuser.Add().then(
-                    res.send({
-                        user: {name, email, password, profilecode: 0, description}, 
-                        message: 'User ' + email + ' registered',
-                        status: 'OK',
-                    })
-                )
-                .catch(
-                    res.status(422).json({
-                        message: 'Something went wrong, try again later',
-                    })
-                )
-            })();
-        })
-    })();
-
-});
+        let userexists = await newuser.exists();
+        res.json(userexists)
+}));
 //-----------------------------------------------------------------------------------
 // Remove One user by ID
 //-----------------------------------------------------------------------------------
