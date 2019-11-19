@@ -17,9 +17,10 @@
 //    Nov 12 2019    Adapt to heavily rewritten user class: 2
 //    Nov 13 2019    Adapt to heavily rewritten user class: 3
 //    Nov 15 2019    Sync vs async calls
+//    Nov 19 2019    No more use of async calls
 //----------------------------------------------------------------------------
 
-const Version = "useradmin.js:1.58 Nov 15 2019 ";
+const Version = "useradmin.js:1.60 Nov 19 2019 ";
 
 const userclass = require('../classes/userclass');
 const logger = require('../../core/services/logger');
@@ -163,8 +164,7 @@ function createUsers(jsonContent) {
             jsonContent[i].profilecode,
             jsonContent[i].description,
           );  
-        (async () => {
-          await newuser.Add().then((status) => {
+          newuser.Add().then((status) => {
             console.log(status);
             if (++userupdated === userlistsize) {
               resolve('\nProcessed ' + userlistsize + ' user(s)');
@@ -174,7 +174,6 @@ function createUsers(jsonContent) {
             console.log('\t' + status);
             reject('KO');
           })
-        })();
       }
   });
 }
@@ -197,42 +196,38 @@ function updateUsers(jsonContent) {
         jsonContent[i].profilecode,
         jsonContent[i].description,
       );  
-      (async () => {
-          await newuser.Update().then( (status) => {
-            console.log(status);
-          })
-          .catch( (status) => {
-            reject('KO' + status);
-          })
-      })();
+      newuser.Update().then( (status) => {
+        console.log(status);
+      })
+      .catch( (status) => {
+        reject('KO' + status);
+      })
     }
     // Check user content from the DB after update
     for (i in jsonContent) {
       let newuser = new userclass( 
         jsonContent[i].email, 
       );  
-      (async () => {
-        await newuser.get().then( (theuser) => {
-          if(userupdated === 0 ) {
-            console.log('\n\n____________________________________________');
-            console.log('Check updated users from the DB');
-            console.log('____________________________________________');
-          }
-          console.log(theuser.email);
-          console.log('====================');
-          console.log('\t', theuser.name);
-          console.log('\t', theuser.password);
-          console.log('\t', theuser.description);
-          console.log('\t Created: ', datetime.convertDateTime(theuser.created));
-          console.log('\t Updated:', datetime.convertDateTime(theuser.updated));
-          if (++userupdated === userlistsize) {
-            resolve('\nProcessed ' + userlistsize + ' user(s)');
-          }
-        })
-        .catch( (status) => {
-            reject(status);
-        })
-      })()
+      newuser.get().then( (theuser) => {
+        if(userupdated === 0 ) {
+          console.log('\n\n____________________________________________');
+          console.log('Check updated users from the DB');
+          console.log('____________________________________________');
+        }
+        console.log(theuser.email);
+        console.log('====================');
+        console.log('\t', theuser.name);
+        console.log('\t', theuser.password);
+        console.log('\t', theuser.description);
+        console.log('\t Created: ', datetime.convertDateTime(theuser.created));
+        console.log('\t Updated:', datetime.convertDateTime(theuser.updated));
+        if (++userupdated === userlistsize) {
+          resolve('\nProcessed ' + userlistsize + ' user(s)');
+        }
+      })
+      .catch( (status) => {
+          reject(status);
+      })
     }
   })
 }
@@ -245,25 +240,20 @@ function removeUsers(jsonContent) {
     const userlistsize = Object.keys(jsonContent).length;
     let userupdated = 0;
     console.log('____________________________________________');
-    (async () => {
-      const userlistsize = Object.keys(jsonContent).length;
-      console.log('Processing DEL list  of ' + userlistsize + ' user(s)\n');
-      let i = 0;
-      for (i in jsonContent) {
-        let newuser = new userclass(jsonContent[i].email);
-        (async () => {
-          await newuser.Delete().then( (status) => {
-            console.log(status);
-            if (++userupdated === userlistsize)
-              resolve('\nProcessed ' + userlistsize + ' user(s)');
-          })
-          .catch( (status) => {
-            console.log('\t' + status);
-            reject('KO');
-          })
-        })();
-      }
-    })();
+    console.log('Processing DEL list  of ' + userlistsize + ' user(s)\n');
+    let i = 0;
+    for (i in jsonContent) {
+      let newuser = new userclass(jsonContent[i].email);
+      newuser.Delete().then( (status) => {
+        console.log(status);
+        if (++userupdated === userlistsize)
+          resolve('\nProcessed ' + userlistsize + ' user(s)');
+      })
+      .catch( (status) => {
+        console.log('\t' + status);
+        reject('KO');
+      })
+    }
   });
 }
 
@@ -275,34 +265,32 @@ function listUsers() {
   return new Promise((resolve, reject) => {
     let newuser = new userclass();
     console.log('____________________________________________');
-    (async () => {
-      await newuser.listUsers().then( (allusers) => {
-        console.log(allusers.length + ' user(s) stored in the DB.\n'); 
-        allusers.forEach((value, index) => {
-          let email = value.email.padEnd(15, ' ');
-          let name = value.name.padEnd(20, ' ');
-          let password = value.password.padEnd(30, ' ');
-          let description = value.description;
-          let profilecode = value.profilecode;
-          console.log(value.email);
-          console.log('====================');
-          console.log('\t', value.name);
-          console.log('\t', value.password);
-          console.log('\t', value.description);
-          console.log('\t Created: ', datetime.convertDateTime(value.created));
-          console.log('\t Updated:', datetime.convertDateTime(value.updated));
-          for(let i = 0; i < profilecode.length; ++i) { 
-            console.log('\t\t%s', profilecode[i]);
-          }
-          console.log('\n');
-        });
-        resolve('\n');
-      })
-      .catch( (status) => {
-        console.log('\t' + status);
-        reject('KO');
-      })
-    })();
+      newuser.listUsers().then( (allusers) => {
+      console.log(allusers.length + ' user(s) stored in the DB.\n'); 
+      allusers.forEach((value, index) => {
+        let email = value.email.padEnd(15, ' ');
+        let name = value.name.padEnd(20, ' ');
+        let password = value.password.padEnd(30, ' ');
+        let description = value.description;
+        let profilecode = value.profilecode;
+        console.log(value.email);
+        console.log('====================');
+        console.log('\t', value.name);
+        console.log('\t', value.password);
+        console.log('\t', value.description);
+        console.log('\t Created: ', datetime.convertDateTime(value.created));
+        console.log('\t Updated:', datetime.convertDateTime(value.updated));
+        for(let i = 0; i < profilecode.length; ++i) { 
+          console.log('\t\t%s', profilecode[i]);
+        }
+        console.log('\n');
+      });
+      resolve('\n');
+    })
+    .catch( (status) => {
+      console.log('\t' + status);
+      reject('KO');
+    })
   });
 }
 //----------------------------------------------------------------------------
@@ -311,16 +299,14 @@ function listUsers() {
 function removeAllUsers() {
   return new Promise((resolve, reject) => {
     console.log('____________________________________________');
-    (async () => {
       console.log('Deleting all users !!!!!!!!!!!!!!!!!!!\n');
       let newuser = new userclass();
-      await newuser.DeleteAll().then( (status) => {
+      newuser.DeleteAll().then( (status) => {
           resolve(status);
       })
       .catch( (status) => {
         console.log('\t' + status);
         reject('KO');
       })
-    })();
   });
 }
