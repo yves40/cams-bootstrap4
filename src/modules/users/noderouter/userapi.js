@@ -135,9 +135,6 @@ router.post('/users/register', cors(corsutility.getCORS()), (req, res) => {
             ["STD"],
             req.body.description
         );
-        await newuser.get("yves@free.fr").then( (theuser) => {
-            console.log(theuser.name);
-        })
         await newuser.Exists().then( () => {
             res.send({
                 user: null, 

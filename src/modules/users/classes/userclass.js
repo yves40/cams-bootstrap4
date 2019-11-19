@@ -19,7 +19,7 @@
 //    Nov 11 2019   Fix architectural design flaws:3
 //    Nov 12 2019   Fix architectural design flaws:4
 //    Nov 13 2019   Fix architectural design flaws:5
-//    Nov 15 2019   Add methd(s)
+//    Nov 15 2019   Add method(s)
 //----------------------------------------------------------------------------
 const UserModel = require('../model/userModel').UserModel
 const bcryptjs = require('bcryptjs');
@@ -94,6 +94,7 @@ module.exports = class userclass {
     Exists(email = this.model.email) { 
         return new Promise((resolve, reject) => { 
             UserModel.findOne( { email: email }, (err, found) => { 
+                console.log("Check user existence : result :" + found)
                 if(err) reject (err);
                 if(found) {
                     resolve(true);
