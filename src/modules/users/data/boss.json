@@ -1,0 +1,9 @@
+{
+  "ben" : {
+    "email": "boss@free.fr",
+    "name": "bintoule",
+    "password": "manager",
+    "profilecode": [ "STD" ],
+    "description": "The british player"
+  }
+}

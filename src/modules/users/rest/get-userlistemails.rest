@@ -1,4 +1,4 @@
-GET http://localhost:8081/users/list
+GET http://localhost:8081/users/listemailsids
 Content-Type: application/json
 Authorization: jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkZDUwMmNkNTBhMmUxNWM2MDM1NDhjYSIsImVtYWlsIjoiYm9zc0BmcmVlLmZyIiwiaWF0IjoxNTc0MjY5NTQ5LCJleHAiOjE1NzQyNzEzNDl9.oPKwkkpc7aJELUlpoYouYuABk_CZiMSMOtX72W389ok
 
