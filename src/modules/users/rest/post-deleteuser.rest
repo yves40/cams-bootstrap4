@@ -1,2 +1,2 @@
-http://localhost:8081/users/delete/email/yves@free.fr
+POST http://localhost:8081/users/delete/email/yves@free.fr
 content-type: application/json

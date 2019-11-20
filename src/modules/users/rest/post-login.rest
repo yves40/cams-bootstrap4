@@ -1,7 +1,7 @@
-http://localhost:8081/users/login
+POST http://localhost:8081/users/login
 content-type: application/json
 
 {
-	"email": "bossuk@free.fr",
+	"email": "boss@free.fr",
 	"password": "manager"
 }

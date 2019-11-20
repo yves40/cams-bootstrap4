@@ -1,2 +1,2 @@
-http://localhost:8081/users/deleteall
+POST http://localhost:8081/users/deleteall
 content-type: application/json
