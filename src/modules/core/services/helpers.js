@@ -3,8 +3,9 @@
 //
 //    Oct 29 2019   Initial
 //    Oct 31 2019   basic syntax error
+//    Nov 20 2019   Async call function
 //----------------------------------------------------------------------------
-const Version = "helpers:1.01, Oct 29 2019 ";
+const Version = "helpers:1.02, Nov 20 2019 ";
 
 
 //----------------------------------------------------------------------------
@@ -26,7 +27,15 @@ function getIP(req) {
     return ip.replace(/f/gi, '').replace(/:/gi, '');
 }
 
+const asyncMiddleware = fn =>
+  (req, res, next) => {
+    Promise.resolve(fn(req, res, next))
+      .catch(next);
+  };
+
+
 module.exports = {
     sleep,
     getIP,
+    asyncMiddleware,
 }
