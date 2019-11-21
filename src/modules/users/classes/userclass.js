@@ -21,12 +21,15 @@
 //    Nov 13 2019   Fix architectural design flaws:5
 //    Nov 15 2019   Add method(s)
 //    Nov 19 2019   New mongoose usage
+//    Nov 20 2019   WIP on code simplification. Shoot obsolete code
 //----------------------------------------------------------------------------
 const UserModel = require('../model/userModel').UserModel
 const bcryptjs = require('bcryptjs');
 const logger = require('../../core/services/logger');
 const datetime = require('../../core/services/datetime');
 const mongo = require ('../../core/services/mongodb');
+
+const objectid = require('mongodb').ObjectId;
 
 const validprofiles = [ "STD", "USERADMIN", "CAMADMIN", "SUPERADMIN" ];
 
@@ -42,7 +45,7 @@ module.exports = class userclass {
             description = "None",
         ) 
     {
-        this.Version = 'userclass:1.76, Nov 19 2019 ';
+        this.Version = 'userclass:1.80, Nov 20 2019 ';
         this.model = new UserModel({ 
                             name: name, 
                             email: email, 
@@ -73,25 +76,30 @@ module.exports = class userclass {
             UserModel.findOne( { email: email }, (err, found) => { 
                 if(err) reject (err);
                 if(found) {
-                    const usermetrics =  {
-                        name: found.name, 
-                        email: found.email, 
-                        password: found.password,
-                        profilecode: Array.toString(found.profilecode),
-                        description: found.description, 
-                        lastlogin: datetime.convertDateTime(found.lastlogin) , 
-                        lastlogout: datetime.convertDateTime(found.lastlogout),
-                        created: datetime.convertDateTime(found.created),
-                        updated: datetime.convertDateTime(found.updated),
-                    }
-                    resolve(usermetrics);
+                    this.model._id = found._id;
+                    this.model.name =  found.name;
+                    this.model.email = found.email;
+                    this.model.password = found.password;
+                    this.model.profilecode = Array.toString(found.profilecode);
+                    this.model.description = found.description;
+                    this.model.lastlogin = datetime.convertDateTime(found.lastlogin) ;
+                    this.model.lastlogout = datetime.convertDateTime(found.lastlogout);
+                    this.model.created = datetime.convertDateTime(found.created);
+                    this.model.updated= datetime.convertDateTime(found.updated);
+                    resolve({ status: true, message: 'User read from mongo' });
                 }
                 else {
-                    reject('User not found');
+                    reject( { status: false, message: 'User not found' });
                 }
             });
         })    
     }
+    //-----------------------------------------------------------------------------------
+    // Get a user by ID. Used by jwt
+    //-----------------------------------------------------------------------------------
+    getByID(ID, callback) {
+        UserModel.findById({ _id: objectid(ID)}, callback);
+    };    
     //------------------------------------------------------
     // Check a user existence
     //------------------------------------------------------
@@ -126,11 +134,11 @@ module.exports = class userclass {
             /* 
                 Check user does not exist yet
             */
-           UserModel.find( { email: this.email }, (err, found) => {
+           UserModel.find( { email: this.model.email }, (err, found) => {
                 if (err) {
                     reject(err);
                 } 
-                if (found.length !== 0) reject('User ' + user.email + ' already exist')
+                if (found.length !== 0) reject('User ' + this.model.email + ' already exist')
                 this.model.created = Date.now();
                 this.model.save(this.model, (err, inserteduser) => {
                     if (err){
@@ -145,39 +153,23 @@ module.exports = class userclass {
         })
     }
     //-------------------------------------
-    // Remove this user
+    // Remove this user, using email
     // Returns a promise
     //-------------------------------------
-    Delete(ASYNC = true) {
+    Delete() {
         return new Promise((resolve, reject) => {
-            if (ASYNC) {
-                UserModel.findOneAndRemove( {email: this.model.email},
-                    (err, userupdated) => {
-                        if (err) reject(err);
-                        else {
-                            if (userupdated === null)
-                                resolve(this.model.email + ' does not exists');
-                            else
-                                resolve('User ' + this.model.email + ' deleted');
-                        } 
-                    });
-            }
-            else {
-                (async () => {
-                    UserModel.findOneAndRemove( {email: this.model.email},
-                        (err, userupdated) => {
-                            if (err) reject(err);
-                            else {
-                                if (userupdated === null)
-                                    resolve(this.model.email + ' does not exists');
-                                else
-                                    resolve('User ' + this.model.email + ' deleted');
-                            } 
-                        });
-                })();                    
-            }
-        });
-    }
+            UserModel.findOneAndRemove( {email: this.model.email},
+                (err, userupdated) => {
+                    if (err) reject(err);
+                    else {
+                        if (userupdated === null)
+                            resolve(this.model.email + ' does not exists');
+                        else
+                            resolve('User ' + this.model.email + ' deleted');
+                    } 
+                });
+            })
+        }
 
     //------------------------------------------------------
     // Get a user object and update it, except the password
@@ -209,7 +201,7 @@ module.exports = class userclass {
         })
     }
     //-------------------------------------
-    // MULTI USER METHODES
+    // MULTI USER METHODS
     //-------------------------------------
     // List user(s)
     // Returns a promise
@@ -218,6 +210,27 @@ module.exports = class userclass {
         return new Promise((resolve, reject) => {
             (async () => {
                 await UserModel.find({}, (function(err, userlist) {
+                        if (err) { 
+                            reject(err);
+                        }
+                        if(userlist.length === 0) {
+                            reject("No user in the DB");
+                        }
+                        else {
+                            resolve(userlist);
+                        }
+                    })
+                )
+            })();
+        });
+    }
+    //-------------------------------------
+    // List user(s) emails and IDs
+    //-------------------------------------
+    listUsersEmailsIds() {
+        return new Promise((resolve, reject) => {
+            (async () => {
+                await UserModel.find({}, 'email _id', (function(err, userlist) {
                         if (err) { 
                             reject(err);
                         }
@@ -276,118 +289,3 @@ function getValidProfile(profcode) {
 //----------------------------------------------------------------------------
 // C O D E    R E S E R V O I R
 //----------------------------------------------------------------------------
-//-------------------------------------
-// Get a user object and save it
-// ASYNC can be true of false ( for batch job useradmin )
-//  Default is ASYNC
-//-------------------------------------
-function S_createUser(user) {
-    UserModel.find( { email: user.email }, (err, found) => {
-        if (err) {
-            console.log(err);
-            throw new Error(err);
-        } 
-        else {
-            if (found.length !== 0) throw new Error('User ' + user.email + ' already exist')
-            else {
-                this.model.email = user.email;
-                this.model.name = user.name;
-                this.model.password = hashPassword(user.password);
-                this.model.profilecode = user.profilecode;
-                this.model.description = user.description;
-                this.model.save(this.model, (err, inserteduser) => {
-                    if (err){
-                        throw new Error(err);
-                    } 
-                    else {
-                        logger.debug('User ' + inserteduser.email + ' created');
-                        return 'OK';
-                    }
-                });
-            }
-        }
-    })
-}
-//-------------------------------------
-// Get a user object and save it
-// ASYNC can be true of false ( for batch job useradmin )
-//  Default is ASYNC
-//-------------------------------------
-function createUser(user, ASYNC = true ) {
-    return new Promise( (resolve, reject) => {
-        /* 
-            Check user does not exist yet
-        */
-        UserModel.find( { email: user.email }, (err, found) => {
-            if (err) {
-                reject(err);
-            } 
-            else {
-                if (found.length !== 0) reject('User ' + user.email + ' already exist')
-                else {
-                    this.model.email = user.email;
-                    this.model.name = user.name;
-                    this.model.password = hashPassword(user.password);
-                    this.model.profilecode = user.profilecode;
-                    this.model.description = user.description;
-                    if (ASYNC) {
-                        this.model.save(this.model, (err, inserteduser) => {
-                            logger.debug(this.Version + 'ASYNC user creation');
-                            if (err){
-                                logger.debug(this.Version + 'Error here');
-                                reject(err);
-                            } 
-                            else {
-                                resolve('User ' + inserteduser.email + ' created');
-                            }
-                        });
-                    }
-                    else {  // SYNC mode, must wait before sending response
-                        (async () => {
-                            this;this.model.save(this.model, (err, inserteduser) => {
-                                if (err){
-                                    logger.debug(this.Version + 'Error here');
-                                    reject(err);
-                                } 
-                                else {
-                                    resolve('User ' + inserteduser.email + ' created');
-                                }
-                            });
-                        })();    
-                    }
-                }
-            }
-        })
-    })
-}
-
-function save(theobject) {
-    theobject.User.save();
-}
-
-function update(theobject) {
-    User.findOneAndUpdate( {email: theobject.User.email}, 
-            {
-                email: theobject.User.email,
-                name: theobject.User.name,
-                password: theobject.User.password,
-                profilecode: theobject.User.profilecode,
-                description: theobject.User.description,
-            },
-        (err, userupdated) => {
-            if (err) console.log(err);
-        });
-}
-function remove(usermail) {
-    User.findOneAndRemove( {email: usermail},
-        (err, userupdated) => {
-            if (err) console.log(err);
-        });
-}
-//----------------------------------------------------------------------------
-// Super sleep function ;-)
-// Must be called from an ASYNC function
-//----------------------------------------------------------------------------
-sleep = function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}

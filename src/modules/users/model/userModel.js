@@ -24,10 +24,10 @@
 //                  Fix architectural design flaws:1
 //    Nov 09 2019   Fix architectural design flaws:2
 //    Nov 11 2019   Fix architectural design flaws:3
+//    Nov 20 2019   User object ID, investigate
 //----------------------------------------------------------------------------
-const Version = 'userModel:1.46, Nov 11 2019 ';
+const Version = 'userModel:1.48, Nov 20 2019 ';
 
-const objectid = require('mongodb').ObjectId;
 const mongoose = require('mongoose');
 const logger = require('../../core/services/logger');
 

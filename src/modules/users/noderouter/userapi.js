@@ -58,12 +58,14 @@
 //    Nov 07 2019  Put the register service back into camms-bootstrap4
 //    Nov 08 2019  Remove an API
 //    Nov 15 2019  Adapt to the userclass modifications
-//    Nov 19 2019  Adapt to new userclass
+//    Nov 19 2019  Adapt to new userclass : register
+//    Nov 20 2019  New userclass, tests : login, logout
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 
-const Version = 'userapi:3.17, Nov 19 2019 ';
+const Version = 'userapi:3.21, Nov 20 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -82,14 +84,16 @@ const cors = require('cors');
 //-----------------------------------------------------------------------------------
 router.post('/users/login', cors(corsutility.getCORS()),passport.authenticate('login'),
     (req, res) => {
-        const payload = { id: req.user.id, email: req.user.email };
+        console.log(req.user.model.id);
+        console.log(mongoose.Types.ObjectId(req.user.model.id));
+        const payload = { id: req.user.model.id, email: req.user.model.email };
         const token = jwthelper.signToken(payload);
-        logger.debug(Version + 'User ' + req.user.email + ' logged');
+        logger.debug(Version + 'User ' + req.user.model.email + ' logged');
         const userdecodedtoken = jwthelper.decodeToken(token);
         const tokendata = jwthelper.getTokenTimeMetrics(userdecodedtoken);
         let userlog = new userlogger(req.user.email, req.user.id, helpers.getIP(req));
         userlog.informational('LOGIN');
-        res.json( { message: req.user.email + ' logged', 
+        res.json( { message: req.user.model.email + ' logged', 
             token: token, 
             userdecodedtoken: userdecodedtoken,
             remainingtime: tokendata.remainingtime,
@@ -126,13 +130,8 @@ router.post('/users/logout', cors(corsutility.getCORS()), passport.authenticate(
 //-----------------------------------------------------------------------------------
 // Register user
 //-----------------------------------------------------------------------------------
-const asyncMiddleware = fn =>
-  (req, res, next) => {
-    Promise.resolve(fn(req, res, next))
-      .catch(next);
-  };
-
-router.post('/users/register', cors(corsutility.getCORS()), asyncMiddleware(async (req, res, next) => {
+router.post('/users/register', cors(corsutility.getCORS()), 
+    helpers.asyncMiddleware(async (req, res, next) => {
         let newuser = new userclass(
             req.body.email, 
             req.body.name,
@@ -140,67 +139,51 @@ router.post('/users/register', cors(corsutility.getCORS()), asyncMiddleware(asyn
             ["STD"],
             req.body.description
         );
-        let userexists = await newuser.exists();
-        res.json(userexists)
-}));
-//-----------------------------------------------------------------------------------
-// Remove One user by ID
-//-----------------------------------------------------------------------------------
-router.post('/users/delete/ID/:id', cors(corsutility.getCORS()), passport.authenticate('jwt'), (req, res) => {
-    logger.debug(Version + 'Removing user with ID : ' + req.params.id);
-    usermodel.deleteoneUserByID( req.params.id, (error, deleted) => {
-        if(error) { logger.debug(error); }
-        if(deleted.result.n === 0) { 
-            logger.debug('No user matching this ID :' + req.params.id);
-            res.send( { message: 'No user matching this ID :' + req.params.id });
-        }
-        else{
-            logger.debug(Version + ' Done.' );
-        }
-        res.send(deleted);
-    });
-})
+        let registereduser = await newuser.Add();
+        res.json(registereduser);
+    })
+);
 
 //-----------------------------------------------------------------------------------
 // Remove One user by email
 //-----------------------------------------------------------------------------------
-router.post('/users/delete/email/:email', cors(corsutility.getCORS()), passport.authenticate('jwt'), (req, res) => {
-    logger.debug(Version + 'Removing user with email : ' + req.params.email);
-    usermodel.deleteoneUserByEmail( req.params.email, (error, deleted) => {
-        if(error) { logger.debug(error); }
-        if(deleted.result.n === 0) { 
-            logger.debug('No user matching this name :' + req.params.email);
-        }
-        else{
-            logger.debug(Version + ' Done.' );
-        }
-        res.send(deleted);
-    });
-})
+router.post('/users/delete/email/:email', cors(corsutility.getCORS()), passport.authenticate('jwt'),
+    helpers.asyncMiddleware(async (req, res, next) => {
+        let message = await newuser(req.params.email).Delete();
+        res.send(message);   
+    })
+);
 
 //-----------------------------------------------------------------------------------
 // List all users
-// Unprotected function right now
 //-----------------------------------------------------------------------------------
-router.get('/users/list', cors(corsutility.getCORS()), (req, res) => {
-    usermodel.listUsers( (error, userlist) => {
-        if(error) { logger.debug(error);}
-        logger.debug(Version + "Fetched " + userlist.length + " users"); 
-        res.send(userlist);   
+router.get('/users/list', cors(corsutility.getCORS()),
+    passport.authenticate('jwt'), 
+    helpers.asyncMiddleware(async (req, res, next) => {
+        let allusers = await new userclass().listUsers();
+        res.send(allusers);   
     })
-});
+);
 
+//-----------------------------------------------------------------------------------
+// List all users emails and Ids
+//-----------------------------------------------------------------------------------
+router.get('/users/listemailsids', cors(corsutility.getCORS()), 
+    passport.authenticate('jwt'), 
+    helpers.asyncMiddleware(async (req, res, next) => {
+        let allusers = await new userclass().listUsersEmailsIds();
+        res.send(allusers);   
+    })
+);
 //-----------------------------------------------------------------------------------
 // Remove all users
 // Very dangerous call ;-) 
 // Will be protected 
 //-----------------------------------------------------------------------------------
-router.post('/users/deleteall', cors(corsutility.getCORS()), (req, res) => {
-    logger.debug(Version + 'Deleting all users !!!');
-    usermodel.deleteallUsers( () => {
-        logger.debug(Version + ' done !!');
-        res.send('success');
-    });
-})
+router.post('/users/deleteall', cors(corsutility.getCORS()),     helpers.asyncMiddleware(async (req, res, next) => {
+        let message = await new userclass().DeleteAll();
+        res.send(message);   
+    })
+)
 
 module.exports = router;

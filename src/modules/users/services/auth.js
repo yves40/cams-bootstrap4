@@ -19,8 +19,10 @@
 //    Oct 31 2019  Reorg
 //    Nov 04 2019  User to UserModel. 
 //    Nov 05 2019  Date format for lastlogin. Security modules reorg
+//    Nov 20 2019  New userclass, tests, login, check token
+//    Nov 21 2019  Test auth module
 //----------------------------------------------------------------------------
-const Version = 'auth.js:1.51, Nov 05 2019 ';
+const Version = 'auth.js:1.57, Nov 21 2019 ';
 
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
@@ -38,6 +40,7 @@ const logger = require('../../core/services/logger');
 const userlogger = require('./userlogger');
 const helpers = require('../../core/services/helpers');
 const UserModel = require('../model/userModel');
+const userclass = require('../classes/userclass');
 
 //-----------------------------------------------------------------------------------
 // Invalidate a token during logout
@@ -72,12 +75,19 @@ module.exports = {
 passport.use('jwt', new JwtStrategy(jwtOptions,
     (token, done) => {
         try {
-            UserModel.getUserByID(token.id, (err, loggeduser) => {
-                if(loggeduser.lastlogout === null) {
-                    return done(null, token);
+            let user = new userclass().getByID(token.id, (err, loggeduser) => {
+                if (err) return done( null, false, {message: err} );
+                if(loggeduser) {
+                    if(loggeduser.model.lastlogout === undefined
+                        || loggeduser.model.lastlogout === null) {
+                        return done(null, token);
+                    }
+                    else {
+                        done();
+                    }
                 }
                 else {
-                    done();
+                    return done( null, false, {message: 'Invalid ID: ' + token.id} );
                 }
             });
         }
@@ -96,44 +106,46 @@ passport.use('login',  new LocalStrategy({
     passwordField: 'password',
     passReqToCallback: true,        // Used to access the client IP in case of bad password
     }, 
-    (req, email, password, done) => {
-        UserModel.getUserByEmail(email, (err, loggeduser) => {
-            if(err) { return done(err); }
-            if ( !loggeduser ) { 
-                let userlog = new userlogger(email, undefined, helpers.getIP(req));
-                userlog.error('Unknown user : ' + email);
-                return done(null, false, {message: 'Unknown User'}) 
-            }
-            UserModel.comparePassword(password, loggeduser.password, (error, isMatch ) => {
+    (async (req, email, password, done) => {
+        let incominguser = new userclass( email );
+        let checkuser = await incominguser.get();
+        if( checkuser.status) {
+            let userlog = new userlogger(incominguser.model.email, incominguser.model.id, helpers.getIP(req));
+            // Check password
+            incominguser.comparePassword(password, incominguser.model.password, (error, isMatch ) => {
                 if (isMatch) {
                     logger.debug(Version + email + ' identified');
-                    loggeduser.lastlogin = Date.now();
-                    loggeduser.lastlogout = null;
-                    loggeduser.save((error, user) => {
+                    incominguser.model.lastlogin = Date.now();
+                    incominguser.model.lastlogout = null;
+                    incominguser.Update((error, user) => {
                         if (error) {
                             logger.error(Version + 'Cannot save last login date')
                         }
                     });
-                    return done(null, loggeduser)   // Success login !!!
+                    return done(null, incominguser)   // Success login !!!
                 }
-                let userlog = new userlogger(email, loggeduser.id, helpers.getIP(req));
-                userlog.error('Invalid password for ' + email);
-                return done( null, false, {message: 'Wrong password'} ); // Error
-            });
-        });
-    }
+                else {  // Password is no match
+                    userlog.error('Invalid password for ' + email);
+                    return done( null, false, {message: 'Wrong password'} );
+                }
+            })
+        }
+        else {  // Don't know this guy
+            let userlog = new userlogger(email, null, helpers.getIP(req));
+            userlog.error('Unknown user for ' + email);
+            return done( null, false, {message: 'Unknown user'} );
+        }
+    })
 ));
 
 //-----------------------------------------------------------------------------------
 // Utility routines for passport
 //-----------------------------------------------------------------------------------
 passport.serializeUser((loggeduser, done) => {
-    // logger.debug(Version + JSON.stringify(loggeduser));
     done(null, loggeduser.id);
 });
 
 passport.deserializeUser((id, done) => { 
-    // logger.debug(Version + 'deserializeUser with ID : ' + id);
     UserModel.getUserByID(id, (err, loggeduser) => {
         done(err, loggeduser);
     });
