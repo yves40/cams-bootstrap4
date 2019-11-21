@@ -9,8 +9,9 @@
 //                  Problem fixed by adding a response handler in express 
 //                  middleware. Look at responseheader.js
 //                  useful URL: https://github.com/expressjs/cors/blob/master/README.md
+//    Nov 20 2019   No jwt in header here
 //----------------------------------------------------------------------------
-const Version = "corshelper:1.22, Oct 23 2019 ";
+const Version = "corshelper:1.23, Nov 20 2019 ";
 
 const logger = require('./logger');
 const corsclientorigin = require('./properties').corsclientorigin;
@@ -36,7 +37,7 @@ const corsOptions = {
   'preflightContinue': false,
   'optionsSuccessStatus': 204,
   'credentials': true,
-  'allowedHeaders': ['Content-Type', 'Authorization', 'jwt'],
+  'allowedHeaders': ['Content-Type', 'Authorization'],
 };
 
 function getCORS() {
