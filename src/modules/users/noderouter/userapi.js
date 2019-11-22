@@ -60,12 +60,13 @@
 //    Nov 15 2019  Adapt to the userclass modifications
 //    Nov 19 2019  Adapt to new userclass : register
 //    Nov 20 2019  New userclass, tests : login, logout
+//    Nov 21 2019  So many things to check...
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-const Version = 'userapi:3.21, Nov 20 2019 ';
+const Version = 'userapi:3.22, Nov 21 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -81,11 +82,11 @@ const cors = require('cors');
 
 //-----------------------------------------------------------------------------------
 // login a user : local strategy
+// passport.authenticate('login') returns a userclass object in req.user
 //-----------------------------------------------------------------------------------
-router.post('/users/login', cors(corsutility.getCORS()),passport.authenticate('login'),
+router.post('/users/login', cors(corsutility.getCORS()),
+    passport.authenticate('login'),
     (req, res) => {
-        console.log(req.user.model.id);
-        console.log(mongoose.Types.ObjectId(req.user.model.id));
         const payload = { id: req.user.model.id, email: req.user.model.email };
         const token = jwthelper.signToken(payload);
         logger.debug(Version + 'User ' + req.user.model.email + ' logged');
@@ -103,29 +104,31 @@ router.post('/users/login', cors(corsutility.getCORS()),passport.authenticate('l
 //-----------------------------------------------------------------------------------
 // logout a user
 //-----------------------------------------------------------------------------------
-router.post('/users/logout', cors(corsutility.getCORS()), passport.authenticate('jwt'), (req, res) => {
-    if (req.user) {
-        const message = 'logging ' + req.user.email +  ' out';
-        logger.debug(Version + message);
-        const token = auth.invalidateToken({id: req.user.id, email: req.user.email});
-        let userlog = new userlogger(req.user.email, req.user.id, helpers.getIP(req));
-        userlog.informational('LOGOUT');
-        req.logout();
-        const userdecodedtoken = jwthelper.decodeToken(token);
-        const tokendata = jwthelper.getTokenTimeMetrics(userdecodedtoken);
-        // logger.debug(Version + 'User decoded token : ' + JSON.stringify(userdecodedtoken));    
-        res.json( { message: message, 
-            token: token, 
-            userdecodedtoken: userdecodedtoken, 
-            logintime: tokendata.logintime,
-            remainingtime: tokendata.remainingtime,
-            tokenstatus: tokendata.tokenstatus, 
-            time: tokendata.time,
-            tokenstatusString: tokendata.tokenstatusString, } );
-    }
-    else {
-        res.json( { message: 'Not logged '});
-    }
+router.post('/users/logout', cors(corsutility.getCORS()), 
+    passport.authenticate('jwt'), 
+    (req, res) => {
+        if (req.user) {
+            const message = 'logging ' + req.user.email +  ' out';
+            logger.debug(Version + message);
+            const token = auth.invalidateToken({id: req.user.id, email: req.user.email});
+            let userlog = new userlogger(req.user.email, req.user.id, helpers.getIP(req));
+            userlog.informational('LOGOUT');
+            req.logout();
+            const userdecodedtoken = jwthelper.decodeToken(token);
+            const tokendata = jwthelper.getTokenTimeMetrics(userdecodedtoken);
+            // logger.debug(Version + 'User decoded token : ' + JSON.stringify(userdecodedtoken));    
+            res.json( { message: message, 
+                token: token, 
+                userdecodedtoken: userdecodedtoken, 
+                logintime: tokendata.logintime,
+                remainingtime: tokendata.remainingtime,
+                tokenstatus: tokendata.tokenstatus, 
+                time: tokendata.time,
+                tokenstatusString: tokendata.tokenstatusString, } );
+        }
+        else {
+            res.json( { message: 'Not logged '});
+        }
 });
 //-----------------------------------------------------------------------------------
 // Register user
@@ -147,7 +150,8 @@ router.post('/users/register', cors(corsutility.getCORS()),
 //-----------------------------------------------------------------------------------
 // Remove One user by email
 //-----------------------------------------------------------------------------------
-router.post('/users/delete/email/:email', cors(corsutility.getCORS()), passport.authenticate('jwt'),
+router.post('/users/delete/email/:email', cors(corsutility.getCORS()), 
+    passport.authenticate('jwt'),
     helpers.asyncMiddleware(async (req, res, next) => {
         let message = await newuser(req.params.email).Delete();
         res.send(message);   
