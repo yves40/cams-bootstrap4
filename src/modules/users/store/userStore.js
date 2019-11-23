@@ -10,6 +10,7 @@
     Nov 05 2019   Some date format, logout action and mutation
     Nov 08 2019   Register 
     Nov 22 2019   Logout message 
+    Nov 23 2019   Logout message : 2nd run!
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -28,7 +29,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.52, Nov 22 2019 ',
+        Version: 'userstore:1.55, Nov 23 2019 ',
         theuser: null,
         token: null,
         tokenobject: '{}',
@@ -117,7 +118,8 @@ export default {
                 )
                 .then((response) => {
                         window.localStorage.setItem('jwt', response.data.token);
-                        resolve('User ' +  state.theuser.email +  'disconnected');
+                        logger.debug(JSON.stringify(response.data))
+                        resolve('User ' +  response.data.email +  ' disconnected');
                         commit('deleteloginstate');
                         if(payload.path !== '/home') {
                             payload.router.push({ name: 'home' });

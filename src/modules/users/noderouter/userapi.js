@@ -68,7 +68,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-const Version = 'userapi:3.25, Nov 23 2019 ';
+const Version = 'userapi:3.27, Nov 23 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -112,6 +112,7 @@ router.post('/users/logout', cors(corsutility.getCORS()),
     (req, res) => {
         if (req.user) {
             const message = 'logging ' + req.user.model.email +  ' out';
+            const usermail = req.user.model.email;
             logger.debug(Version + message);
             const token = auth.invalidateToken({id: req.user.model.id, email: req.user.model.email});
             logger.debug(Version + 'Update logout time for ID ' + req.user.model.id)
@@ -131,7 +132,6 @@ router.post('/users/logout', cors(corsutility.getCORS()),
             req.logout();
             const userdecodedtoken = jwthelper.decodeToken(token);
             const tokendata = jwthelper.getTokenTimeMetrics(userdecodedtoken);
-            // logger.debug(Version + 'User decoded token : ' + JSON.stringify(userdecodedtoken));    
             res.json( { message: message, 
                 token: token, 
                 userdecodedtoken: userdecodedtoken, 
@@ -139,7 +139,9 @@ router.post('/users/logout', cors(corsutility.getCORS()),
                 remainingtime: tokendata.remainingtime,
                 tokenstatus: tokendata.tokenstatus, 
                 time: tokendata.time,
-                tokenstatusString: tokendata.tokenstatusString, } );
+                tokenstatusString: tokendata.tokenstatusString,
+                email: usermail,
+             } );
         }
         else {
             res.json( { message: 'Not logged '});
