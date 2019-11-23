@@ -9,6 +9,7 @@
     Nov 04 2019   Manage the state after login
     Nov 05 2019   Some date format, logout action and mutation
     Nov 08 2019   Register 
+    Nov 22 2019   Logout message 
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -27,7 +28,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.50, Nov 08 2019 ',
+        Version: 'userstore:1.52, Nov 22 2019 ',
         theuser: null,
         token: null,
         tokenobject: '{}',
@@ -116,8 +117,8 @@ export default {
                 )
                 .then((response) => {
                         window.localStorage.setItem('jwt', response.data.token);
+                        resolve('User ' +  state.theuser.email +  'disconnected');
                         commit('deleteloginstate');
-                        resolve('User disconnected');
                         if(payload.path !== '/home') {
                             payload.router.push({ name: 'home' });
                         }
