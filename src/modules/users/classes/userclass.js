@@ -22,6 +22,8 @@
 //    Nov 15 2019   Add method(s)
 //    Nov 19 2019   New mongoose usage
 //    Nov 20 2019   WIP on code simplification. Shoot obsolete code
+//    Nov 22 2019   Update method reviewed
+//    Nov 23 2019   Update method changed
 //----------------------------------------------------------------------------
 const UserModel = require('../model/userModel').UserModel
 const bcryptjs = require('bcryptjs');
@@ -45,7 +47,7 @@ module.exports = class userclass {
             description = "None",
         ) 
     {
-        this.Version = 'userclass:1.80, Nov 20 2019 ';
+        this.Version = 'userclass:1.82, Nov 23 2019 ';
         this.model = new UserModel({ 
                             name: name, 
                             email: email, 
@@ -172,18 +174,50 @@ module.exports = class userclass {
         }
 
     //------------------------------------------------------
-    // Get a user object and update it, except the password
+    // Get a user object and update it, except the password and 
+    // login / logout dates
     // Returns a promise
     //------------------------------------------------------
-    Update() {
+    Update( list = {
+        email: this.model.email,
+        name: this.model.name,
+        profilecode: this.model.profilecode,
+        description: this.model.description,
+
+    }) {
         return new Promise((resolve, reject) => {
             UserModel.findOneAndUpdate( {email: this.model.email}, 
                 {
-                    email: this.model.email,
-                    name: this.model.name,
-                    profilecode: this.model.profilecode,
-                    description: this.model.description,
+                    list: list,
                     updated: Date.now(),
+                },
+                { upsert: false, new: true }, // Do not update a non existing user
+                (err, userupdated) => {
+                    if (err) reject(err);
+                    else{
+                        if(userupdated === null) {
+                            resolve('User ' + this.model.email + ' does not exist');
+                        }
+                        else {
+                            resolve('User ' + userupdated.email + ' updated');
+                        }
+                    }
+                }
+            );
+        })
+    }
+    //------------------------------------------------------
+    // Get a user object and update login / logout dates
+    // Returns a promise
+    //------------------------------------------------------
+    UpdateConnection() {
+        return new Promise((resolve, reject) => {
+            UserModel.findOneAndUpdate( {email: this.model.email}, 
+                { 
+                    lastlogin: this.model.lastlogin,
+                    lastlogout: this.model.lastlogout,
+                    updated: Date.now(),
+ 
                 },
                 { upsert: false, new: true }, // Do not update a non existing user
                 (err, userupdated) => {

@@ -61,12 +61,14 @@
 //    Nov 19 2019  Adapt to new userclass : register
 //    Nov 20 2019  New userclass, tests : login, logout
 //    Nov 21 2019  So many things to check...
+//    Nov 22 2019  User object used in login logout sequences
+//    Nov 23 2019  WIP on Update calls
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-const Version = 'userapi:3.22, Nov 21 2019 ';
+const Version = 'userapi:3.25, Nov 23 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -76,6 +78,7 @@ const auth = require('../services/auth');
 const jwthelper = require('../services/jwthelper');
 const usermodel = require('../model/userModel');
 const userclass = require('../classes/userclass');
+const userclasshandle = new userclass();
 
 const passport = require('passport');
 const cors = require('cors');
@@ -108,10 +111,22 @@ router.post('/users/logout', cors(corsutility.getCORS()),
     passport.authenticate('jwt'), 
     (req, res) => {
         if (req.user) {
-            const message = 'logging ' + req.user.email +  ' out';
+            const message = 'logging ' + req.user.model.email +  ' out';
             logger.debug(Version + message);
-            const token = auth.invalidateToken({id: req.user.id, email: req.user.email});
-            let userlog = new userlogger(req.user.email, req.user.id, helpers.getIP(req));
+            const token = auth.invalidateToken({id: req.user.model.id, email: req.user.model.email});
+            logger.debug(Version + 'Update logout time for ID ' + req.user.model.id)
+            userclasshandle.getByID(req.user.model.id, (err, loggeduser) => {
+                if (err) {
+                    logger.error(Version + ' Cannot get user data for ID : ' + req.user.model.id);
+                }
+                loggeduser.lastlogout = Date.now();
+                loggeduser.save((error, user) => {
+                    if (error) {
+                        logger.error(Version + 'Cannot save last logout date')
+                    }
+                });
+            });
+            let userlog = new userlogger(req.user.model.email, req.user.model.id, helpers.getIP(req));
             userlog.informational('LOGOUT');
             req.logout();
             const userdecodedtoken = jwthelper.decodeToken(token);

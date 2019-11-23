@@ -21,8 +21,10 @@
 //    Nov 05 2019  Date format for lastlogin. Security modules reorg
 //    Nov 20 2019  New userclass, tests, login, check token
 //    Nov 21 2019  Test auth module
+//    Nov 22 2019  Debug the auth module, everything is broken ;-)
+//    Nov 23 2019  WIP on Update calls
 //----------------------------------------------------------------------------
-const Version = 'auth.js:1.57, Nov 21 2019 ';
+const Version = 'auth.js:1.62, Nov 23 2019 ';
 
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
@@ -41,23 +43,12 @@ const userlogger = require('./userlogger');
 const helpers = require('../../core/services/helpers');
 const UserModel = require('../model/userModel');
 const userclass = require('../classes/userclass');
+const userclasshandle = new userclass();
 
 //-----------------------------------------------------------------------------------
 // Invalidate a token during logout
 //-----------------------------------------------------------------------------------
 function invalidateToken(payload) {
-    logger.debug(Version + 'Update logout time for ID ' + payload.id)
-    UserModel.getUserByID(payload.id, (err, loggeduser) => {
-        if (err) {
-            logger.error(Version + ' Cannot get user data for ID : ' + payload.id);
-        }
-        loggeduser.lastlogout = Date.now();
-        loggeduser.save((error, user) => {
-            if (error) {
-                logger.error(Version + 'Cannot save last logout date')
-            }
-        });
-    });
     logger.debug(Version + 'Invalidating a token with a 1s expiration time');
     const token = jwt.sign(payload, jwtOptions.secretOrKey, {expiresIn: 1}); // 1 second
     return token;
@@ -75,12 +66,17 @@ module.exports = {
 passport.use('jwt', new JwtStrategy(jwtOptions,
     (token, done) => {
         try {
-            let user = new userclass().getByID(token.id, (err, loggeduser) => {
+            userclasshandle.getByID(token.id, (err, loggeduser) => {
                 if (err) return done( null, false, {message: err} );
+                logger.debug('Got the logged user ' + loggeduser.email);
                 if(loggeduser) {
-                    if(loggeduser.model.lastlogout === undefined
-                        || loggeduser.model.lastlogout === null) {
-                        return done(null, token);
+                    if(loggeduser.lastlogout === undefined
+                        || loggeduser.lastlogout === null) {
+                        (async () => {
+                            let userobject = new userclass(loggeduser.email);
+                            let status = await userobject.get();
+                            return done(null, userobject);
+                        })()
                     }
                     else {
                         done();
@@ -94,8 +90,8 @@ passport.use('jwt', new JwtStrategy(jwtOptions,
         catch(error) {
             done(error);
         }
-    }
-));
+    })
+);
 //-----------------------------------------------------------------------------------
 // passport initialization stuff
 // Local strategy for user  / password authentication
@@ -117,12 +113,15 @@ passport.use('login',  new LocalStrategy({
                     logger.debug(Version + email + ' identified');
                     incominguser.model.lastlogin = Date.now();
                     incominguser.model.lastlogout = null;
-                    incominguser.Update((error, user) => {
-                        if (error) {
-                            logger.error(Version + 'Cannot save last login date')
+                    incominguser.UpdateConnection().then(() => {
+                            logger.debug(Version + 'Updated login date');
+                            return done(null, incominguser)   // Success login !!!
                         }
-                    });
-                    return done(null, incominguser)   // Success login !!!
+                    )
+                    .catch( (error) => {
+                        logger.error(Version + 'Cannot save last login date');
+                        return done( null, false, {message: 'Cannot save last login date'} );
+                    })
                 }
                 else {  // Password is no match
                     userlog.error('Invalid password for ' + email);
@@ -142,11 +141,11 @@ passport.use('login',  new LocalStrategy({
 // Utility routines for passport
 //-----------------------------------------------------------------------------------
 passport.serializeUser((loggeduser, done) => {
-    done(null, loggeduser.id);
+    done(null, loggeduser.model.id);
 });
 
 passport.deserializeUser((id, done) => { 
-    UserModel.getUserByID(id, (err, loggeduser) => {
+    userclasshandle(id, (err, loggeduser) => {
         done(err, loggeduser);
     });
 });
