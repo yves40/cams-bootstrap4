@@ -11,6 +11,7 @@
                 Manage mongodb down detection as in login vue
   Oct 31 2019   Fix button overlap problem when resizing to small window
   Nov 08 2019   Perform the axios call (through vuex)
+  Nov 22 2019   Missing space
 -->
 <template>
   <div>
@@ -118,7 +119,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      version: "Register 1.28, Nov 08 2019",
+      version: "Register 1.29, Nov 22 2019",
       name: '',
       email: '',
       userdescription: '',
@@ -192,7 +193,7 @@ export default {
           password: this.password1,
         })
         .then((result) => {
-          this.$swal('User' + this.email + ' registered', result, 'success');
+          this.$swal('User ' + this.email + ' registered', result, 'success');
           this.$router.push({ name: 'login' });
         })
         .catch((err) => {
