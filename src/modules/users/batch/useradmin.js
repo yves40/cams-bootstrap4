@@ -18,9 +18,10 @@
 //    Nov 13 2019    Adapt to heavily rewritten user class: 3
 //    Nov 15 2019    Sync vs async calls
 //    Nov 19 2019    No more use of async calls
+//    Nov 24 2019    Add a command line filter -mail
 //----------------------------------------------------------------------------
 
-const Version = "useradmin.js:1.60 Nov 19 2019 ";
+const Version = "useradmin.js:1.62 Nov 24 2019 ";
 
 const userclass = require('../classes/userclass');
 const logger = require('../../core/services/logger');
@@ -32,6 +33,7 @@ var fs = require("fs");
 let command = undefined;
 let thefile = undefined;
 let validparam = false;
+let useremail = '';
 //----------------------------------------------------------------------------
 // Parse command line args
 //----------------------------------------------------------------------------
@@ -64,7 +66,16 @@ function parseCommandLine() {
                     command = 'ZAP';
                     validparam = true;
                     break;
-        default: 
+        case '-mail':
+                    value = process.argv[++index];
+                    if (value === undefined) {
+                      throw new Error('You specified ' + keyword + ' without any value');
+                    }
+                    useremail = value;
+                    logger.info('Filtering on mail : ' + useremail);
+                    validparam = true;
+                    break;
+          default: 
                     validparam = false;
                     break;
       }
@@ -265,7 +276,11 @@ function listUsers() {
   return new Promise((resolve, reject) => {
     let newuser = new userclass();
     console.log('____________________________________________');
-      newuser.listUsers().then( (allusers) => {
+    let filter = '';
+    if(useremail.length !== 0) {
+      filter = useremail;
+    }
+    newuser.listUsers(filter).then( (allusers) => {
       console.log(allusers.length + ' user(s) stored in the DB.\n'); 
       allusers.forEach((value, index) => {
         let email = value.email.padEnd(15, ' ');
