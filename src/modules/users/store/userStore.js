@@ -11,6 +11,7 @@
     Nov 08 2019   Register 
     Nov 22 2019   Logout message 
     Nov 23 2019   Logout message : 2nd run!
+    Nov 24 2019   getemail fixed
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -29,7 +30,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.55, Nov 23 2019 ',
+        Version: 'userstore:1.56, Nov 24 2019 ',
         theuser: null,
         token: null,
         tokenobject: '{}',
@@ -41,11 +42,11 @@ export default {
     ----------------------------------------------------------------------------*/
     getters: {
         getVersion(state) {return state.Version;},
-        getEmail(state) {return state.theuser === null ? 'Not logged' : state.theuser.email;},
-        getName(state) {return state.theuser === null ? 'Not logged' : state.theuser.name;},
-        getDescription(state) {return state.theuser === null ? 'Not logged' : state.theuser.description;},
+        getEmail(state) {return state.theuser === null ? 'Not logged' : state.theuser.model.email;},
+        getName(state) {return state.theuser === null ? 'Not logged' : state.theuser.model.name;},
+        getDescription(state) {return state.theuser === null ? 'Not logged' : state.theuser.model.description;},
         getLastlogin(state) {
-            return state.theuser === null ? 'Not logged' : datetime.getDateTime(state.theuser.lastlogin);
+            return state.theuser === null ? 'Not logged' : datetime.getDateTime(state.theuser.model.lastlogin);
         },
         getSessionTime(state) { return state.tokenremainingtime; },
         isLogged(state) {return state.theuser === null ? false : true ;},
