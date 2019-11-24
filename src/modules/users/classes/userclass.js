@@ -24,6 +24,7 @@
 //    Nov 20 2019   WIP on code simplification. Shoot obsolete code
 //    Nov 22 2019   Update method reviewed
 //    Nov 23 2019   Update method changed
+//    Nov 24 2019   Filter on list users
 //----------------------------------------------------------------------------
 const UserModel = require('../model/userModel').UserModel
 const bcryptjs = require('bcryptjs');
@@ -47,7 +48,7 @@ module.exports = class userclass {
             description = "None",
         ) 
     {
-        this.Version = 'userclass:1.82, Nov 23 2019 ';
+        this.Version = 'userclass:1.83, Nov 24 2019 ';
         this.model = new UserModel({ 
                             name: name, 
                             email: email, 
@@ -237,14 +238,17 @@ module.exports = class userclass {
     //-------------------------------------
     // MULTI USER METHODS
     //-------------------------------------
-    // List user(s)
+    // List all or some user(s)
     // Returns a promise
     //-------------------------------------
-    listUsers() {
+    listUsers(filter = '') {
         return new Promise((resolve, reject) => {
             (async () => {
-                await UserModel.find({}, (function(err, userlist) {
-                        if (err) { 
+                let query = UserModel.find({});
+                query.select().where( { 'email': { '$regex' : filter, '$options' : 'i' }});
+                await query.exec(function(err, userlist) {
+
+                        if (err !== null) { 
                             reject(err);
                         }
                         if(userlist.length === 0) {
@@ -253,13 +257,13 @@ module.exports = class userclass {
                         else {
                             resolve(userlist);
                         }
-                    })
+                    }
                 )
             })();
         });
     }
     //-------------------------------------
-    // List user(s) emails and IDs
+    // List all user(s) emails and IDs
     //-------------------------------------
     listUsersEmailsIds() {
         return new Promise((resolve, reject) => {
