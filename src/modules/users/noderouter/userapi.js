@@ -63,12 +63,13 @@
 //    Nov 21 2019  So many things to check...
 //    Nov 22 2019  User object used in login logout sequences
 //    Nov 23 2019  WIP on Update calls
+//    Nov 24 2019  Fix problem with description field during register
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-const Version = 'userapi:3.27, Nov 23 2019 ';
+const Version = 'userapi:3.28, Nov 24 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -157,7 +158,7 @@ router.post('/users/register', cors(corsutility.getCORS()),
             req.body.name,
             req.body.password,
             ["STD"],
-            req.body.description
+            req.body.userdescription
         );
         let registereduser = await newuser.Add();
         res.json(registereduser);
