@@ -21,6 +21,13 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "useradmin -list -mail",
+      "program": "${workspaceFolder}\\src\\modules\\users\\batch\\useradmin.js",
+      "args": [ "-list", "-mail", "yves@free.fr" ] 
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "useradmin -add",
       "program": "${workspaceFolder}\\src\\modules\\users\\batch\\useradmin.js",
       "args": [ "-add",  "-f" , "d:\\ALL\\LAB\\GIT\\cams-bootstrap4\\src\\modules\\users\\data\\yves.json"] 
@@ -45,6 +52,13 @@
       "name": "useradmin -z",
       "program": "${workspaceFolder}\\src\\modules\\users\\batch\\useradmin.js",
       "args": [ "-z" ] 
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "scanuserlog -mail yves@free.fr",
+      "program": "${workspaceFolder}\\src\\modules\\users\\batch\\scanuserlog.js",
+      "args": [ "-mail", "yves@free.fr" ] 
     }
   ]
 }
