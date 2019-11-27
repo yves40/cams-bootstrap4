@@ -11,7 +11,7 @@
 //    Nov 27 2019     Port to cam-bootstrap4
 //-------------------------------------------------------------------------------
 
-const Version = "mongologreader.js:1.24 Nov 27 2019 ";
+const Version = "mongologreader.js:1.25 Nov 27 2019 ";
 
 const mongo = require('../services/mongodb');
 const datetime = require('../services/datetime');
@@ -26,6 +26,7 @@ let aftertime = null;
 let modulename = null;
 let verbose = true;
 let validparam = false;
+let helprequested = false;
 //----------------------------------------------------------------------------
 // Parse command line args
 //----------------------------------------------------------------------------
@@ -36,8 +37,7 @@ function parseCommandLine() {
   for (index = 2; index < process.argv.length; ) {
     let keyword = process.argv[index];
     switch(keyword) {
-      case '-before':
-                  value = process.argv[++index];
+      case '-before':value = process.argv[++index];
                   if (value === undefined) {
                     throw new Error('You specified ' + keyword + ' without any value');
                   }
@@ -48,8 +48,7 @@ function parseCommandLine() {
                   beforetime = new Date(value);
                   validparam = true;
                   break;
-      case '-after': 
-                  value = process.argv[++index];
+      case '-after': value = process.argv[++index];
                   if (value === undefined) {
                     throw new Error('You specified ' + keyword + ' without any value');
                   }
@@ -60,16 +59,14 @@ function parseCommandLine() {
                   aftertime = new Date(value);
                   validparam = true;
                   break;
-      case '-l':  
-                  value = process.argv[++index];
+      case '-l':  value = process.argv[++index];
                   if (value === undefined) {
                     throw new Error('You specified ' + keyword + ' without any value');
                   }
                   loglimit = parseInt(value);
                   validparam = true;
                   break;
-      case '-m':  
-                  value = process.argv[++index];
+      case '-m':  value = process.argv[++index];
                   if (value === undefined) {
                     throw new Error('You specified ' + keyword + ' without any value');
                   }
@@ -78,6 +75,9 @@ function parseCommandLine() {
                   break;
       case '-s':  verbose = false;   // Silent mode ?
                   validparam = true;
+                  break;
+      case '-h':  validparam = true;
+                  helprequested = true;
                   break;
     }
     if (!validparam) {
@@ -114,6 +114,7 @@ function usage() {
 
   console.log('\n\n');
   console.log('Usage : node mongologreader [-l maxlog] [-m modulename] [-before <valid-date>] [-after <valid-date>] [-s] \n');
+  console.log('Usage : node mongologreader -h \n');
   console.log('[] maxlog is the maximum number of log events reported.');
   console.log('[] modulename is the name of a module which logged in mongo repository. The search is case insensitive');
   console.log('[] -before specifies a search for logs before a date');
@@ -144,6 +145,10 @@ catch(Error) {
     console.log('\n\n********** Error : ' + Error);
     usage();
     process.exit(1);
+}
+if (helprequested) {
+  usage();
+  process.exit(0);
 }
 // Get a connection
 mongo.getMongoDBConnection();
@@ -179,9 +184,9 @@ if (loglimit) {
     if (err) console.log(err);
     else {
       thelist.forEach((value, index) => {
-        console.log('[ %s ] %s %s ------ %s', ('000'+index).slice(-3), 
+        console.log('[ %s ] %s    %s %s', ('0000'+index).slice(-4), 
         datetime.convertDateTime(value.timestamp), 
-          value.module, 
+          value.module.padEnd(35, ' '), 
           value.message );
       });
     }

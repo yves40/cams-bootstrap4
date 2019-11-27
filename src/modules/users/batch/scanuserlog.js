@@ -12,9 +12,10 @@
 //    Apr 23 2019    Time range and some bugs 
 //    Nov 24 2019    Integrate cams-bootstrap4
 //    Nov 26 2019    user class changed
+//    Nov 27 2019    -h qualifier
 //----------------------------------------------------------------------------
 
-const Version = "scanuserlog.js:1.40 Nov 26 2019 ";
+const Version = "scanuserlog.js:1.41 Nov 27 2019 ";
 
 const userclass = require('../classes/userclass');
 const userLog = require('../model/userLogModel');
@@ -30,6 +31,7 @@ let verbose = true;
 let searchunknwon = true;
 let userids = [];       // All users to get log from 
 let validparam = false;
+let helprequested = false;
 //----------------------------------------------------------------------------
 // Parse command line args
 //----------------------------------------------------------------------------
@@ -86,7 +88,10 @@ function parseCommandLine() {
             case '-nok':  searchunknwon = false; 
                     validparam = true;
                     break;
-            default: 
+            case '-h':  validparam = true;
+                    helprequested = true;
+                    break;
+              default: 
                     validparam = false;
                     break;
       }
@@ -122,6 +127,7 @@ function usage() {
 
     console.log('\n\n');
     console.log('Usage : node scanuserlog [-mail <usermail>] [-l maxlog] [-before <valid-date>] [-after <valid-date>] [-s] [nok]\n');
+    console.log('Usage : node scanuserlog -h \n');
     console.log('[] usermail is a string matching all or partial mail spec. i.e : lueo@free.fr or eo@fr');
     console.log('[] maxlog is the maximum number of log events reported.');
     console.log('[] -before specifies a search for logs before a date');
@@ -153,6 +159,10 @@ try {
     logger.info(Version + 'Start search ');
     
     parseCommandLine();
+    if (helprequested) {
+        usage();
+        process.exit(0);
+    }
     // Get a connection
     mongo.getMongoDBConnection();
 

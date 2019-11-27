@@ -26,7 +26,7 @@ const corshelper = require('./modules/core/services/corshelper');
 const cors = require('cors');
 const mongologgerclass = require('./modules/core/classes/mongologgerclass');
 
-const Version = 'server.js:1.28, Nov 27 2019';
+const Version = 'server.js:1.29, Nov 27 2019';
 
 const app = express();
 //---------------------------------------------------------------------------------------------------------
@@ -78,7 +78,7 @@ logger.info("---------------------------------------------------------");
 logger.info('Site : ' + properties.corsclientorigin);
 app.use(cors(corshelper.getCORS()));
 // Log a start message in mongo
-const mongolog = new mongologgerclass('Node.js Server');
+const mongolog = new mongologgerclass(Version);
 mongolog.informational('Started');
 // Let's start the server
 app.listen(properties.nodeserverport, ()=>{
