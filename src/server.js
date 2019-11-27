@@ -11,6 +11,7 @@
     Oct 23 2019   Initial log trace
                   Install a response header middleware
     Oct 31 2019   Start work on users apis
+    Nov 27 2019   Test mongologgerclass
 ----------------------------------------------------------------------------*/
 const mongoose = require('mongoose');
 const express = require('express');
@@ -23,8 +24,9 @@ const responseheader = require('./modules/core/services/responseheader');
 const properties =  require('./modules/core/services/properties');
 const corshelper = require('./modules/core/services/corshelper');
 const cors = require('cors');
+const mongologgerclass = require('./modules/core/classes/mongologgerclass');
 
-const Version = 'server.js:1.25, Oct 31 2019';
+const Version = 'server.js:1.28, Nov 27 2019';
 
 const app = express();
 //---------------------------------------------------------------------------------------------------------
@@ -75,8 +77,12 @@ logger.info('CORS Security setting: webserver node');
 logger.info("---------------------------------------------------------");
 logger.info('Site : ' + properties.corsclientorigin);
 app.use(cors(corshelper.getCORS()));
+// Log a start message in mongo
+const mongolog = new mongologgerclass('Node.js Server');
+mongolog.informational('Started');
 // Let's start the server
 app.listen(properties.nodeserverport, ()=>{
-  logger.info('nodejs now listening on port ' + properties.nodeserverport);
+  logger.info('Node.js now listening on port ' + properties.nodeserverport);
+  mongolog.informational('Node.js now listening on port ' + properties.nodeserverport);
 });
 

@@ -23,8 +23,9 @@
 //    Nov 21 2019  Test auth module
 //    Nov 22 2019  Debug the auth module, everything is broken ;-)
 //    Nov 23 2019  WIP on Update calls
+//    Nov 27 2019  Use mongologgerclass
 //----------------------------------------------------------------------------
-const Version = 'auth.js:1.62, Nov 23 2019 ';
+const Version = 'auth.js:1.63 Nov 27 2019 ';
 
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
@@ -44,6 +45,8 @@ const helpers = require('../../core/services/helpers');
 const UserModel = require('../model/userModel');
 const userclass = require('../classes/userclass');
 const userclasshandle = new userclass();
+const mongologgerclass = require('../../core/classes/mongologgerclass');
+let mongolog = new mongologgerclass(Version);
 
 //-----------------------------------------------------------------------------------
 // Invalidate a token during logout
@@ -68,7 +71,6 @@ passport.use('jwt', new JwtStrategy(jwtOptions,
         try {
             userclasshandle.getByID(token.id, (err, loggeduser) => {
                 if (err) return done( null, false, {message: err} );
-                logger.debug('Got the logged user ' + loggeduser.email);
                 if(loggeduser) {
                     if(loggeduser.lastlogout === undefined
                         || loggeduser.lastlogout === null) {
@@ -124,6 +126,7 @@ passport.use('login',  new LocalStrategy({
                 }
                 else {  // Password is no match
                     userlog.error('Invalid password');
+                    mongolog.error('Invalid password for : ' + email);
                     return done( null, false, {message: 'Invalid password'} );
                 }
             })
@@ -131,6 +134,7 @@ passport.use('login',  new LocalStrategy({
         .catch( (result) => {
             let userlog = new userlogger(email, null);
             userlog.error('Unknown user');
+            mongolog.warning('Unknown user: ' + email);
             return done( null, false, {message: 'Unknown user'} );
         });
     })
