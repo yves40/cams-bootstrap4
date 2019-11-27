@@ -56,9 +56,9 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "scanuserlog -mail yves@free.fr",
+      "name": "scanuserlog -mail yves",
       "program": "${workspaceFolder}\\src\\modules\\users\\batch\\scanuserlog.js",
-      "args": [ "-mail", "yves@free.fr" ] 
+      "args": [ "-mail", "yves" ] 
     }
   ]
 }
