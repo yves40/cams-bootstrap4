@@ -5,6 +5,7 @@
 //    Apr 04 2019   Add client IP
 //    Oct 29 2019  cams-bootstrap4 project
 //    Oct 31 2019  Reorg
+//    Nov 27 2019  No longer use client IP
 //----------------------------------------------------------------------------
 "use strict"
 
@@ -18,8 +19,8 @@ const logger = require ('../../core/services/logger');
 // The class 
 //----------------------------------------------------------------------------
 module.exports = class userlogger {
-  constructor (email, ID = 0, ip = '0.0.0.0') {
-      this.Version = 'userlogger:1.11, Oct 31 2019 ';
+  constructor (email, ID = 0) {
+      this.Version = 'userlogger:1.12, Nov 27 2019 ';
       this.DEBUG = 0;
       this.INFORMATIONAL = 1;
       this.WARNING = 2;
@@ -27,7 +28,6 @@ module.exports = class userlogger {
       this.FATAL = 4;
       this.email = email;
       this.userid = objectid(ID);
-      this.ip = ip;
       this._DB = mongo.getMongoDBConnection();
   };
   //----------------------------------------------------------------------------
@@ -39,7 +39,6 @@ module.exports = class userlogger {
                                     userid: this.userid,
                                     email: this.email,
                                     action: action, 
-                                    ip: this.ip,
                                     timestamp: Date.now(),
                                     severity: severity,
                                 });

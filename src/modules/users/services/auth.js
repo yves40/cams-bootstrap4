@@ -104,9 +104,8 @@ passport.use('login',  new LocalStrategy({
     }, 
     (async (req, email, password, done) => {
         let incominguser = new userclass( email );
-        let checkuser = await incominguser.get();
-        if( checkuser.status) {
-            let userlog = new userlogger(incominguser.model.email, incominguser.model.id, helpers.getIP(req));
+        await incominguser.get().then( (checkuser) => {
+            let userlog = new userlogger(incominguser.model.email, incominguser.model.id);
             // Check password
             incominguser.comparePassword(password, incominguser.model.password, (error, isMatch ) => {
                 if (isMatch) {
@@ -124,16 +123,16 @@ passport.use('login',  new LocalStrategy({
                     })
                 }
                 else {  // Password is no match
-                    userlog.error('Invalid password for ' + email);
-                    return done( null, false, {message: 'Wrong password'} );
+                    userlog.error('Invalid password');
+                    return done( null, false, {message: 'Invalid password'} );
                 }
             })
-        }
-        else {  // Don't know this guy
-            let userlog = new userlogger(email, null, helpers.getIP(req));
-            userlog.error('Unknown user for ' + email);
+        })
+        .catch( (result) => {
+            let userlog = new userlogger(email, null);
+            userlog.error('Unknown user');
             return done( null, false, {message: 'Unknown user'} );
-        }
+        });
     })
 ));
 

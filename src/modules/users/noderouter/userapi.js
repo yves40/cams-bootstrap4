@@ -64,12 +64,15 @@
 //    Nov 22 2019  User object used in login logout sequences
 //    Nov 23 2019  WIP on Update calls
 //    Nov 24 2019  Fix problem with description field during register
+//    Nov 26 2019  Problem when logging a user connection
+//                 Check client IP 
+//    Nov 27 2019  Check client IP. No longer use it, it's a mess
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-const Version = 'userapi:3.28, Nov 24 2019 ';
+const Version = 'userapi:3.33, Nov 27 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -93,10 +96,10 @@ router.post('/users/login', cors(corsutility.getCORS()),
     (req, res) => {
         const payload = { id: req.user.model.id, email: req.user.model.email };
         const token = jwthelper.signToken(payload);
-        logger.debug(Version + 'User ' + req.user.model.email + ' logged');
+        logger.debug(Version + 'User ' + req.user.model.email + ' logged in');
         const userdecodedtoken = jwthelper.decodeToken(token);
         const tokendata = jwthelper.getTokenTimeMetrics(userdecodedtoken);
-        let userlog = new userlogger(req.user.email, req.user.id, helpers.getIP(req));
+        let userlog = new userlogger(req.user.model.email, req.user.model.id);
         userlog.informational('LOGIN');
         res.json( { message: req.user.model.email + ' logged', 
             token: token, 
@@ -128,7 +131,7 @@ router.post('/users/logout', cors(corsutility.getCORS()),
                     }
                 });
             });
-            let userlog = new userlogger(req.user.model.email, req.user.model.id, helpers.getIP(req));
+            let userlog = new userlogger(req.user.model.email, req.user.model.id);
             userlog.informational('LOGOUT');
             req.logout();
             const userdecodedtoken = jwthelper.decodeToken(token);
