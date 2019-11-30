@@ -8,6 +8,7 @@
     Oct 10 2019     Getter for hour minutes
     Oct 11 2019     Vuex integration
     Nov 05 2019     Reduce timer delay to 5 sec
+    Nov 29 2019     Investigate timer mechanism
 ----------------------------------------------------------------------------*/
 
 import Vue from 'vue';
@@ -20,7 +21,7 @@ Vue.use(Vuex);
     VUEX states
 ----------------------------------------------------------------------------*/
 const state = {
-    Version: 'corestore.js:1.22, Nov 05 2019',
+    Version: 'corestore.js:1.23, Nov 29 2019',
     today: datetime.getDate(),
     hourminute: datetime.getShortTime(),
 };
@@ -51,6 +52,7 @@ const mutations = { // Synchronous
 ----------------------------------------------------------------------------*/
 const actions = { 
     settimer({ commit, dispatch }) {
+        logger.debug('corestore set timer');
         setInterval(() => {
             commit('updatetime');  
             dispatch('userstore/updateTokenTime',null, {root:true});
