@@ -129,6 +129,10 @@ export default {
   // ------------------------------------------------------------------------------------------------------------
   created() {
     this.$parent.disableMenu('login');
+    this.$parent.enableMenu('register');
+    this.$parent.disableMenu('logout');
+    this.$parent.disableMenu('identity');
+    this.$parent.disableTopMenu('Bootstrap4');
   },
   beforeDestroy() {
     this.$parent.enableMenu('login');
