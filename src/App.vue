@@ -17,6 +17,7 @@
                 Change menu management for login/logout/register...
   Nov 07 2019   Finally use a logout page...
                 Some work on menus
+  Nov 29 2019   More user management
 -->
 
 <template>
@@ -46,6 +47,7 @@
             </div>
           </b-navbar-nav>
           <b-navbar-nav class="ml-auto">
+            <b-nav-item v-if="logged" v-bind:to="{ name: 'identity' }">{{email}} ({{sessiontime}})</b-nav-item>
             <b-nav-item v-if="!logged" v-bind:to="{ name: 'login' }">Login</b-nav-item>
             <b-nav-item v-if="logged" v-bind:to="{ name: 'logout' }">Logout</b-nav-item>
           </b-navbar-nav>
@@ -58,12 +60,7 @@
         <b-row>
           <b-col cols="2"></b-col>
           <b-col>
-            <ul class="list-group list-group-horizontal-sm">
-              <li class="list-group-item list-group-item-dark">{{mongostate}}</li>
-              <li class="list-group-item list-group-item-primary" v-if="logged">{{email}}</li>
-              <li class="list-group-item list-group-item-primary" v-if="logged">Log time: {{lastlogin}}</li>
-              <li class="list-group-item list-group-item-primary" v-if="logged">Time remaining : {{sessiontime}}</li>
-            </ul>
+              {{mongostate}}
           </b-col>
           <b-col cols="2"></b-col>
         </b-row>
@@ -99,7 +96,7 @@ export default {
   name: "app",
   data() {
       return {
-        version: "Cams Manager 2.18, Nov 07 2019",
+        version: "Cams Manager 2.19, Nov 29 2019",
         copyright: "oldtimerSoft",
         // These arrays are defining the displayed menus
         // enableflag drives the visibility of the URL
@@ -112,6 +109,7 @@ export default {
               {url: "login",text: "Login", enableflag: true, disableflag: false, },
               {url: "logout",text: "Logout", enableflag: false, disableflag: false,},
               {url: "register",text: "Register", enableflag: true, disableflag: false, },
+              {url: "identity",text: "Identity", enableflag: false, disableflag: false, },
             ]
           },
           {
