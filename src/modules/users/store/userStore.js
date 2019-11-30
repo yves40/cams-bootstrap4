@@ -12,6 +12,7 @@
     Nov 22 2019   Logout message 
     Nov 23 2019   Logout message : 2nd run!
     Nov 24 2019   getemail fixed
+    Nov 29 2019   Remove some logging
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -119,7 +120,6 @@ export default {
                 )
                 .then((response) => {
                         window.localStorage.setItem('jwt', response.data.token);
-                        logger.debug(JSON.stringify(response.data))
                         resolve('User ' +  response.data.email +  ' disconnected');
                         commit('deleteloginstate');
                         if(payload.path !== '/home') {
