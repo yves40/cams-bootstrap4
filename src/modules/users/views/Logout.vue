@@ -42,7 +42,7 @@ export default {
           this.$parent.enableMenu('login');
           this.$parent.enableMenu('register');
           this.$parent.disableTopMenu('Bootstrap4');
-          this.$parent.disableTopMenu('identity');
+          this.$parent.disableMenu('identity');
         })
         .catch((err) => {
           this.$swal('KO!', err, 'error');
