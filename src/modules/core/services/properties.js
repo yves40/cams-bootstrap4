@@ -17,13 +17,14 @@
 //    Nov 05 2019   Shorten the mongo monitoring delay
 //                  Parameter for the timer in corestore
 //    Nov 13 2019   No trace for mongo
+//    Nov 29 2019   Timer to 1sec : Externalize session duration time
 //----------------------------------------------------------------------------
-const Version = 'properties:1.31, Nov 13 2019';
+const Version = 'properties:1.33, Nov 29 2019';
 
 const axios = require('axios');
 
 // Core timer used to display the hour in the bottom bar
-const COREDELAY = 5000;
+const COREDELAY = 1000;
 // The webpack dev server
 const webserver = process.env.WEBSERVER || "http://localhost:8080";
 const webserverport = process.env.WEBSERVERPORT || 8080;
@@ -62,6 +63,8 @@ const axioscall = axios.create({
     timeout: 1000,
     withCredentials: true,
   });  
+// User session duration in seconds
+const tokenexpirationdelay = 120;
 
 module.exports = {
     webserver: webserver,
@@ -85,5 +88,6 @@ module.exports = {
     MONGOUSER,
     MONGOPASSWORD,
     jwtconfig,
+    tokenexpirationdelay,
     axioscall,
 }
