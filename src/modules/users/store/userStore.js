@@ -13,6 +13,7 @@
     Nov 23 2019   Logout message : 2nd run!
     Nov 24 2019   getemail fixed
     Nov 29 2019   Remove some logging
+    Nov 30 2019   WIP on tokentime expiration
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -31,12 +32,13 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.56, Nov 24 2019 ',
+        Version: 'userstore:1.59, Nov 30 2019 ',
         theuser: null,
         token: null,
         tokenobject: '{}',
         tokenvalidtime: null,
         tokenremainingtime: null,
+        therouter: null,            // set on login logout to manage token time expiration
     },
     /*----------------------------------------------------------------------------
         VUEX Getters
@@ -72,6 +74,11 @@ export default {
                 const decodedtoken = jwthelper.decodeToken(state.token);
                 const tokendata = jwthelper.getTokenTimeMetrics(decodedtoken);
                 state.tokenremainingtime = tokendata.remainingtime;
+                if (tokendata.tokenstatus === false) {
+                    state.therouter.push({ name: 'login' });
+                    state.therouter = null;
+                    state.theuser = null;
+                }
             }
         }
     },
@@ -98,6 +105,7 @@ export default {
                     window.localStorage.setItem('jwt', response.data.token);
                     commit('updateloginstate', { theuser: response.data.theuser, token:response.data.token });
                     resolve('User ' + payload.email + ' logged');
+                    state.therouter = payload.router;
                     payload.router.push({ name: 'home' });
                     },
                 )
@@ -122,6 +130,7 @@ export default {
                         window.localStorage.setItem('jwt', response.data.token);
                         resolve('User ' +  response.data.email +  ' disconnected');
                         commit('deleteloginstate');
+                        state.therouter = null;
                         if(payload.path !== '/home') {
                             payload.router.push({ name: 'home' });
                         }
