@@ -68,12 +68,13 @@
 //                 Check client IP 
 //    Nov 27 2019  Check client IP. No longer use it, it's a mess
 //                 Log user registration in mongodb global store with mongologgerclass
+//    Nov 29 2019  Remove some logging
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-const Version = 'userapi:3.34, Nov 27 2019 ';
+const Version = 'userapi:3.35, Nov 29 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
