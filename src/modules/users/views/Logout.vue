@@ -9,6 +9,7 @@
                 No longer delete it from local storage
                 Instead, shorten its expiration time
   Nov 07 2019   cams-Bootstrap4
+  Nov 29 2019   Identiy menu entry
  
 -->
 <template>
@@ -21,7 +22,7 @@ import { mapActions } from 'vuex'
 
 export default {
   data: () => ({
-    Version: 'Logout:1.20, Nov 07 2019 ',
+    Version: 'Logout:1.21, Nov 29 2019 ',
   }),
   mounted() {
     this.logout();
@@ -41,6 +42,7 @@ export default {
           this.$parent.enableMenu('login');
           this.$parent.enableMenu('register');
           this.$parent.disableTopMenu('Bootstrap4');
+          this.$parent.disableTopMenu('identity');
         })
         .catch((err) => {
           this.$swal('KO!', err, 'error');

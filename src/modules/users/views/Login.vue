@@ -17,6 +17,7 @@
   Nov 03 2019   More tests with Vuex. Use promise, and externalize the axios call in vues store module 
   Nov 06 2019   Change menu management for login/logout/register...
   Nov 08 2019   Default user mail, will be of course removed later
+  Nov 29 2019   Identiy menu entry
 -->
 <template>
   <div>
@@ -95,7 +96,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Login 1.82, Nov 08 2019 ",
+        version: "Login 1.83, Nov 29 2019 ",
         email: 'yves@free.fr',
         password: 'manager',
       };
@@ -147,6 +148,7 @@ export default {
           this.$parent.disableMenu('login');
           this.$parent.disableMenu('register');
           this.$parent.enableMenu('logout');
+          this.$parent.enableMenu('identity');
           this.$parent.enableTopMenu('Bootstrap4');
         })
         .catch((err) => {
