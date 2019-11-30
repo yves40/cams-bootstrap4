@@ -2,6 +2,7 @@
 //    jwthelper.js
 //
 //    Nov 05 2019   Initial : from auth.js : security modules reorg
+//    Nov 29 2019   Externalize session duration time
 //----------------------------------------------------------------------------
 const Version = 'jwthelper.js:1.02, Nov 05 2019 ';
 
@@ -13,7 +14,7 @@ const jwt = require('jsonwebtoken');
 const passportJWT = require('passport-jwt');
 const ExtractJwt = passportJWT.ExtractJwt;
 
-const tokenexpirationdelay = 1800;
+const tokenexpirationdelay = require('../../core/services/properties').tokenexpirationdelay;
 
 const jwtOptions = {};
 jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme('jwt');
