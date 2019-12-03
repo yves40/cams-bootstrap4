@@ -32,12 +32,13 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.59, Nov 30 2019 ',
+        Version: 'userstore:1.60, Nov 30 2019 ',
         theuser: null,
         token: null,
         tokenobject: '{}',
         tokenvalidtime: null,
         tokenremainingtime: null,
+        tokenremainingtimeraw: null,
         therouter: null,            // set on login logout to manage token time expiration
     },
     /*----------------------------------------------------------------------------
@@ -52,6 +53,7 @@ export default {
             return state.theuser === null ? 'Not logged' : datetime.getDateTime(state.theuser.model.lastlogin);
         },
         getSessionTime(state) { return state.tokenremainingtime; },
+        getSessionTimeRaw(state) { return state.tokenremainingtimeraw; },
         isLogged(state) {return state.theuser === null ? false : true ;},
         
     },
@@ -65,6 +67,7 @@ export default {
             state.tokenobject = jwthelper.decodeToken(payload.token);
             const tokendata = jwthelper.getTokenTimeMetrics(state.tokenobject);
             state.tokenremainingtime = tokendata.remainingtime;
+            state.tokenremainingtimeraw = tokendata.remainingtimeraw;
         },
         deleteloginstate(state) {
             state.theuser = null;
