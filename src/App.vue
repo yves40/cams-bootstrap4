@@ -18,6 +18,7 @@
   Nov 07 2019   Finally use a logout page...
                 Some work on menus
   Nov 29 2019   More user management
+  Dec 03 2019   Manage token expiration alert
 -->
 
 <template>
@@ -47,6 +48,9 @@
             </div>
           </b-navbar-nav>
           <b-navbar-nav class="ml-auto">
+            <b-nav-item href="#" link-classes="menualert" v-if="tokenalert">
+              <span class="menualert">Beware, session expires soon</span>
+            </b-nav-item>
             <b-nav-item v-if="logged" v-bind:to="{ name: 'identity' }">{{email}} ({{sessiontime}})</b-nav-item>
             <b-nav-item v-if="!logged" v-bind:to="{ name: 'login' }">Login</b-nav-item>
             <b-nav-item v-if="logged" v-bind:to="{ name: 'logout' }">Logout</b-nav-item>
@@ -156,6 +160,7 @@ export default {
           lastlogin: 'getLastlogin',
           logged: 'isLogged',
           sessiontime: 'getSessionTime',
+          tokenalert: 'getTokenalert'
         }
     ),
     checkmongo() {
