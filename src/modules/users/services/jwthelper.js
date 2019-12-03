@@ -3,8 +3,9 @@
 //
 //    Nov 05 2019   Initial : from auth.js : security modules reorg
 //    Nov 29 2019   Externalize session duration time
+//    Nov 30 2019   Add a raw remainingtime value for session
 //----------------------------------------------------------------------------
-const Version = 'jwthelper.js:1.02, Nov 05 2019 ';
+const Version = 'jwthelper.js:1.03, Nov 30 2019 ';
 
 const logger = require('../../core/services/logger');
 const datetime = require('../../core/services/datetime');
@@ -54,6 +55,7 @@ function getTokenTimeMetrics(thetoken) {
     }
     tokenmetrics.logintime = datetime.convertDateTime(thetoken.iat*1000);
     tokenmetrics.remainingtime = datetime.convertSecondsToHMS(remainingtime);
+    tokenmetrics.remainingtimeraw = remainingtime;
     tokenmetrics.time = datetime.getDateTime(Date.now());
     return tokenmetrics;
 };
