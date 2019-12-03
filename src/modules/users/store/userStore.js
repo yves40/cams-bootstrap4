@@ -32,7 +32,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.60, Nov 30 2019 ',
+        Version: 'userstore:1.61, Nov 30 2019 ',
         theuser: null,
         token: null,
         tokenobject: '{}',
