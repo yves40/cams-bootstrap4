@@ -18,8 +18,9 @@
 //                  Parameter for the timer in corestore
 //    Nov 13 2019   No trace for mongo
 //    Nov 29 2019   Timer to 1sec : Externalize session duration time
+//    Dec 03 2019   Variable to define alert delay before killing the session
 //----------------------------------------------------------------------------
-const Version = 'properties:1.33, Nov 29 2019';
+const Version = 'properties:1.34, Dec 03 2019';
 
 const axios = require('axios');
 
@@ -65,6 +66,7 @@ const axioscall = axios.create({
   });  
 // User session duration in seconds
 const tokenexpirationdelay = 120;
+const tokenexpirationalert = 60;    // Display a message in menu to inform user session is soon expired
 
 module.exports = {
     webserver: webserver,
@@ -89,5 +91,6 @@ module.exports = {
     MONGOPASSWORD,
     jwtconfig,
     tokenexpirationdelay,
+    tokenexpirationalert,
     axioscall,
 }

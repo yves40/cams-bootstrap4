@@ -14,6 +14,7 @@
     Nov 24 2019   getemail fixed
     Nov 29 2019   Remove some logging
     Nov 30 2019   WIP on tokentime expiration
+    Dec 03 2019   WIP on tokentime expiration, manage expiration with a pre-alert
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -32,13 +33,14 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.61, Nov 30 2019 ',
+        Version: 'userstore:1.64, Dec 03 2019 ',
         theuser: null,
         token: null,
         tokenobject: '{}',
         tokenvalidtime: null,
         tokenremainingtime: null,
         tokenremainingtimeraw: null,
+        tokenalert: false,
         therouter: null,            // set on login logout to manage token time expiration
     },
     /*----------------------------------------------------------------------------
@@ -55,7 +57,7 @@ export default {
         getSessionTime(state) { return state.tokenremainingtime; },
         getSessionTimeRaw(state) { return state.tokenremainingtimeraw; },
         isLogged(state) {return state.theuser === null ? false : true ;},
-        
+        getTokenalert(state) { return state.tokenalert; },
     },
     /*----------------------------------------------------------------------------
         VUEX mutations
@@ -71,16 +73,20 @@ export default {
         },
         deleteloginstate(state) {
             state.theuser = null;
+            state.tokenalert = false;
         },
         refreshtokentime(state) {
             if (state.theuser) {
                 const decodedtoken = jwthelper.decodeToken(state.token);
                 const tokendata = jwthelper.getTokenTimeMetrics(decodedtoken);
                 state.tokenremainingtime = tokendata.remainingtime;
+                state.tokenremainingtimeraw = tokendata.remainingtimeraw;
+                if (state.tokenremainingtimeraw < properties.tokenexpirationalert ) state.tokenalert = true;
                 if (tokendata.tokenstatus === false) {
                     state.therouter.push({ name: 'login' });
                     state.therouter = null;
                     state.theuser = null;
+                    state.tokenalert = false;
                 }
             }
         }

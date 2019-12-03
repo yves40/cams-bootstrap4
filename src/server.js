@@ -12,6 +12,7 @@
                   Install a response header middleware
     Oct 31 2019   Start work on users apis
     Nov 27 2019   Test mongologgerclass
+    Dec 03 2019   favicon
 ----------------------------------------------------------------------------*/
 const mongoose = require('mongoose');
 const express = require('express');
@@ -26,14 +27,13 @@ const corshelper = require('./modules/core/services/corshelper');
 const cors = require('cors');
 const mongologgerclass = require('./modules/core/classes/mongologgerclass');
 
-const Version = 'server.js:1.29, Nov 27 2019';
+const Version = 'server.js:1.30, Dec 03 2019';
 
 const app = express();
 //---------------------------------------------------------------------------------------------------------
 // Body parser middleware
 app.use(express.json());
 app.use(express.urlencoded( {extended: false}));
-
 //---------------------------------------------------------------------------------------------------------
 // Set a static folder containing html files
 app.use(express.static(path.join(__dirname, 'public')));
@@ -46,6 +46,14 @@ app.use('/style', express.static(path.join(__dirname, 'css')));
 // Test a simple middleware function tracking requests made on the server : see the httplogger.js source file
 // The imported function is installed in the MW chain
 if (properties.httptrace) app.use(httplogger);
+//---------------------------------------------------------------------------------------------------------
+// favicon request 
+app.use(function(req, res, next) {  // For the favicon boring request error
+  if (req.originalUrl && req.originalUrl.split("/").pop() === "favicon.ico") {
+    return res.sendStatus(204);
+  }
+  return next();
+});
 //---------------------------------------------------------------------------------------------------------
 // Install middleware responsible for response header settings
 app.use(responseheader);
