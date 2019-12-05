@@ -6,6 +6,7 @@
     Oct 03 2019   new sections
     Oct 25 2019   Add a class for button group
     Oct 27 2019   Class for vertical menu buttons 
+    Dec 05 2019   WIP on session message in menu
 
 */
 
@@ -28,7 +29,7 @@
 #header h3 {font-weight: normal;font-size: 0.8em; }
 
 #menu {text-align: left;}
-.menualert  { font-weight: bold; font-style: italic;  }
+.menualert  { font-weight: bolder; font-style: italic; padding-left: .6em; padding-right: .6em; border-radius: 4px; }
 
 #appzone {padding-top: 1em;padding-bottom: 1em;margin-top: 1em;}
 #footer {font-size: 1em;margin-top: 1em;padding-top: 1em;}

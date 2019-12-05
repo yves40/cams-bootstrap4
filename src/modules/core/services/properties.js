@@ -19,8 +19,9 @@
 //    Nov 13 2019   No trace for mongo
 //    Nov 29 2019   Timer to 1sec : Externalize session duration time
 //    Dec 03 2019   Variable to define alert delay before killing the session
+//    Dec 05 2019   Test session expiration 
 //----------------------------------------------------------------------------
-const Version = 'properties:1.34, Dec 03 2019';
+const Version = 'properties:1.35, Dec 05 2019';
 
 const axios = require('axios');
 

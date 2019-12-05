@@ -19,6 +19,7 @@
                 Some work on menus
   Nov 29 2019   More user management
   Dec 03 2019   Manage token expiration alert
+  Dec 05 2019   Manage token expiration message in menu
 -->
 
 <template>
@@ -48,9 +49,9 @@
             </div>
           </b-navbar-nav>
           <b-navbar-nav class="ml-auto">
-            <b-nav-item href="#" link-classes="menualert" v-if="tokenalert">
-              <span class="menualert">Beware, session expires soon</span>
-            </b-nav-item>
+            <b-nav-text class="bg-danger menualert" v-if="tokenalert">
+              Session expires in {{sessiontimeraw}} seconds
+            </b-nav-text>
             <b-nav-item v-if="logged" v-bind:to="{ name: 'identity' }">{{email}} ({{sessiontime}})</b-nav-item>
             <b-nav-item v-if="!logged" v-bind:to="{ name: 'login' }">Login</b-nav-item>
             <b-nav-item v-if="logged" v-bind:to="{ name: 'logout' }">Logout</b-nav-item>
@@ -100,7 +101,7 @@ export default {
   name: "app",
   data() {
       return {
-        version: "Cams Manager 2.19, Nov 29 2019",
+        version: "Cams Manager 2.20, Dec 05 2019",
         copyright: "oldtimerSoft",
         // These arrays are defining the displayed menus
         // enableflag drives the visibility of the URL
@@ -160,6 +161,7 @@ export default {
           lastlogin: 'getLastlogin',
           logged: 'isLogged',
           sessiontime: 'getSessionTime',
+          sessiontimeraw: 'getSessionTimeRaw',
           tokenalert: 'getTokenalert'
         }
     ),
