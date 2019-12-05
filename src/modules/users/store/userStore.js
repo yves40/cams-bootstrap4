@@ -66,7 +66,7 @@ export default {
         updateloginstate(state, payload) {
             state.theuser = payload.theuser;
             state.token = payload.token;
-            state.tokenobject = jwthelper.decodeToken(payload.token);
+            state.tokenobject = jwthelper.verifyToken(payload.token);
             const tokendata = jwthelper.getTokenTimeMetrics(state.tokenobject);
             state.tokenremainingtime = tokendata.remainingtime;
             state.tokenremainingtimeraw = tokendata.remainingtimeraw;
@@ -77,7 +77,7 @@ export default {
         },
         refreshtokentime(state) {
             if (state.theuser) {
-                const decodedtoken = jwthelper.decodeToken(state.token);
+                const decodedtoken = jwthelper.verifyToken(state.token);
                 const tokendata = jwthelper.getTokenTimeMetrics(decodedtoken);
                 state.tokenremainingtime = tokendata.remainingtime;
                 state.tokenremainingtimeraw = tokendata.remainingtimeraw;

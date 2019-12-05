@@ -101,7 +101,7 @@ router.post('/users/login', cors(corsutility.getCORS()),
         const payload = { id: req.user.model.id, email: req.user.model.email };
         const token = jwthelper.signToken(payload);
         logger.debug(Version + 'User ' + req.user.model.email + ' logged in');
-        const userdecodedtoken = jwthelper.decodeToken(token);
+        const userdecodedtoken = jwthelper.verifyToken(token);
         const tokendata = jwthelper.getTokenTimeMetrics(userdecodedtoken);
         let userlog = new userlogger(req.user.model.email, req.user.model.id);
         userlog.informational('LOGIN');
@@ -140,7 +140,7 @@ router.post('/users/logout', cors(corsutility.getCORS()),
             userlog.informational('LOGOUT');
             mongolog.informational( req.user.model.email + ' logged out')
             req.logout();
-            const userdecodedtoken = jwthelper.decodeToken(token);
+            const userdecodedtoken = jwthelper.verifyToken(token);
             const tokendata = jwthelper.getTokenTimeMetrics(userdecodedtoken);
             res.json( { message: message, 
                 token: token, 

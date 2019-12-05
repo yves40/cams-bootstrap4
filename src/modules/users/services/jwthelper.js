@@ -4,8 +4,9 @@
 //    Nov 05 2019   Initial : from auth.js : security modules reorg
 //    Nov 29 2019   Externalize session duration time
 //    Nov 30 2019   Add a raw remainingtime value for session
+//    Dec 05 2019   Verify token method
 //----------------------------------------------------------------------------
-const Version = 'jwthelper.js:1.03, Nov 30 2019 ';
+const Version = 'jwthelper.js:1.04, Dec 05 2019 ';
 
 const logger = require('../../core/services/logger');
 const datetime = require('../../core/services/datetime');
@@ -38,6 +39,13 @@ function decodeToken(thetoken) {
 };
 
 //-----------------------------------------------------------------------------------
+// Verify a token, decode the token and checks the signature
+//-----------------------------------------------------------------------------------
+function verifyToken(thetoken) {
+    return jwt.verify(thetoken, jwtconfig.jwtSecret);
+};
+
+//-----------------------------------------------------------------------------------
 // get token time characteristics
 //-----------------------------------------------------------------------------------
 function getTokenTimeMetrics(thetoken) {
@@ -63,6 +71,7 @@ function getTokenTimeMetrics(thetoken) {
 module.exports = {
     getTokenTimeMetrics,
     decodeToken,
+    verifyToken,
     signToken,
 }
 
