@@ -24,8 +24,9 @@
 //    Nov 22 2019  Debug the auth module, everything is broken ;-)
 //    Nov 23 2019  WIP on Update calls
 //    Nov 27 2019  Use mongologgerclass
+//    Dec 06 2019  No longer use the old userlog
 //----------------------------------------------------------------------------
-const Version = 'auth.js:1.63 Nov 27 2019 ';
+const Version = 'auth.js:1.65 Dec 06 2019 ';
 
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
@@ -40,9 +41,6 @@ jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme('jwt');
 jwtOptions.secretOrKey = jwtconfig.jwtSecret;
 
 const logger = require('../../core/services/logger');
-const userlogger = require('./userlogger');
-const helpers = require('../../core/services/helpers');
-const UserModel = require('../model/userModel');
 const userclass = require('../classes/userclass');
 const userclasshandle = new userclass();
 const mongologgerclass = require('../../core/classes/mongologgerclass');
@@ -107,7 +105,6 @@ passport.use('login',  new LocalStrategy({
     (async (req, email, password, done) => {
         let incominguser = new userclass( email );
         await incominguser.get().then( (checkuser) => {
-            let userlog = new userlogger(incominguser.model.email, incominguser.model.id);
             // Check password
             incominguser.comparePassword(password, incominguser.model.password, (error, isMatch ) => {
                 if (isMatch) {
@@ -125,16 +122,13 @@ passport.use('login',  new LocalStrategy({
                     })
                 }
                 else {  // Password is no match
-                    userlog.error('Invalid password');
-                    mongolog.error('Invalid password for : ' + email);
+                    mongolog.error('Invalid password for : ' + email, 'LOGIN', email);
                     return done( null, false, {message: 'Invalid password'} );
                 }
             })
         })
         .catch( (result) => {
-            let userlog = new userlogger(email, null);
-            userlog.error('Unknown user');
-            mongolog.warning('Unknown user: ' + email);
+            mongolog.warning('Unknown user: ' + email, 'LOGIN', email);
             return done( null, false, {message: 'Unknown user'} );
         });
     })
