@@ -32,9 +32,9 @@ const webserver = process.env.WEBSERVER || "http://localhost:8080";
 const webserverport = process.env.WEBSERVERPORT || 8080;
 // const mongodbserver =  process.env.MONGOSERVER || 'mongodb://vboxweb:4100/cams';
 const mongodbserver =  process.env.MONGOSERVER || 'mongodb://localhost:27017/cams';
-const nodeserverport = process.env.NODESERVERPORT || 8081;
 // The node server
 const nodeserver =  process.env.NODESERVER || 'http://localhost:8081';
+const nodeserverport = process.env.NODESERVERPORT || 8081;
 // CORS site enabled for cross server requests
 // The web app on 8080 calls the node services on 8081
 const corsclientorigin = 'http://localhost:8080';  
