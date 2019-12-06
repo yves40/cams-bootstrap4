@@ -17,9 +17,9 @@ const logger = require ('../services/logger');
 //----------------------------------------------------------------------------
 module.exports = class mongologger {
   constructor (modulename = 'Unspecified', 
-              email = 'Irelevant', 
-              category = 'Unspecified') {
-      this.Version = 'mongologgerclass:1.29, dec 06 2019 ';
+              category = 'Unspecified', 
+              email = 'Irelevant' ) {
+      this.Version = 'mongologgerclass:1.30, dec 06 2019 ';
       this.DEBUG = 0;
       this.INFORMATIONAL = 1;
       this.WARNING = 2;
@@ -48,7 +48,10 @@ module.exports = class mongologger {
   };
   //----------------------------------------------------------------------------
   debug(message) {this.log(message, this.DEBUG);};
-  informational(message) {this.log(message, this.INFORMATIONAL);};
+  informational(message, category = undefined, email = undefined) {
+    if(category !== undefined) this.category = category;      
+    if(email !== undefined) this.email = email;      
+    this.log(message, this.INFORMATIONAL);};
   warning(message) {this.log(message, this.WARNING);};
   fatal(message) {this.log(message, this.FATAL);};
   error(message) {this.log(message, this.ERROR);};

@@ -12,7 +12,7 @@
 //    Dec 06 2019     new field in report
 //-------------------------------------------------------------------------------
 
-const Version = "mongologreader.js:1.27 Dec 06 2019 ";
+const Version = "mongologreader.js:1.28 Dec 06 2019 ";
 
 const mongo = require('../services/mongodb');
 const datetime = require('../services/datetime');
@@ -189,8 +189,8 @@ if (loglimit) {
           ('0000'+index).slice(-4), 
           datetime.convertDateTime(value.timestamp), 
           value.module.padEnd(30, ' '), 
-          value.message.padEnd(45, ' '),
-          value.email,
+          value.message.padEnd(65, ' '),
+          value.email.padEnd(15, ' '),
           value.category  );
       });
     }

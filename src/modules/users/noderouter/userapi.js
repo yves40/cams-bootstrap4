@@ -74,7 +74,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-const Version = 'userapi:3.35, Nov 29 2019 ';
+const Version = 'userapi:3.36, Nov 29 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -86,7 +86,7 @@ const usermodel = require('../model/userModel');
 const userclass = require('../classes/userclass');
 const userclasshandle = new userclass();
 const mongologgerclass = require('../../core/classes/mongologgerclass');
-let mongolog = new mongologgerclass(Version);
+let mongolog = new mongologgerclass(Version, 'USERAPI');
 
 const passport = require('passport');
 const cors = require('cors');
@@ -105,7 +105,7 @@ router.post('/users/login', cors(corsutility.getCORS()),
         const tokendata = jwthelper.getTokenTimeMetrics(userdecodedtoken);
         let userlog = new userlogger(req.user.model.email, req.user.model.id);
         userlog.informational('LOGIN');
-        mongolog.informational(req.user.model.email + ' logged in');
+        mongolog.informational(req.user.model.email + ' logged in', 'LOGIN', req.user.model.email);
         res.json( { message: req.user.model.email + ' logged', 
             token: token, 
             userdecodedtoken: userdecodedtoken,
@@ -138,7 +138,7 @@ router.post('/users/logout', cors(corsutility.getCORS()),
             });
             let userlog = new userlogger(req.user.model.email, req.user.model.id);
             userlog.informational('LOGOUT');
-            mongolog.informational( req.user.model.email + ' logged out')
+            mongolog.informational( req.user.model.email + ' logged out', 'LOGOUT', req.user.model.email)
             req.logout();
             const userdecodedtoken = jwthelper.verifyToken(token);
             const tokendata = jwthelper.getTokenTimeMetrics(userdecodedtoken);
@@ -170,7 +170,8 @@ router.post('/users/register', cors(corsutility.getCORS()),
             req.body.userdescription
         );
         let registereduser = await newuser.Add();
-        mongolog.informational('User ' + req.body.email + ' has been registered through web access.');
+        mongolog.informational('User ' + req.body.email + ' has been registered through web access.', 
+                'REGISTER', req.body.email);
         res.json(registereduser);
     })
 );

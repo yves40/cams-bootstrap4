@@ -46,7 +46,7 @@ const UserModel = require('../model/userModel');
 const userclass = require('../classes/userclass');
 const userclasshandle = new userclass();
 const mongologgerclass = require('../../core/classes/mongologgerclass');
-let mongolog = new mongologgerclass(Version);
+let mongolog = new mongologgerclass(Version, 'AUTHENTICATION');
 
 //-----------------------------------------------------------------------------------
 // Invalidate a token during logout
