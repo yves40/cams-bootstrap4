@@ -69,17 +69,17 @@
 //    Nov 27 2019  Check client IP. No longer use it, it's a mess
 //                 Log user registration in mongodb global store with mongologgerclass
 //    Nov 29 2019  Remove some logging
+//    Dec 06 2019  No longer use the old userlog
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-const Version = 'userapi:3.36, Nov 29 2019 ';
+const Version = 'userapi:3.37, Dec 06 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
 const helpers = require('../../core/services/helpers');
-const userlogger = require("../services/userlogger");
 const auth = require('../services/auth');
 const jwthelper = require('../services/jwthelper');
 const usermodel = require('../model/userModel');
@@ -103,8 +103,6 @@ router.post('/users/login', cors(corsutility.getCORS()),
         logger.debug(Version + 'User ' + req.user.model.email + ' logged in');
         const userdecodedtoken = jwthelper.verifyToken(token);
         const tokendata = jwthelper.getTokenTimeMetrics(userdecodedtoken);
-        let userlog = new userlogger(req.user.model.email, req.user.model.id);
-        userlog.informational('LOGIN');
         mongolog.informational(req.user.model.email + ' logged in', 'LOGIN', req.user.model.email);
         res.json( { message: req.user.model.email + ' logged', 
             token: token, 
@@ -136,8 +134,6 @@ router.post('/users/logout', cors(corsutility.getCORS()),
                     }
                 });
             });
-            let userlog = new userlogger(req.user.model.email, req.user.model.id);
-            userlog.informational('LOGOUT');
             mongolog.informational( req.user.model.email + ' logged out', 'LOGOUT', req.user.model.email)
             req.logout();
             const userdecodedtoken = jwthelper.verifyToken(token);
