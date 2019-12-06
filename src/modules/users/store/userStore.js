@@ -15,6 +15,7 @@
     Nov 29 2019   Remove some logging
     Nov 30 2019   WIP on tokentime expiration
     Dec 03 2019   WIP on tokentime expiration, manage expiration with a pre-alert
+    Dec 06 2019   log session alerts and expiration in mongolog
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -33,7 +34,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.64, Dec 03 2019 ',
+        Version: 'userstore:1.68, Dec 06 2019 ',
         theuser: null,
         token: null,
         tokenobject: '{}',
@@ -81,8 +82,48 @@ export default {
                 const tokendata = jwthelper.getTokenTimeMetrics(decodedtoken);
                 state.tokenremainingtime = tokendata.remainingtime;
                 state.tokenremainingtimeraw = tokendata.remainingtimeraw;
-                if (state.tokenremainingtimeraw < properties.tokenexpirationalert ) state.tokenalert = true;
-                if (tokendata.tokenstatus === false) {
+                // Session about to expire ?
+                if (state.tokenremainingtimeraw < properties.tokenexpirationalert ) {
+                    if(!state.tokenalert) {
+                        properties.axioscall(
+                            {
+                                method: 'post',
+                                url: '/users/messages',
+                                headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
+                                data: {
+                                    message: 'Session soon expired for user ' + state.theuser.model.email,
+                                },
+                             }
+                        )
+                        .then((response) => {
+                            },
+                        )
+                        .catch((error) => {
+                            logger.error(state.Version + error);
+                            },
+                        );
+                        state.tokenalert = true;
+                    }
+                } 
+                // Session expired ?
+                if (state.tokenremainingtimeraw === 0) {
+                    properties.axioscall(
+                        {
+                            method: 'post',
+                            url: '/users/messages',
+                            headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
+                            data: {
+                                message: 'Session killed  for user ' + state.theuser.model.email,
+                            },
+                         }
+                    )
+                    .then((response) => {
+                    },
+                    )
+                    .catch((error) => {
+                        logger.error(state.Version + error);
+                        },
+                    );
                     state.therouter.push({ name: 'login' });
                     state.therouter = null;
                     state.theuser = null;

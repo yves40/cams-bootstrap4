@@ -70,12 +70,13 @@
 //                 Log user registration in mongodb global store with mongologgerclass
 //    Nov 29 2019  Remove some logging
 //    Dec 06 2019  No longer use the old userlog
+//                 Add a service to access mongolog
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-const Version = 'userapi:3.37, Dec 06 2019 ';
+const Version = 'userapi:3.38, Dec 06 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -171,6 +172,17 @@ router.post('/users/register', cors(corsutility.getCORS()),
         res.json(registereduser);
     })
 );
+
+//-----------------------------------------------------------------------------------
+// log a message in Mongo
+//-----------------------------------------------------------------------------------
+router.post('/users/messages', cors(corsutility.getCORS()),
+    passport.authenticate('jwt'),
+    (req, res) => {
+        const message = req.body.message;
+        mongolog.informational(message, 'AUTHENTICATION', req.user.model.email);
+        res.send('OK');
+});
 
 //-----------------------------------------------------------------------------------
 // Remove One user by email
