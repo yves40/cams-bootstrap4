@@ -10,9 +10,10 @@
 //    Apr 03 2019     Forgot to change the usage samples
 //    Nov 27 2019     Port to cam-bootstrap4
 //    Dec 06 2019     new field in report
+//                    -m qualifier to search for specific email field in log
 //-------------------------------------------------------------------------------
 
-const Version = "mongologreader.js:1.28 Dec 06 2019 ";
+const Version = "mongologreader.js:1.32 Dec 06 2019 ";
 
 const mongo = require('../services/mongodb');
 const datetime = require('../services/datetime');
@@ -21,6 +22,8 @@ const Mongolog = require ('../model/mongoLogModel');
 
 const ObjectId = require('mongodb').ObjectId;
 
+let useremail = null;
+let category = null;
 let loglimit = null;
 let beforetime = null;
 let aftertime = null;
@@ -80,7 +83,23 @@ function parseCommandLine() {
       case '-h':  validparam = true;
                   helprequested = true;
                   break;
-    }
+      case '-mail':
+                  value = process.argv[++index];
+                  if (value === undefined) {
+                    throw new Error('You specified ' + keyword + ' without any value');
+                  }
+                  useremail = value;
+                  validparam = true;
+                  break;
+    case '-c':
+                  value = process.argv[++index];
+                  if (value === undefined) {
+                    throw new Error('You specified ' + keyword + ' without any value');
+                  }
+                  category = value;
+                  validparam = true;
+                  break;
+      }
     if (!validparam) {
       throw new Error('Invalid parameter : ' + keyword);
     }
@@ -106,6 +125,8 @@ function parseCommandLine() {
   }
   if(verbose&&loglimit) logger.info(Version + 'Will report no more than ' + loglimit + ' lines');
   if(verbose&&modulename) logger.info(Version + 'Searching for module ' + modulename);
+  if(verbose&&useremail) logger.info(Version + 'Searching for user ' + useremail);
+  if(verbose&&category) logger.info(Version + 'Searching for category ' + category);
 };
 
 //----------------------------------------------------------------------------
@@ -114,10 +135,12 @@ function parseCommandLine() {
 function usage() {
 
   console.log('\n\n');
-  console.log('Usage : node mongologreader [-l maxlog] [-m modulename] [-before <valid-date>] [-after <valid-date>] [-s] \n');
+  console.log('Usage : node mongologreader [-l maxlog] [-m modulename] [-before <valid-date>] [-after <valid-date>] [-s] [-mail email] [-c category]\n');
   console.log('Usage : node mongologreader -h \n');
   console.log('[] maxlog is the maximum number of log events reported.');
   console.log('[] modulename is the name of a module which logged in mongo repository. The search is case insensitive');
+  console.log('[] email is the associated user for a particular event, like dummy@free.fr. can be partial, for ex. free.fr');
+  console.log('[] category is the associatedcategory for  a particular event, like LOGIN, LOGOUT, NODESERVER...');
   console.log('[] -before specifies a search for logs before a date');
   console.log('[] -after specifies a search for logs after a date');
   console.log('[]     valid-date defines the latest date to consider. All events posted before this date will not be read.');
@@ -160,6 +183,14 @@ query.select('module category email message timestamp severity').sort({timestamp
 // Any specific module wanted ? 
 if (modulename !== null) {
   query.select().where({ 'module' : { '$regex' : modulename, '$options' : 'i' } });
+}
+// Any specific user via the email qualifier ?
+if (useremail !== null) {
+  query.select().where({ 'email' : { '$regex' : useremail, '$options' : 'i' } });
+}
+// Any specific category with the -c qualifier ?
+if (category !== null) {
+  query.select().where({ 'category' : { '$regex' : category, '$options' : 'i' } });
 }
 // Any time range  ? Must be : before MAR 31 ------ after MAR 26 
 if(beforetime && aftertime) {  
