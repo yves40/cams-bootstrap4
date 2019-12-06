@@ -9,9 +9,10 @@
 //    Apr 02 2019     Change command line interpreter to use blanks instead of '='
 //    Apr 03 2019     Forgot to change the usage samples
 //    Nov 27 2019     Port to cam-bootstrap4
+//    Dec 06 2019     new field in report
 //-------------------------------------------------------------------------------
 
-const Version = "mongologreader.js:1.25 Nov 27 2019 ";
+const Version = "mongologreader.js:1.27 Dec 06 2019 ";
 
 const mongo = require('../services/mongodb');
 const datetime = require('../services/datetime');
@@ -155,7 +156,7 @@ mongo.getMongoDBConnection();
 console.log('\n\n');
 // Builds the query
 let query = Mongolog.find({ });
-query.select('module message timestamp severity').sort({timestamp: -1});  // Sorted by most recent dates
+query.select('module category email message timestamp severity').sort({timestamp: -1});  // Sorted by most recent dates
 // Any specific module wanted ? 
 if (modulename !== null) {
   query.select().where({ 'module' : { '$regex' : modulename, '$options' : 'i' } });
@@ -184,10 +185,13 @@ if (loglimit) {
     if (err) console.log(err);
     else {
       thelist.forEach((value, index) => {
-        console.log('[ %s ] %s    %s %s', ('0000'+index).slice(-4), 
-        datetime.convertDateTime(value.timestamp), 
-          value.module.padEnd(35, ' '), 
-          value.message );
+        console.log('[ %s ] %s    %s %s %s %s', 
+          ('0000'+index).slice(-4), 
+          datetime.convertDateTime(value.timestamp), 
+          value.module.padEnd(30, ' '), 
+          value.message.padEnd(45, ' '),
+          value.email,
+          value.category  );
       });
     }
     process.exit(0);
