@@ -6,6 +6,7 @@
 //    Mar 27 2019   Playing with async & Promise...
 //    Nov 27 2019   Get service in cams-bootstrap4 project
 //    Dec 06 2019   New fields and new constructor
+//                  Add parameters to log methods
 //----------------------------------------------------------------------------
 "use strict"
 const MongoLogModel = require('../model/mongoLogModel');
@@ -19,7 +20,7 @@ module.exports = class mongologger {
   constructor (modulename = 'Unspecified', 
               category = 'Unspecified', 
               email = 'Irelevant' ) {
-      this.Version = 'mongologgerclass:1.30, dec 06 2019 ';
+      this.Version = 'mongologgerclass:1.33, dec 06 2019 ';
       this.DEBUG = 0;
       this.INFORMATIONAL = 1;
       this.WARNING = 2;
@@ -47,14 +48,31 @@ module.exports = class mongologger {
     }); 
   };
   //----------------------------------------------------------------------------
-  debug(message) {this.log(message, this.DEBUG);};
-  informational(message, category = undefined, email = undefined) {
+  debug(message, category = undefined, email = undefined) {
     if(category !== undefined) this.category = category;      
     if(email !== undefined) this.email = email;      
-    this.log(message, this.INFORMATIONAL);};
-  warning(message) {this.log(message, this.WARNING);};
-  fatal(message) {this.log(message, this.FATAL);};
-  error(message) {this.log(message, this.ERROR);};
+    this.log(message, this.DEBUG);
+  };
+  informational(message, category = undefined, email = undefined) {
+      if(category !== undefined) this.category = category;      
+      if(email !== undefined) this.email = email;      
+      this.log(message, this.INFORMATIONAL);
+  };
+  warning(message, category = undefined, email = undefined) {
+    if(category !== undefined) this.category = category;      
+    if(email !== undefined) this.email = email;      
+    this.log(message, this.WARNING);
+  };
+  fatal(message, category = undefined, email = undefined) {
+    if(category !== undefined) this.category = category;      
+    if(email !== undefined) this.email = email;      
+    this.log(message, this.FATAL);
+  };
+  error(message, category = undefined, email = undefined) {
+    if(category !== undefined) this.category = category;      
+    if(email !== undefined) this.email = email;      
+  this.log(message, this.ERROR);
+  };
   //----------------------------------------------------------------------------
   levelToString(level) {
     switch (level) {
