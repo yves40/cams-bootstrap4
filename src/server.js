@@ -13,6 +13,7 @@
     Oct 31 2019   Start work on users apis
     Nov 27 2019   Test mongologgerclass
     Dec 03 2019   favicon
+    Dec 06 2019   Category for log message in mongo
 ----------------------------------------------------------------------------*/
 const mongoose = require('mongoose');
 const express = require('express');
@@ -27,7 +28,7 @@ const corshelper = require('./modules/core/services/corshelper');
 const cors = require('cors');
 const mongologgerclass = require('./modules/core/classes/mongologgerclass');
 
-const Version = 'server.js:1.30, Dec 03 2019';
+const Version = 'server.js:1.31, Dec 06 2019';
 
 const app = express();
 //---------------------------------------------------------------------------------------------------------
@@ -86,7 +87,7 @@ logger.info("---------------------------------------------------------");
 logger.info('Site : ' + properties.corsclientorigin);
 app.use(cors(corshelper.getCORS()));
 // Log a start message in mongo
-const mongolog = new mongologgerclass(Version);
+const mongolog = new mongologgerclass(Version, 'NODESERVER');
 mongolog.informational('Started');
 // Let's start the server
 app.listen(properties.nodeserverport, ()=>{
