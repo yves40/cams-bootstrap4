@@ -2,6 +2,6 @@ POST http://localhost:8081/users/login
 content-type: application/json
 
 {
-	"email": "boss@free.fr",
+	"email": "yves@free.fr",
 	"password": "manager"
 }

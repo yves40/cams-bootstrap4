@@ -1,0 +1,8 @@
+GET http://localhost:8081/users/mylog
+Content-Type: application/json
+authorization: jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkZDU3OTBkN2IwNTc3NWIwMGM2NjY3NyIsImVtYWlsIjoieXZlc0BmcmVlLmZyIiwiaWF0IjoxNTc1OTExOTU4LCJleHAiOjE1NzU5MTMxNTh9.DR1RPbZXvfHzCqolmVa-bmpMOCYgCy4xV_StkN3TA7A
+
+{
+  "logtype": "USER",
+  "lineslimit": 40
+}

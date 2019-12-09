@@ -16,6 +16,7 @@
     Nov 30 2019   WIP on tokentime expiration
     Dec 03 2019   WIP on tokentime expiration, manage expiration with a pre-alert
     Dec 06 2019   log session alerts and expiration in mongolog
+    Dec 09 2019   user logs
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -34,7 +35,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.68, Dec 06 2019 ',
+        Version: 'userstore:1.74, Dec 09 2019 ',
         theuser: null,
         token: null,
         tokenobject: '{}',
@@ -43,6 +44,7 @@ export default {
         tokenremainingtimeraw: null,
         tokenalert: false,
         therouter: null,            // set on login logout to manage token time expiration
+        userlogs: null,
     },
     /*----------------------------------------------------------------------------
         VUEX Getters
@@ -59,6 +61,8 @@ export default {
         getSessionTimeRaw(state) { return state.tokenremainingtimeraw; },
         isLogged(state) {return state.theuser === null ? false : true ;},
         getTokenalert(state) { return state.tokenalert; },
+        // Get a user logs
+        getUserLogs(state) { return state.userlogs; }
     },
     /*----------------------------------------------------------------------------
         VUEX mutations
@@ -71,6 +75,27 @@ export default {
             const tokendata = jwthelper.getTokenTimeMetrics(state.tokenobject);
             state.tokenremainingtime = tokendata.remainingtime;
             state.tokenremainingtimeraw = tokendata.remainingtimeraw;
+        },
+        updateuserlogs(state) {
+            logger.debug(state.Version + ' Updating user logs');
+            properties.axioscall(
+                {
+                    method: 'get',
+                    url: '/users/mylog',
+                    headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
+                    data: {
+                        "logtype": "USER",
+                        "lineslimit": 40,     
+                    }
+                }
+            )
+            .then((response) => { 
+                state.userlogs = response.data; },
+            )
+            .catch((error) => {
+                logger.error(state.Version + error);
+                },
+            );
         },
         deleteloginstate(state) {
             state.theuser = null;
@@ -154,6 +179,7 @@ export default {
                 .then((response) => {
                     window.localStorage.setItem('jwt', response.data.token);
                     commit('updateloginstate', { theuser: response.data.theuser, token:response.data.token });
+                    commit('updateuserlogs');
                     resolve('User ' + payload.email + ' logged');
                     state.therouter = payload.router;
                     payload.router.push({ name: 'home' });

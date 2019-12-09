@@ -71,19 +71,18 @@
 //    Nov 29 2019  Remove some logging
 //    Dec 06 2019  No longer use the old userlog
 //                 Add a service to access mongolog
+//    Dec 09 2019  Access user logs now
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
-const mongoose = require('mongoose');
 
-const Version = 'userapi:3.38, Dec 06 2019 ';
+const Version = 'userapi:3.42, Dec 09 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
 const helpers = require('../../core/services/helpers');
 const auth = require('../services/auth');
 const jwthelper = require('../services/jwthelper');
-const usermodel = require('../model/userModel');
 const userclass = require('../classes/userclass');
 const userclasshandle = new userclass();
 const mongologgerclass = require('../../core/classes/mongologgerclass');
@@ -204,6 +203,24 @@ router.get('/users/list', cors(corsutility.getCORS()),
         let allusers = await new userclass().listUsers();
         res.send(allusers);   
     })
+);
+
+//-----------------------------------------------------------------------------------
+// Access user log
+//-----------------------------------------------------------------------------------
+router.get('/users/mylog', cors(corsutility.getCORS()),
+    passport.authenticate('jwt'), 
+    (req, res) => {
+        const logtype = req.body.logtype;
+        const lineslimit = req.body.lineslimit;
+        const mongologs = new mongologgerclass();
+        mongologs.getUserLogs(req.user.model.email).then((logs) => {
+            res.send(logs);
+        })
+        .catch((errormessage => {
+            res.send(errormessage);
+        }))
+    }
 );
 
 //-----------------------------------------------------------------------------------
