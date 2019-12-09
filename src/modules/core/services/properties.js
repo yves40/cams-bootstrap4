@@ -20,8 +20,9 @@
 //    Nov 29 2019   Timer to 1sec : Externalize session duration time
 //    Dec 03 2019   Variable to define alert delay before killing the session
 //    Dec 05 2019   Test session expiration 
+//    Dec 08 2019   Reset session expiration time
 //----------------------------------------------------------------------------
-const Version = 'properties:1.35, Dec 05 2019';
+const Version = 'properties:1.36, Dec 08 2019';
 
 const axios = require('axios');
 
@@ -66,8 +67,8 @@ const axioscall = axios.create({
     withCredentials: true,
   });  
 // User session duration in seconds
-const tokenexpirationdelay = 120;
-const tokenexpirationalert = 60;    // Display a message in menu to inform user session is soon expired
+const tokenexpirationdelay = 1200;
+const tokenexpirationalert = 120;    // Display a message in menu to inform user session is soon expired
 
 module.exports = {
     webserver: webserver,
