@@ -6,6 +6,7 @@
 //    Oct 06 2019   1st vuex tests
 //    Oct 16 2019   Reorg folders : router becomes vuerouter
 //    Nov 03 2019   vueswal for informational popups
+//    Dec 09 2019   Test vue filter
 //----------------------------------------------------------------------------
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -18,11 +19,16 @@ import App from './App';
 
 import mainrouter from './modules/core/vuerouter/mainrouter';
 import store from './modules/core/store/store';
+import datetime from './modules/core/services/datetime'
 
-const Version = 'Version:1.08, Nov 03 2019';
+const Version = 'Version:1.09, Dec 09 2019';
 
 Vue.use(BootstrapVue);
 Vue.use(vueswal);   // For smart alert popups
+// Add a vue filter to be used in Identity.vue
+Vue.filter('formatdate', function(value) {
+  return datetime.convertDateTime(value);
+})
 
 new Vue({
   el: '#app',
