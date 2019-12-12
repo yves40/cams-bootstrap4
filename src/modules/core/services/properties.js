@@ -21,8 +21,9 @@
 //    Dec 03 2019   Variable to define alert delay before killing the session
 //    Dec 05 2019   Test session expiration 
 //    Dec 08 2019   Reset session expiration time
+//    Dec 11 2019   Query on mongolog : lines limit parameter
 //----------------------------------------------------------------------------
-const Version = 'properties:1.36, Dec 08 2019';
+const Version = 'properties:1.37, Dec 11 2019';
 
 const axios = require('axios');
 
@@ -69,6 +70,8 @@ const axioscall = axios.create({
 // User session duration in seconds
 const tokenexpirationdelay = 1200;
 const tokenexpirationalert = 120;    // Display a message in menu to inform user session is soon expired
+// Mongolog : default lines limit for returned data
+const MONGOLOGLINESLIMIT = 20;
 
 module.exports = {
     webserver: webserver,
@@ -91,6 +94,7 @@ module.exports = {
     MONGODOWN,
     MONGOUSER,
     MONGOPASSWORD,
+    MONGOLOGLINESLIMIT,
     jwtconfig,
     tokenexpirationdelay,
     tokenexpirationalert,
