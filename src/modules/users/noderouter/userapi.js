@@ -72,14 +72,16 @@
 //    Dec 06 2019  No longer use the old userlog
 //                 Add a service to access mongolog
 //    Dec 09 2019  Access user logs now
+//    Dec 11 2019  Manage lines limit for mongo llog queries
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.42, Dec 09 2019 ';
+const Version = 'userapi:3.43, Dec 11 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
+const props = require("../../core/services/properties");
 const helpers = require('../../core/services/helpers');
 const auth = require('../services/auth');
 const jwthelper = require('../services/jwthelper');
@@ -212,9 +214,11 @@ router.get('/users/mylog', cors(corsutility.getCORS()),
     passport.authenticate('jwt'), 
     (req, res) => {
         const logtype = req.body.logtype;
-        const lineslimit = req.body.lineslimit;
+        let lineslimit = req.body.lineslimit;
+        if(lineslimit === undefined) 
+            lineslimit = props.MONGOLOGLINESLIMIT;      // This is the default
         const mongologs = new mongologgerclass();
-        mongologs.getUserLogs(req.user.model.email).then((logs) => {
+        mongologs.getUserLogs(req.user.model.email, lineslimit).then((logs) => {
             res.send(logs);
         })
         .catch((errormessage => {
