@@ -8,6 +8,7 @@
 //    Dec 06 2019   New fields and new constructor
 //                  Add parameters to log methods
 //    Dec 09 2019   Add a user log access method
+//    Dec 11 2019   log lines limit
 //----------------------------------------------------------------------------
 "use strict"
 const MongoLogModel = require('../model/mongoLogModel');
@@ -22,7 +23,7 @@ module.exports = class mongologger {
   constructor (modulename = 'Unspecified', 
               category = 'Unspecified', 
               email = 'Irelevant' ) {
-      this.Version = 'mongologgerclass:1.40, dec 09 2019 ';
+      this.Version = 'mongologgerclass:1.41, dec 11 2019 ';
       this.DEBUG = 0;
       this.INFORMATIONAL = 1;
       this.WARNING = 2;
@@ -90,13 +91,15 @@ module.exports = class mongologger {
   };  
   //----------------------------------------------------------------------------
   // Get some user logs
+  // Pass user email and optional lines limit for the returned data
   //----------------------------------------------------------------------------
-  getUserLogs(useremail) {
+  getUserLogs(useremail, lineslimit) {
     return new Promise((resolve, reject) => {
       (async () => {
         let query = Mongolog.find({ });
         query.select('module category email message timestamp severity').sort({timestamp: -1});  // Sorted by most recent dates
         query.select().where({ 'email' : { '$regex' : useremail, '$options' : 'i' } });
+        if (lineslimit !== undefined) query.limit(lineslimit);
         logger.debug(this.Version + 'Search for ' + useremail + ' logs');
         await query.exec(function(err, thelist) {
           if (err) reject(err);
