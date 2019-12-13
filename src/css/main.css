@@ -7,6 +7,7 @@
     Oct 25 2019   Add a class for button group
     Oct 27 2019   Class for vertical menu buttons 
     Dec 05 2019   WIP on session message in menu
+    Dec 13 2019   Log window styles 
 
 */
 
@@ -54,4 +55,9 @@ ul {
   margin-top: 6px;
 }
 
+.loginf { font-size: small; }
+.logerr { color:red; font-size: large;}
+.logwarn { color: forestgreen; font-size: medium;}
+.logfatal { color: red; font-size: large; font-weight: bolder;}
+.logheader { padding-top: 1em; }
 
