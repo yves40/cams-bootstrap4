@@ -73,11 +73,12 @@
 //                 Add a service to access mongolog
 //    Dec 09 2019  Access user logs now
 //    Dec 11 2019  Manage lines limit for mongo llog queries
+//    Dec 12 2019  /users/messages get more input params 
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.43, Dec 11 2019 ';
+const Version = 'userapi:3.44, Dec 12 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -181,9 +182,28 @@ router.post('/users/messages', cors(corsutility.getCORS()),
     passport.authenticate('jwt'),
     (req, res) => {
         const message = req.body.message;
-        mongolog.informational(message, 'AUTHENTICATION', req.user.model.email);
+        const severity = req.body.severity;
+        const category = req.body.category === undefined ? 'AUTHENTICATION' : req.body.category;
+        switch(severity) {
+            case 'D':
+                    mongolog.debug(message, category, req.user.model.email);
+                    break;
+            case 'I':
+                    mongolog.informational(message, category, req.user.model.email);
+                    break;
+            case 'W':
+                    mongolog.warning(message, category, req.user.model.email);
+                    break;
+            case 'E':
+                    mongolog.error(message, category, req.user.model.email);
+                    break;
+            case 'F':
+                    mongolog.fatal(message, category, req.user.model.email);
+                    break;
+        }  
         res.send('OK');
-});
+    }
+);
 
 //-----------------------------------------------------------------------------------
 // Remove One user by email

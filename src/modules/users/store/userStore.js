@@ -17,6 +17,7 @@
     Dec 03 2019   WIP on tokentime expiration, manage expiration with a pre-alert
     Dec 06 2019   log session alerts and expiration in mongolog
     Dec 09 2019   user logs
+    Dec 12 2019   user messages for session killed and session alert changed
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -35,7 +36,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.74, Dec 09 2019 ',
+        Version: 'userstore:1.75, Dec 12 2019 ',
         theuser: null,
         token: null,
         tokenobject: '{}',
@@ -117,6 +118,7 @@ export default {
                                 headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
                                 data: {
                                     message: 'Session soon expired for user ' + state.theuser.model.email,
+                                    severity: 'W',
                                 },
                              }
                         )
@@ -139,6 +141,7 @@ export default {
                             headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
                             data: {
                                 message: 'Session killed  for user ' + state.theuser.model.email,
+                                severity: 'F',
                             },
                          }
                     )
