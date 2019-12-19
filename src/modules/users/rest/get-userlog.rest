@@ -1,8 +1,8 @@
 GET http://localhost:8081/users/mylog
 Content-Type: application/json
-authorization: jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkZDU3OTBkN2IwNTc3NWIwMGM2NjY3NyIsImVtYWlsIjoieXZlc0BmcmVlLmZyIiwiaWF0IjoxNTc1OTExOTU4LCJleHAiOjE1NzU5MTMxNTh9.DR1RPbZXvfHzCqolmVa-bmpMOCYgCy4xV_StkN3TA7A
+authorization: jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkZDU3OTBkN2IwNTc3NWIwMGM2NjY3NyIsImVtYWlsIjoieXZlc0BmcmVlLmZyIiwiaWF0IjoxNTc2NTk1MjAzLCJleHAiOjE1NzY1OTUzMjN9.1cm0nH77FZWLxd4GLeq-yculdrPpjZXV-Jcq0rNBqx8
 
 {
-  "logtype": "USER",
-  "lineslimit": 40
+  "severity": [ "3", "1" ],
+  "lineslimit": 10
 }

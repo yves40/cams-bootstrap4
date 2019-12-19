@@ -1,0 +1,8 @@
+POST http://localhost:8081/users/update HTTP/1.1
+content-type: application/json
+Authorization: jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkZDU3OTBkN2IwNTc3NWIwMGM2NjY3NyIsImVtYWlsIjoieXZlc0BmcmVlLmZyIiwiaWF0IjoxNTc2NjAyMjM4LCJleHAiOjE1NzY2MDIzNTh9.Qc0O58H7fecbr3jrIrf7AdTiarua9BkQMjmM1Fz3UAA
+
+{
+    "name": "Yves oldtimer",
+    "description": "This is me in RECO"
+}
