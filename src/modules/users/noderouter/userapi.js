@@ -74,11 +74,16 @@
 //    Dec 09 2019  Access user logs now
 //    Dec 11 2019  Manage lines limit for mongo llog queries
 //    Dec 12 2019  /users/messages get more input params 
+//    Dec 13 2019  Manage severity level when reading user logs
+//    Dec 17 2019  Check severity parameter for user log request. 
+//                 GET is now a POST
+//                 Update a user from web access
+//    Dec 19 2019  User update bug
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.44, Dec 12 2019 ';
+const Version = 'userapi:3.54, Dec 19 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -176,6 +181,27 @@ router.post('/users/register', cors(corsutility.getCORS()),
 );
 
 //-----------------------------------------------------------------------------------
+// Update user
+//-----------------------------------------------------------------------------------
+router.post('/users/update', cors(corsutility.getCORS()), 
+    passport.authenticate('jwt'),
+    helpers.asyncMiddleware(async (req, res, next) => {
+        logger.debug(Version + 'Update user : ' + req.user.model.email);
+        let newuser = new userclass(
+            req.user.model.email, 
+            req.body.name,
+            undefined,
+            undefined,
+            req.body.description
+        );
+        let updateduser = await newuser.Update();
+        mongolog.informational('User ' + req.user.model.email + ' has been updated.', 
+                'UPDATE', req.body.email);
+        res.json(updateduser);
+    })
+);
+
+//-----------------------------------------------------------------------------------
 // log a message in Mongo
 //-----------------------------------------------------------------------------------
 router.post('/users/messages', cors(corsutility.getCORS()),
@@ -230,15 +256,15 @@ router.get('/users/list', cors(corsutility.getCORS()),
 //-----------------------------------------------------------------------------------
 // Access user log
 //-----------------------------------------------------------------------------------
-router.get('/users/mylog', cors(corsutility.getCORS()),
+router.post('/users/mylog', cors(corsutility.getCORS()),
     passport.authenticate('jwt'), 
     (req, res) => {
-        const logtype = req.body.logtype;
+        const severity = req.body.severity;       // Defines the severity of logs required. Defaults to all
         let lineslimit = req.body.lineslimit;
         if(lineslimit === undefined) 
             lineslimit = props.MONGOLOGLINESLIMIT;      // This is the default
         const mongologs = new mongologgerclass();
-        mongologs.getUserLogs(req.user.model.email, lineslimit).then((logs) => {
+        mongologs.getUserLogs(req.user.model.email, lineslimit, severity).then((logs) => {
             res.send(logs);
         })
         .catch((errormessage => {

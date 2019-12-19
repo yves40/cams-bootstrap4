@@ -25,6 +25,9 @@
 //    Nov 22 2019   Update method reviewed
 //    Nov 23 2019   Update method changed
 //    Nov 24 2019   Filter on list users
+//    Dec 17 2019   WIP on user update
+//    Dec 18 2019   WIP on user update, check mongo action
+//    Dec 19 2019   WIP on user update, change call to a sync one
 //----------------------------------------------------------------------------
 const UserModel = require('../model/userModel').UserModel
 const bcryptjs = require('bcryptjs');
@@ -48,7 +51,7 @@ module.exports = class userclass {
             description = "None",
         ) 
     {
-        this.Version = 'userclass:1.83, Nov 24 2019 ';
+        this.Version = 'userclass:1.87, Dec 19 2019 ';
         this.model = new UserModel({ 
                             name: name, 
                             email: email, 
@@ -176,21 +179,18 @@ module.exports = class userclass {
 
     //------------------------------------------------------
     // Get a user object and update it, except the password and 
-    // login / logout dates
+    // profile, login / logout dates
     // Returns a promise
     //------------------------------------------------------
-    Update( list = {
-        email: this.model.email,
-        name: this.model.name,
-        profilecode: this.model.profilecode,
-        description: this.model.description,
-
-    }) {
+    Update() 
+    {
         return new Promise((resolve, reject) => {
             UserModel.findOneAndUpdate( {email: this.model.email}, 
-                {
-                    list: list,
-                    updated: Date.now(),
+                { $set: {
+                            name: this.model.name,
+                            description : this.model.description,
+                        },
+                        updated: Date.now(),
                 },
                 { upsert: false, new: true }, // Do not update a non existing user
                 (err, userupdated) => {
