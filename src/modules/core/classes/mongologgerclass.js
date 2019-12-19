@@ -9,6 +9,9 @@
 //                  Add parameters to log methods
 //    Dec 09 2019   Add a user log access method
 //    Dec 11 2019   log lines limit
+//    Dec 13 2019   Manage severity level for logs
+//    Dec 17 2019   Check severity level for logs is processed properly
+//    Dec 19 2019   Remove some log trace
 //----------------------------------------------------------------------------
 "use strict"
 const MongoLogModel = require('../model/mongoLogModel');
@@ -23,7 +26,7 @@ module.exports = class mongologger {
   constructor (modulename = 'Unspecified', 
               category = 'Unspecified', 
               email = 'Irelevant' ) {
-      this.Version = 'mongologgerclass:1.41, dec 11 2019 ';
+      this.Version = 'mongologgerclass:1.45, Dec 19 2019 ';
       this.DEBUG = 0;
       this.INFORMATIONAL = 1;
       this.WARNING = 2;
@@ -92,15 +95,20 @@ module.exports = class mongologger {
   //----------------------------------------------------------------------------
   // Get some user logs
   // Pass user email and optional lines limit for the returned data
+  // Severity if passed defines the log type we want in DIWEF
   //----------------------------------------------------------------------------
-  getUserLogs(useremail, lineslimit) {
+  getUserLogs(useremail, lineslimit, severity = undefined) {
     return new Promise((resolve, reject) => {
       (async () => {
         let query = Mongolog.find({ });
         query.select('module category email message timestamp severity').sort({timestamp: -1});  // Sorted by most recent dates
         query.select().where({ 'email' : { '$regex' : useremail, '$options' : 'i' } });
+        // Check required severity
+        if(severity !== undefined) {
+          query.select().where('severity').in(severity);
+        }
+        // Check line limit
         if (lineslimit !== undefined) query.limit(lineslimit);
-        logger.debug(this.Version + 'Search for ' + useremail + ' logs');
         await query.exec(function(err, thelist) {
           if (err) reject(err);
           else {
