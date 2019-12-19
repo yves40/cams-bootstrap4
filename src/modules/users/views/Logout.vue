@@ -10,6 +10,7 @@
                 Instead, shorten its expiration time
   Nov 07 2019   cams-Bootstrap4
   Nov 29 2019   Identiy menu entry
+  Dec 17 2019   Edit user profile page de-activated
  
 -->
 <template>
@@ -43,6 +44,7 @@ export default {
           this.$parent.enableMenu('register');
           this.$parent.disableTopMenu('Bootstrap4');
           this.$parent.disableMenu('identity');
+          this.$parent.disableMenu('edit');
         })
         .catch((err) => {
           this.$swal('KO!', err, 'error');

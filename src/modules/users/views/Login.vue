@@ -18,6 +18,7 @@
   Nov 06 2019   Change menu management for login/logout/register...
   Nov 08 2019   Default user mail, will be of course removed later
   Nov 29 2019   Identiy menu entry
+  Dec 17 2019   Edit user profile page activated
 -->
 <template>
   <div>
@@ -153,6 +154,7 @@ export default {
           this.$parent.disableMenu('register');
           this.$parent.enableMenu('logout');
           this.$parent.enableMenu('identity');
+          this.$parent.enableMenu('edit');
           this.$parent.enableTopMenu('Bootstrap4');
         })
         .catch((err) => {
