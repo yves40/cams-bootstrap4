@@ -18,6 +18,10 @@
     Dec 06 2019   log session alerts and expiration in mongolog
     Dec 09 2019   user logs
     Dec 12 2019   user messages for session killed and session alert changed
+    Dec 13 2019   Manage user logs queries severity param
+    Dec 16 2019   Add filterbox, to select info type in logs
+    Dec 17 2019   Manage filters when UI selects them
+                  Add a user update action
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -36,7 +40,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.75, Dec 12 2019 ',
+        Version: 'userstore:1.83, Dec 17 2019 ',
         theuser: null,
         token: null,
         tokenobject: '{}',
@@ -46,6 +50,7 @@ export default {
         tokenalert: false,
         therouter: null,            // set on login logout to manage token time expiration
         userlogs: null,
+        filterbox: [ '0', '1', '2', '3', '4'],
     },
     /*----------------------------------------------------------------------------
         VUEX Getters
@@ -63,7 +68,8 @@ export default {
         isLogged(state) {return state.theuser === null ? false : true ;},
         getTokenalert(state) { return state.tokenalert; },
         // Get a user logs
-        getUserLogs(state) { return state.userlogs; }
+        getUserLogs(state) { return state.userlogs; },
+        getFilters(state) { return state.filterbox; }
     },
     /*----------------------------------------------------------------------------
         VUEX mutations
@@ -77,30 +83,36 @@ export default {
             state.tokenremainingtime = tokendata.remainingtime;
             state.tokenremainingtimeraw = tokendata.remainingtimeraw;
         },
-        updateuserlogs(state) {
-            logger.debug(state.Version + ' Updating user logs');
+        updateuserlogs(state, severity = undefined) {
+            if (severity === undefined) severity =  [ "0", "1", "2", "3", "4" ]; 
             properties.axioscall(
                 {
-                    method: 'get',
+                    method: 'post',
                     url: '/users/mylog',
                     headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
                     data: {
-                        "logtype": "USER",
+                        "severity": severity,
                         "lineslimit": 40,     
                     }
                 }
             )
             .then((response) => { 
-                state.userlogs = response.data; },
+                    state.userlogs = response.data; 
+                    logger.debug(state.Version + 'Got ' + state.userlogs.length + ' log entries');
+                },
             )
             .catch((error) => {
-                logger.error(state.Version + error);
+                    logger.error(state.Version + error);
                 },
             );
         },
         deleteloginstate(state) {
             state.theuser = null;
             state.tokenalert = false;
+        },
+        update(state, name, description) {
+            state.name = name;
+            state.description = description;
         },
         refreshtokentime(state) {
             if (state.theuser) {
@@ -240,6 +252,32 @@ export default {
                 .then((response) => {
                         commit('deleteloginstate');
                         resolve('User registered');
+                    },
+                )
+                .catch((error) => {
+                    logger.error(state.Version + error);
+                    reject('An error occured');
+                    },
+                );
+            })
+        },
+        // Update action -------------------------------------------------------------------
+        update({commit, state}, payload) {
+            return new Promise((resolve, reject) => {
+                properties.axioscall(
+                    {
+                        method: 'post',
+                        url: '/users/update',
+                        headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
+                        data: {
+                            name : payload.name,
+                            description: payload.description,
+                        },
+                    }
+                )
+                .then((response) => {
+                        commit('update', payload.name, payload.description);
+                        resolve('User updated');
                     },
                 )
                 .catch((error) => {
