@@ -9,6 +9,8 @@
                 Follow the formatdate track...
   Dec 12 2019   Add some info about user activity
   Dec 13 2019   Filter on user activity logs
+  Dec 16 2019   Filters checkboxes are now in user store
+  Dec 17 2019   filterbox setter problem
 -->
 <template>
   <div>
@@ -95,15 +97,15 @@
         <!-- 
           Filter with check boxes
         -->
-        <b-row >
+        <b-row>
           <b-col cols="2"></b-col>
           <b-col >
                 <b-form-checkbox-group v-model="filterbox" id="checkboxes">
-                  <b-form-checkbox value="deb" unchecked-value="nodeb">Debug</b-form-checkbox>
-                  <b-form-checkbox value="inf" unchecked-value="noinf">Information</b-form-checkbox>
-                  <b-form-checkbox value="war">Warning</b-form-checkbox>
-                  <b-form-checkbox value="err">Error</b-form-checkbox>
-                  <b-form-checkbox value="fat">Fatal</b-form-checkbox>
+                  <b-form-checkbox value="0">Debug</b-form-checkbox>
+                  <b-form-checkbox value="1">Information</b-form-checkbox>
+                  <b-form-checkbox value="2">Warning</b-form-checkbox>
+                  <b-form-checkbox value="3">Error</b-form-checkbox>
+                  <b-form-checkbox value="4">Fatal</b-form-checkbox>
                 </b-form-checkbox-group>
           </b-col>
           <b-col cols="2"></b-col>
@@ -143,13 +145,12 @@
 const logger = require('../../core/services/logger');
 const datetime = require('../../core/services/datetime');
 
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   data() {
       return {
-        version: "Identity 1.37, Dec 13 2019 ",
-        filterbox: [ 'deb', 'inf', 'war', 'err', 'fat'],
+        version: "Identity 1.44, Dec 17 2019 ",
       };
   },
   // ------------------------------------------------------------------------------------------------------------
@@ -162,9 +163,21 @@ export default {
           description: 'getDescription',
           lastlogin: 'getLastlogin',
           sessiontime: 'getSessionTime',
-          userlogs: 'getUserLogs'
-        },
+          userlogs: 'getUserLogs',
+          logged: 'isLogged'
+        }
     ),
+    filterbox: 
+      {
+        get() {
+          return this.$store.state.userstore.filterbox;
+        },
+        set(value) {
+          // Call a Vuex mutation (synchronous) to refresh the log query
+          // and update the store 
+          this.$store.commit('userstore/updateuserlogs', value );
+        }
+      },
   },  
   
   // ------------------------------------------------------------------------------------------------------------
@@ -180,12 +193,5 @@ export default {
       this.$router.push({ name: 'home' });
     },
   },
-  watch: {
-    filterbox: {
-      handler: (value) => {
-        console.log('Filters  set to : ' + value);
-      }
-    },
-  }
 }
 </script>
