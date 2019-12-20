@@ -23,8 +23,9 @@
 //    Dec 08 2019   Reset session expiration time
 //    Dec 11 2019   Query on mongolog : lines limit parameter
 //    Dec 12 2019   session expiration in debug mode (shorter)
+//    Dec 20 2019   session expiration in debug mode (longer)
 //----------------------------------------------------------------------------
-const Version = 'properties:1.38, Dec 12 2019';
+const Version = 'properties:1.39, Dec 20 2019';
 
 const axios = require('axios');
 
@@ -69,7 +70,7 @@ const axioscall = axios.create({
     withCredentials: true,
   });  
 // User session duration in seconds
-const tokenexpirationdelay = 120;
+const tokenexpirationdelay = 600;
 const tokenexpirationalert = 60;    // Display a message in menu to inform user session is soon expired
 // Mongolog : default lines limit for returned data
 const MONGOLOGLINESLIMIT = 20;
