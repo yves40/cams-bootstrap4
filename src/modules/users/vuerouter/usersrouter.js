@@ -5,9 +5,10 @@
 //    Nov 05 2019   Add Identity
 //    Nov 07 2019   Finally use a logout page...
 //    Dec 17 2019   user profile edit page added
+//    Dec 20 2019   user delete page added
 //----------------------------------------------------------------------------
 
-const Version = "usersrouter.js: Nov 05 2019, 1.01 ";
+const Version = "usersrouter.js: Dec 20 2019, 1.04 ";
 
 import Vue from "vue";
 import Router from "vue-router";
@@ -17,6 +18,7 @@ import Logout from "../views/Logout.vue";
 import Register from "../views/Register";
 import Identity from "../views/Identity";
 import Edit from "../views/Edit";
+import Delete from "../views/Delete";
 
 const  usersroutes = 
   [
@@ -25,5 +27,6 @@ const  usersroutes =
     { path: "/register", name: "register", component: Register },
     { path: "/identity", name: "identity", component: Identity },
     { path: "/edit", name: "edit", component: Edit },
+    { path: "/deleteme", name: "deleteme", component: Delete },
   ];
 export default usersroutes;

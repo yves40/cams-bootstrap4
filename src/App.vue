@@ -21,6 +21,7 @@
   Dec 03 2019   Manage token expiration alert
   Dec 05 2019   Manage token expiration message in menu
   Dec 17 2019   Edit page for logged user
+  Dec 20 2019   Delete page for logged user
 -->
 
 <template>
@@ -102,7 +103,7 @@ export default {
   name: "app",
   data() {
       return {
-        version: "Cams Manager 2.21, Dec 17 2019",
+        version: "Cams Manager 2.22, Dec 20 2019",
         copyright: "oldtimerSoft",
         // These arrays are defining the displayed menus
         // enableflag drives the visibility of the URL
@@ -117,6 +118,7 @@ export default {
               {url: "register",text: "Register", enableflag: true, disableflag: false, },
               {url: "identity",text: "Identity", enableflag: false, disableflag: false, },
               {url: "edit",text: "Edit profile", enableflag: false, disableflag: false, },
+              {url: "deleteme",text: "Delete ME!", enableflag: false, disableflag: false, },
             ]
           },
           {
