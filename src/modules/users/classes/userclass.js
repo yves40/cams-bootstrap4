@@ -28,6 +28,7 @@
 //    Dec 17 2019   WIP on user update
 //    Dec 18 2019   WIP on user update, check mongo action
 //    Dec 19 2019   WIP on user update, change call to a sync one
+//    Dec 20 2019   get method properly returns the profiles array 
 //----------------------------------------------------------------------------
 const UserModel = require('../model/userModel').UserModel
 const bcryptjs = require('bcryptjs');
@@ -51,7 +52,7 @@ module.exports = class userclass {
             description = "None",
         ) 
     {
-        this.Version = 'userclass:1.87, Dec 19 2019 ';
+        this.Version = 'userclass:1.88, Dec 20 2019 ';
         this.model = new UserModel({ 
                             name: name, 
                             email: email, 
@@ -86,7 +87,7 @@ module.exports = class userclass {
                     this.model.name =  found.name;
                     this.model.email = found.email;
                     this.model.password = found.password;
-                    this.model.profilecode = Array.toString(found.profilecode);
+                    this.model.profilecode = found.profilecode;
                     this.model.description = found.description;
                     this.model.lastlogin = datetime.convertDateTime(found.lastlogin) ;
                     this.model.lastlogout = datetime.convertDateTime(found.lastlogout);
