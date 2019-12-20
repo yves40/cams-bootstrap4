@@ -22,6 +22,8 @@
     Dec 16 2019   Add filterbox, to select info type in logs
     Dec 17 2019   Manage filters when UI selects them
                   Add a user update action
+    Dec 19 2019   Getter for user profiles codes
+    Dec 20 2019   Getter for user profiles codes, Grrrrr
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -40,7 +42,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.83, Dec 17 2019 ',
+        Version: 'userstore:1.88, Dec 20 2019 ',
         theuser: null,
         token: null,
         tokenobject: '{}',
@@ -69,7 +71,12 @@ export default {
         getTokenalert(state) { return state.tokenalert; },
         // Get a user logs
         getUserLogs(state) { return state.userlogs; },
-        getFilters(state) { return state.filterbox; }
+        getFilters(state) { return state.filterbox; },
+        getUserProfiles(state) {  
+            if ( state.theuser !== null) {
+                return state.theuser.model.profilecode === null ? [ 'NO PROFILE' ] : state.theuser.model.profilecode ; 
+            }
+        }
     },
     /*----------------------------------------------------------------------------
         VUEX mutations
