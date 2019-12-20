@@ -19,14 +19,16 @@
 //    Nov 15 2019    Sync vs async calls
 //    Nov 19 2019    No more use of async calls
 //    Nov 24 2019    Add a command line filter -mail
+//    Dec 20 2019    Test profileclass
 //----------------------------------------------------------------------------
 
-const Version = "useradmin.js:1.62 Nov 24 2019 ";
+const Version = "useradmin.js:1.63 Dec 20 2019 ";
 
 const userclass = require('../classes/userclass');
 const logger = require('../../core/services/logger');
 const mongo = require("../../core/services/mongodb");
 const datetime = require("../../core/services/datetime");
+const profileclass = require('../classes/profileclass');
 
 var fs = require("fs");
 
@@ -275,6 +277,7 @@ function removeUsers(jsonContent) {
 function listUsers() {
   return new Promise((resolve, reject) => {
     let newuser = new userclass();
+    let profclass = new profileclass();
     console.log('____________________________________________');
     let filter = '';
     if(useremail.length !== 0) {
@@ -293,10 +296,12 @@ function listUsers() {
         console.log('\t', value.name);
         console.log('\t', value.password);
         console.log('\t', value.description);
-        console.log('\t Created: ', datetime.convertDateTime(value.created));
-        console.log('\t Updated:', datetime.convertDateTime(value.updated));
+        console.log('\t Created    : ', datetime.convertDateTime(value.created));
+        console.log('\t Updated    : ', datetime.convertDateTime(value.updated));
+        console.log('\t Last login : ', datetime.convertDateTime(value.lastlogin));
+        console.log('\t Last logout: ', datetime.convertDateTime(value.lastlogout));
         for(let i = 0; i < profilecode.length; ++i) { 
-          console.log('\t\t%s', profilecode[i]);
+          console.log('\t\t%s , %s', profilecode[i].padEnd(10, ' '), profclass.getProfileLabel(profilecode[i]));
         }
         console.log('\n');
       });
