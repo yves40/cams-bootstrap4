@@ -56,8 +56,8 @@ ul {
 }
 
 .loginf { font-size: small; }
-.logerr { color:red; font-size: large;}
+.logerr { color:red; font-size: medium;}
 .logwarn { color: forestgreen; font-size: medium;}
-.logfatal { color: red; font-size: large; font-weight: bolder;}
+.logfatal { color: red; font-size: medium; }
 .logheader { padding-top: 1em; }
 
