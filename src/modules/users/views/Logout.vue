@@ -38,7 +38,7 @@ export default {
     logout() {
       this.logoutVuex({router: this.$router, path: this.$route.path})
         .then((result) => {
-          this.$swal('You are disconnected!', result, 'success');
+          swal('You are disconnected!', result, 'success');
           this.$parent.disableMenu('logout');
           this.$parent.enableMenu('login');
           this.$parent.enableMenu('register');
@@ -47,7 +47,7 @@ export default {
           this.$parent.disableMenu('edit');
         })
         .catch((err) => {
-          this.$swal('KO!', err, 'error');
+          swal('KO!', err, 'error');
         });
     },
   },

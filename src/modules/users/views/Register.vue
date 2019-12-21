@@ -193,11 +193,11 @@ export default {
           password: this.password1,
         })
         .then((result) => {
-          this.$swal('User ' + this.email + ' registered', result, 'success');
+          swal('User ' + this.email + ' registered', result, 'success');
           this.$router.push({ name: 'login' });
         })
         .catch((err) => {
-          this.$swal('KO!', err, 'error');
+          swal('KO!', err, 'error');
         });
     },
     clear() {

@@ -149,11 +149,11 @@ export default {
           description: this.userdescription,
         })
         .then((result) => {
-          this.$swal('User ' + this.$store.state.userstore.theuser.model.email + ' updated', result, 'success');
+          swal('User ' + this.$store.state.userstore.theuser.model.email + ' updated', result, 'success');
           this.$router.push({ name: 'identity' });
         })
         .catch((err) => {
-          this.$swal('KO!', err, 'error');
+          swal('KO!', err, 'error');
         });
     },
     clear() {

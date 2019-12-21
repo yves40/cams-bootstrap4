@@ -149,7 +149,7 @@ export default {
       logger.debug(this.version + 'login requested');
       this.loginVuex({email: this.email, password: this.password, router: this.$router})
         .then((result) => {
-          this.$swal('OK!', result, 'success');
+          swal('OK!', result, 'success');
           this.$parent.disableMenu('login');
           this.$parent.disableMenu('register');
           this.$parent.enableMenu('logout');
@@ -158,7 +158,7 @@ export default {
           this.$parent.enableTopMenu('Bootstrap4');
         })
         .catch((err) => {
-          this.$swal('KO!', err, 'error');
+          swal('KO!', err, 'error');
         });
     },
     clear() {

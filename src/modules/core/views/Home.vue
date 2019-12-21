@@ -10,6 +10,7 @@
   Oct 06 2019   1st vuex tests
   Oct 09 2019   Small change in content
   Nov 07 2019   Small change in content
+  Dec 21 2019   Simpler
 -->
 <template>
   <div>
@@ -36,16 +37,8 @@
                 The goal is to easily monitor their status, set alarm on and off, based on time schedule,
                 and then get the Video stream and display it in one or more windows.
                 This is an MEVN based application. MEVN stands for Mongodb, Express, Vuejs, Nodejs.
-                The application uses technologies such as :
-              </p>
-              <b-list-group >
-                <b-list-group-item >MongoDB, mongoose</b-list-group-item>
-                <b-list-group-item >Express</b-list-group-item>
-                <b-list-group-item >Vue, Vuex</b-list-group-item>
-                <b-list-group-item >Nodejs</b-list-group-item>
-                <b-list-group-item >Bootstrap and Bootstrap-Vue</b-list-group-item>
-                <b-list-group-item >Axios, passport, json web token</b-list-group-item>
-              </b-list-group>
+                The application uses technologies such as MongoDB, mongoose, Express, Vue, Vuex,Nodejs, Bootstrap 
+                and Bootstrap-Vue, Axios, passport, json web token
               <p></p>
               <p>
                 And some other libraries...
@@ -67,7 +60,7 @@
 export default {
   data() {
     return {
-      version: "Home 1.45, Oct 09 2019"
+      version: "Home 1.46, Dec 21 2019"
     };
   },
   created() {
