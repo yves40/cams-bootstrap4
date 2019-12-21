@@ -40,8 +40,8 @@
 
 .identification {padding-top: 1em;padding-bottom: 1em;}
 .viewbackground {background-color: lightgray;}
-.viewframe { border: 1px solid lightgray; };
-.viewframeiner { border: 1px solid lightgray; padding: 1em 0 1em 0;};
+.viewframe { border: 1px solid lightgray; padding: 0; margin: 0; };
+.viewframeiner { border: 1px solid lightgray;};
 
 li {margin: 0 0.8em;}
 
