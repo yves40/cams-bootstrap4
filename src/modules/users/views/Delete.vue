@@ -3,6 +3,7 @@
   Delete.vue
 
   Dec 20 2019   Initial
+  Dec 21 2019   Use swal from bootstrap-sweetalert
 -->
 <template>
   <div>
@@ -52,7 +53,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      version: "Delete 1.00, Dec 20 2019",
+      version: "Delete 1.01, Dec 20 2019",
     };
   },
   computed: {
@@ -66,7 +67,18 @@ export default {
   },
   methods: {
     deleteme() {
-      this.$router.push({ name: 'deleteme' });
+      swal({
+        title: "Are you sure?",
+        text: "Your will not be able to recover your account!",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      })
+      .then( (choice) => {
+          if (choice) {
+            logger.debug('Will delete');
+          }
+      })
     },
     gotohome() {
       this.$router.push({ name: 'home' });
