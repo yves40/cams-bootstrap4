@@ -11,18 +11,34 @@
   Dec 13 2019   Filter on user activity logs
   Dec 16 2019   Filters checkboxes are now in user store
   Dec 17 2019   filterbox setter problem
+  Dec 19 2019   Now display user profiles
+  Dec 20 2019   User profiles display
 -->
 <template>
   <div>
     <b-container>
+      <!-- 
+        Header and buttons to call the edit and delete pages
+      -->
       <b-row>
         <b-col cols="2"></b-col>
-        <b-col>
+        <b-col cols="2">
           <img src="../../../assets/users.png" />
         </b-col>
+        <b-col cols="6">
+              <b-navbar toggleable="sm">
+                <b-navbar-toggle target="collapsemenu"></b-navbar-toggle>
+                <b-collapse id="collapsemenu" is-nav>
+                  <b-navbar-nav class="mr-auto">
+                    <b-button pill variant="outline-primary" v-on:click="edit" >Edit my profile</b-button>
+                    <b-button pill variant="outline-danger" v-on:click="deleteme" >Delete me</b-button>
+                  </b-navbar-nav>
+                </b-collapse>
+              </b-navbar>
+        </b-col>  
         <b-col cols="2"></b-col>
       </b-row>
-      
+
       <b-row>
         <b-col cols="2"></b-col>
         <b-col>
@@ -34,7 +50,7 @@
       <!-- 
         User data
       -->
-      <div class="viewframe">
+      <div class="viewframeinner">
         <b-row>
           <b-col cols="2"></b-col>
           <b-col>
@@ -67,7 +83,26 @@
           </b-col>
           <b-col cols="2"></b-col>
         </b-row>
+      </div>
+      <!-- 
+        The user profiles dump section 
+      -->
+      <b-row>
+        <b-col cols="2"></b-col>
+        <b-col >Your privileges</b-col>
+        <b-col cols="2"></b-col>
+      </b-row>
+      <div class="viewframeinner" v-for="profile in profiles" :key="profile.id">
+        <b-row>
+          <b-col cols="2"></b-col>
+          <b-col>
+            {{profile}}
+          </b-col>
+          <b-col cols="2"></b-col>
+        </b-row>
+      </div>
 
+      <div class="viewframe">
         <b-row>
           <b-col cols="2"></b-col>
           <b-col>
@@ -150,7 +185,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Identity 1.44, Dec 17 2019 ",
+        version: "Identity 1.54, Dec 20 2019 ",
       };
   },
   // ------------------------------------------------------------------------------------------------------------
@@ -164,7 +199,8 @@ export default {
           lastlogin: 'getLastlogin',
           sessiontime: 'getSessionTime',
           userlogs: 'getUserLogs',
-          logged: 'isLogged'
+          logged: 'isLogged',
+          profiles: 'getUserProfiles'
         }
     ),
     filterbox: 
@@ -191,6 +227,12 @@ export default {
   methods: {
     gotohome() {
       this.$router.push({ name: 'home' });
+    },
+    edit() {
+      this.$router.push({ name: 'edit' });
+    },
+    deleteme() {
+      this.$router.push({ name: 'deleteme' });
     },
   },
 }
