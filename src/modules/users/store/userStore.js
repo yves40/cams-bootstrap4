@@ -24,6 +24,8 @@
                   Add a user update action
     Dec 19 2019   Getter for user profiles codes
     Dec 20 2019   Getter for user profiles codes, Grrrrr
+    Dec 21 2019   Delete mutation
+    Dec 23 2019   Timeout when deleting user 
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -31,6 +33,7 @@ import { generateCodeFrame } from 'vue-template-compiler';
 
 const logger = require('../../core/services/logger');
 const properties = require('../../core/services/properties');
+const AXIOS = properties.axioscall;
 const datetime = require('../../core/services/datetime')
 const jwthelper = require('../services/jwthelper');
 
@@ -42,7 +45,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.88, Dec 20 2019 ',
+        Version: 'userstore:1.92, Dec 23 2019 ',
         theuser: null,
         token: null,
         tokenobject: '{}',
@@ -120,6 +123,23 @@ export default {
         update(state, name, description) {
             state.name = name;
             state.description = description;
+        },
+        delete(state) {
+            AXIOS(
+                {
+                    method: 'post',
+                    url: '/users/delete/email',
+                    headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
+                 }
+            )
+            .then((response) => {
+                logger.debug(state.Version + response.data.message);
+                }
+            )
+            .catch((error) => {
+                logger.error(state.Version + error);
+                }
+            );
         },
         refreshtokentime(state) {
             if (state.theuser) {
@@ -222,6 +242,9 @@ export default {
                         method: 'post',
                         url: '/users/logout',
                         headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
+                        data: {
+                            mode: payload.mode,
+                        }
                     }
                 )
                 .then((response) => {
