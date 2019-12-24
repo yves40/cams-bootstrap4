@@ -36,7 +36,12 @@ export default {
     ),
     // --------------------------------- Logging out  --------------------------------
     logout() {
-      this.logoutVuex({router: this.$router, path: this.$route.path})
+      // If logout is called after a delete user (by himself) pass the parameter to the logout method
+      // as setting the logout time is no longer possible
+      let logoutmode = 'standard';
+      if ( this.$route.params.mode !== undefined)
+        logoutmode = this.$route.params.mode;
+      this.logoutVuex({router: this.$router, path: this.$route.path, mode: logoutmode})
         .then((result) => {
           swal('You are disconnected!', result, 'success');
           this.$parent.disableMenu('logout');
@@ -45,6 +50,7 @@ export default {
           this.$parent.disableTopMenu('Bootstrap4');
           this.$parent.disableMenu('identity');
           this.$parent.disableMenu('edit');
+          this.$parent.disableMenu('deleteme');
         })
         .catch((err) => {
           swal('KO!', err, 'error');
