@@ -15,6 +15,7 @@
       </b-col>
       <b-col cols="2"></b-col>
     </b-row>
+
     <b-row>
       <b-col cols="2"></b-col>
       <b-col>
@@ -22,6 +23,23 @@
       </b-col>
       <b-col cols="2"></b-col>
     </b-row>
+
+    <b-row>
+      <b-col cols="2"></b-col>
+      <b-col>
+        <p><b>{{email}}</b> with pseudo {{name}}, known as : {{description}}</p>
+      </b-col>
+      <b-col cols="2"></b-col>
+    </b-row>
+
+    <b-row>
+      <b-col cols="2"></b-col>
+      <b-col>
+        <p>Delete your account now ? </p>
+      </b-col>
+      <b-col cols="2"></b-col>
+    </b-row>
+
     <b-row>
       <b-col cols="2"></b-col>
       <b-col >
@@ -53,10 +71,17 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      version: "Delete 1.01, Dec 20 2019",
+      version: "Delete 1.08, Dec 20 2019",
     };
   },
   computed: {
+    ...mapGetters (
+        'userstore', { 
+          email: 'getEmail',
+          name: 'getName',
+          description: 'getDescription',
+        }
+    ),
   },  
  
  created() {
@@ -66,18 +91,44 @@ export default {
     this.$parent.enableMenu('deleteme');
   },
   methods: {
+    // Some funny things with swal
     deleteme() {
       swal({
         title: "Are you sure?",
         text: "Your will not be able to recover your account!",
         icon: "warning",
-        buttons: true,
         dangerMode: true,
+        buttons:{
+          forget: {
+            text: "Forget it",
+            value: "forget",
+            visible: true,
+          },
+          cancel: {
+            text: "Back to identity",
+            value: "abort",
+            visible: true,
+          },
+          confirm: {
+            text: "Shoot me!!!",
+            value: "shoot",
+            visible: true,
+          },
+        },
       })
       .then( (choice) => {
-          if (choice) {
-            logger.debug('Will delete');
-          }
+        switch(choice) {
+          case "forget": 
+            this.$router.push({ name: 'home' });
+            break;
+          case "abort": 
+            this.$router.push({ name: 'identity' });
+            break;
+          case "shoot": 
+            this.$store.commit('userstore/delete');
+            this.$router.push({ name: 'logout', params: { mode: 'afterdelete'} });
+            break;
+        }
       })
     },
     gotohome() {
