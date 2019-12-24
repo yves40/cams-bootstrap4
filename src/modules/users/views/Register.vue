@@ -12,6 +12,7 @@
   Oct 31 2019   Fix button overlap problem when resizing to small window
   Nov 08 2019   Perform the axios call (through vuex)
   Nov 22 2019   Missing space
+  Dec 22 2019   Default values
 -->
 <template>
   <div>
@@ -119,12 +120,12 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      version: "Register 1.29, Nov 22 2019",
-      name: '',
-      email: '',
-      userdescription: '',
-      password1: '',
-      password2: '',
+      version: "Register 1.30, Dec 22 2019",
+      name: 'zab91',
+      email: 'zab@free.fr',
+      userdescription: 'This is the school master',
+      password1: 'manager',
+      password2: 'manager',
     };
   },
   computed: {
