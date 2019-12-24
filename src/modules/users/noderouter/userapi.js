@@ -235,7 +235,6 @@ router.post('/users/delete/email', cors(corsutility.getCORS()),
         mongolog.informational(req.user.model.email + ' : delete my account', 'ACCOUNT', req.user.model.email);
         await new userclass(req.user.model.email).Delete()
             .then( (message) => {
-                logger.debug('**************** OK *******************');
                 res.send(message);
             })
             .catch( (error) => {
