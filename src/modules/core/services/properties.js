@@ -66,7 +66,7 @@ const jwtconfig = {
 // Some axios params
 const axioscall = axios.create({
     baseURL: nodeserver,
-    timeout: 1000,
+    timeout: 5000,
     withCredentials: true,
   });  
 // User session duration in seconds
