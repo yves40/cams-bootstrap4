@@ -163,20 +163,23 @@ module.exports = class userclass {
     // Remove this user, using email
     // Returns a promise
     //-------------------------------------
-    Delete() {
+    Delete() 
+    {
         return new Promise((resolve, reject) => {
             UserModel.findOneAndRemove( {email: this.model.email},
                 (err, userupdated) => {
                     if (err) reject(err);
                     else {
-                        if (userupdated === null)
+                        if (userupdated === null) {
                             resolve(this.model.email + ' does not exists');
-                        else
+                        }
+                        else {
                             resolve('User ' + this.model.email + ' deleted');
+                        }
                     } 
                 });
-            })
-        }
+        })
+    }
 
     //------------------------------------------------------
     // Get a user object and update it, except the password and 

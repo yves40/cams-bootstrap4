@@ -79,11 +79,14 @@
 //                 GET is now a POST
 //                 Update a user from web access
 //    Dec 19 2019  User update bug
+//    Dec 21 2019  Small change to /users/delete/email
+//    Dec 22 2019  /users/delete/email check
+//    Dec 23 2019  /users/delete/email ; timeout bug
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.54, Dec 19 2019 ';
+const Version = 'userapi:3.68, Dec 23 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -92,7 +95,6 @@ const helpers = require('../../core/services/helpers');
 const auth = require('../services/auth');
 const jwthelper = require('../services/jwthelper');
 const userclass = require('../classes/userclass');
-const userclasshandle = new userclass();
 const mongologgerclass = require('../../core/classes/mongologgerclass');
 let mongolog = new mongologgerclass(Version, 'USERAPI');
 
@@ -121,41 +123,34 @@ router.post('/users/login', cors(corsutility.getCORS()),
 });
 //-----------------------------------------------------------------------------------
 // logout a user
+// The mode parameter is passed in the request for after user delete action
 //-----------------------------------------------------------------------------------
 router.post('/users/logout', cors(corsutility.getCORS()), 
     passport.authenticate('jwt'), 
     (req, res) => {
         if (req.user) {
-            const message = 'logging ' + req.user.model.email +  ' out';
+            const message = 'logging ' + req.user.model.email +  ' out : mode is ' + req.body.mode;
             const usermail = req.user.model.email;
             logger.debug(Version + message);
             const token = auth.invalidateToken({id: req.user.model.id, email: req.user.model.email});
-            logger.debug(Version + 'Update logout time for ID ' + req.user.model.id)
-            userclasshandle.getByID(req.user.model.id, (err, loggeduser) => {
-                if (err) {
-                    logger.error(Version + ' Cannot get user data for ID : ' + req.user.model.id);
-                }
-                loggeduser.lastlogout = Date.now();
-                loggeduser.save((error, user) => {
-                    if (error) {
-                        logger.error(Version + 'Cannot save last logout date')
+            // Update the logout time if we're not in a delete user process
+            if (req.body.mode !== 'afterdelete') {
+                logger.debug(Version + 'Update logout time for ID ' + req.user.model.id)
+                new userclass().getByID(req.user.model.id, (err, loggeduser) => {
+                    if (err) {
+                        logger.error(Version + ' Cannot get user data for ID : ' + req.user.model.id);
                     }
+                    loggeduser.lastlogout = Date.now();
+                    loggeduser.save((error, user) => {
+                        if (error) {
+                            logger.error(Version + 'Cannot save last logout date')
+                        }
+                    });
                 });
-            });
+            }
             mongolog.informational( req.user.model.email + ' logged out', 'LOGOUT', req.user.model.email)
             req.logout();
-            const userdecodedtoken = jwthelper.verifyToken(token);
-            const tokendata = jwthelper.getTokenTimeMetrics(userdecodedtoken);
-            res.json( { message: message, 
-                token: token, 
-                userdecodedtoken: userdecodedtoken, 
-                logintime: tokendata.logintime,
-                remainingtime: tokendata.remainingtime,
-                tokenstatus: tokendata.tokenstatus, 
-                time: tokendata.time,
-                tokenstatusString: tokendata.tokenstatusString,
-                email: usermail,
-             } );
+            res.json( { message: message, email: usermail } );
         }
         else {
             res.json( { message: 'Not logged '});
@@ -234,11 +229,18 @@ router.post('/users/messages', cors(corsutility.getCORS()),
 //-----------------------------------------------------------------------------------
 // Remove One user by email
 //-----------------------------------------------------------------------------------
-router.post('/users/delete/email/:email', cors(corsutility.getCORS()), 
+router.post('/users/delete/email', cors(corsutility.getCORS()), 
     passport.authenticate('jwt'),
     helpers.asyncMiddleware(async (req, res, next) => {
-        let message = await newuser(req.params.email).Delete();
-        res.send(message);   
+        mongolog.informational(req.user.model.email + ' : delete my account', 'ACCOUNT', req.user.model.email);
+        await new userclass(req.user.model.email).Delete()
+            .then( (message) => {
+                logger.debug('**************** OK *******************');
+                res.send(message);
+            })
+            .catch( (error) => {
+                res.send(error);
+            });
     })
 );
 
