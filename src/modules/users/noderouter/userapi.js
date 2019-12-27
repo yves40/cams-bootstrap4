@@ -82,11 +82,12 @@
 //    Dec 21 2019  Small change to /users/delete/email
 //    Dec 22 2019  /users/delete/email check
 //    Dec 23 2019  /users/delete/email ; timeout bug
+//    Dec 26 2019  Message after delete
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.68, Dec 23 2019 ';
+const Version = 'userapi:3.70, Dec 26 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -235,6 +236,7 @@ router.post('/users/delete/email', cors(corsutility.getCORS()),
         mongolog.informational(req.user.model.email + ' : delete my account', 'ACCOUNT', req.user.model.email);
         await new userclass(req.user.model.email).Delete()
             .then( (message) => {
+                logger.debug('Delete status from user class ' + message); 
                 res.send(message);
             })
             .catch( (error) => {
