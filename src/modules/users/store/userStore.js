@@ -26,6 +26,8 @@
     Dec 20 2019   Getter for user profiles codes, Grrrrr
     Dec 21 2019   Delete mutation
     Dec 23 2019   Timeout when deleting user 
+    Dec 26 2019   Log window management : refresh it when session soon expires
+    Dec 27 2019   Log window management
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -45,7 +47,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.92, Dec 23 2019 ',
+        Version: 'userstore:1.97, Dec 27 2019 ',
         theuser: null,
         token: null,
         tokenobject: '{}',
@@ -53,6 +55,7 @@ export default {
         tokenremainingtime: null,
         tokenremainingtimeraw: null,
         tokenalert: false,
+        logrefresh: false,
         therouter: null,            // set on login logout to manage token time expiration
         userlogs: null,
         filterbox: [ '0', '1', '2', '3', '4'],
@@ -119,6 +122,7 @@ export default {
         deleteloginstate(state) {
             state.theuser = null;
             state.tokenalert = false;
+            state.logrefresh = false;
         },
         update(state, name, description) {
             state.name = name;
@@ -133,7 +137,7 @@ export default {
                  }
             )
             .then((response) => {
-                logger.debug(state.Version + response.data.message);
+                logger.debug(state.Version + response.data);
                 }
             )
             .catch((error) => {
@@ -169,6 +173,7 @@ export default {
                             },
                         );
                         state.tokenalert = true;
+                        state.logrefresh = true;
                     }
                 } 
                 // Session expired ?
@@ -195,6 +200,7 @@ export default {
                     state.therouter = null;
                     state.theuser = null;
                     state.tokenalert = false;
+                    state.logrefresh = false;
                 }
             }
         }
@@ -319,9 +325,18 @@ export default {
         },
         // Update the remaining session time
         // This action is triggered from corestore timer action : settimer
-        updateTokenTime({commit}) {
+        updateTokenTime({commit, state}) {
             commit('refreshtokentime');
-        } 
+            if(state.logrefresh) {
+                commit('updateuserlogs');
+                state.logrefresh = false;
+            }
+        }, 
+        // Delete a user ( on its own request )
+        deleteMe({ commit })
+        {
+            commit('delete');
+        }
     },
 }
 
