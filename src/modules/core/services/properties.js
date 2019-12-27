@@ -70,8 +70,8 @@ const axioscall = axios.create({
     withCredentials: true,
   });  
 // User session duration in seconds
-const tokenexpirationdelay = 600;
-const tokenexpirationalert = 60;    // Display a message in menu to inform user session is soon expired
+const tokenexpirationdelay = 120;
+const tokenexpirationalert = 20;    // Display a message in menu to inform user session is soon expired
 // Mongolog : default lines limit for returned data
 const MONGOLOGLINESLIMIT = 20;
 
