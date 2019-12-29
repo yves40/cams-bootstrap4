@@ -83,11 +83,12 @@
 //    Dec 22 2019  /users/delete/email check
 //    Dec 23 2019  /users/delete/email ; timeout bug
 //    Dec 26 2019  Message after delete
+//    Dec 28 2019  Register user service : better code
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.70, Dec 26 2019 ';
+const Version = 'userapi:3.75, Dec 28 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -161,7 +162,7 @@ router.post('/users/logout', cors(corsutility.getCORS()),
 // Register user
 //-----------------------------------------------------------------------------------
 router.post('/users/register', cors(corsutility.getCORS()), 
-    helpers.asyncMiddleware(async (req, res, next) => {
+    helpers.asyncMiddleware(async (req, res, next) => { 
         let newuser = new userclass(
             req.body.email, 
             req.body.name,
@@ -169,10 +170,15 @@ router.post('/users/register', cors(corsutility.getCORS()),
             ["STD"],
             req.body.userdescription
         );
-        let registereduser = await newuser.Add();
-        mongolog.informational('User ' + req.body.email + ' has been registered through web access.', 
-                'REGISTER', req.body.email);
-        res.json(registereduser);
+        newuser.Add()
+        .then( (response) => {
+            mongolog.informational(response, 'REGISTER', req.body.email);
+            res.json( { error: false, message: response });
+        })
+        .catch( (error) => {
+            mongolog.error(error, 'REGISTER', req.body.email);
+            res.json( { error: true, message: error });
+        })
     })
 );
 
