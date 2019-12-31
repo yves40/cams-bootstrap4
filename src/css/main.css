@@ -8,6 +8,7 @@
     Oct 27 2019   Class for vertical menu buttons 
     Dec 05 2019   WIP on session message in menu
     Dec 13 2019   Log window styles 
+    Dec 31 2019   Log list styles
 
 */
 
@@ -57,8 +58,8 @@ ul {
 }
 
 .loginf { font-size: small; }
-.logerr { color:red; font-size: medium;}
-.logwarn { color: forestgreen; font-size: medium;}
-.logfatal { color: red; font-size: medium; }
+.logerr { color:red; font-size: small;}
+.logwarn { color: forestgreen; font-size: small;}
+.logfatal { color: red; font-size: small; }
 .logheader { padding-top: 1em; }
 
