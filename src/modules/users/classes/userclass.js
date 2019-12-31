@@ -29,6 +29,7 @@
 //    Dec 18 2019   WIP on user update, check mongo action
 //    Dec 19 2019   WIP on user update, change call to a sync one
 //    Dec 20 2019   get method properly returns the profiles array 
+//    Dec 31 2019   Modify Add user handler
 //----------------------------------------------------------------------------
 const UserModel = require('../model/userModel').UserModel
 const bcryptjs = require('bcryptjs');
@@ -52,7 +53,7 @@ module.exports = class userclass {
             description = "None",
         ) 
     {
-        this.Version = 'userclass:1.88, Dec 20 2019 ';
+        this.Version = 'userclass:1.89, Dec 31 2019 ';
         this.model = new UserModel({ 
                             name: name, 
                             email: email, 
@@ -145,17 +146,20 @@ module.exports = class userclass {
                 if (err) {
                     reject(err);
                 } 
-                if (found.length !== 0) reject('User ' + this.model.email + ' already exist')
-                this.model.created = Date.now();
-                this.model.save(this.model, (err, inserteduser) => {
-                    if (err){
-                        logger.debug(this.Version + 'Error here');
-                        reject(err);
-                    } 
-                    else {
-                        resolve('User ' + inserteduser.email + ' created');
-                    }
-                });
+                if (found.length !== 0) {
+                    reject('User ' + this.model.email + ' already exist')
+                }
+                else {
+                    this.model.created = Date.now();
+                    this.model.save(this.model, (err, inserteduser) => {
+                        if (err){
+                            reject(err);
+                        } 
+                        else {
+                            resolve('User ' + inserteduser.email + ' registered');
+                        }
+                    });
+                }
             })
         })
     }

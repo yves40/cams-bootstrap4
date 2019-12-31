@@ -13,6 +13,7 @@
   Nov 08 2019   Perform the axios call (through vuex)
   Nov 22 2019   Missing space
   Dec 22 2019   Default values
+  Dec 31 2019   Double registration bug fixed
 -->
 <template>
   <div>
@@ -120,7 +121,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      version: "Register 1.30, Dec 22 2019",
+      version: "Register 1.31, Dec 31 2019",
       name: 'zab91',
       email: 'zab@free.fr',
       userdescription: 'This is the school master',
@@ -194,7 +195,7 @@ export default {
           password: this.password1,
         })
         .then((result) => {
-          swal('User ' + this.email + ' registered', result, 'success');
+          swal('OK', result, 'success');
           this.$router.push({ name: 'login' });
         })
         .catch((err) => {

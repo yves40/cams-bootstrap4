@@ -28,6 +28,7 @@
     Dec 23 2019   Timeout when deleting user 
     Dec 26 2019   Log window management : refresh it when session soon expires
     Dec 27 2019   Log window management
+    Dec 31 2019   Double user registration bug
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -47,7 +48,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.97, Dec 27 2019 ',
+        Version: 'userstore:1.98, Dec 31 2019 ',
         theuser: null,
         token: null,
         tokenobject: '{}',
@@ -287,12 +288,12 @@ export default {
                 )
                 .then((response) => {
                         commit('deleteloginstate');
-                        resolve('User registered');
+                        resolve(response.data.message);
                     },
                 )
                 .catch((error) => {
                     logger.error(state.Version + error);
-                    reject('An error occured');
+                    reject(error.response.data.message);
                     },
                 );
             })

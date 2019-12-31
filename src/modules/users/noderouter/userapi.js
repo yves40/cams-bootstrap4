@@ -84,11 +84,13 @@
 //    Dec 23 2019  /users/delete/email ; timeout bug
 //    Dec 26 2019  Message after delete
 //    Dec 28 2019  Register user service : better code
+//    Dec 29 2019  Register user service : Bug with double registration
+//    Dec 31 2019  Register user service : Bug with double registration
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.75, Dec 28 2019 ';
+const Version = 'userapi:3.86, Dec 31 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -170,15 +172,16 @@ router.post('/users/register', cors(corsutility.getCORS()),
             ["STD"],
             req.body.userdescription
         );
-        newuser.Add()
-        .then( (response) => {
+        try {
+            const response = await newuser.Add()
             mongolog.informational(response, 'REGISTER', req.body.email);
-            res.json( { error: false, message: response });
-        })
-        .catch( (error) => {
+            //res.json( { error: false, message: response });
+            res.status(200).send({ message: response })
+        }
+        catch(error) {
             mongolog.error(error, 'REGISTER', req.body.email);
-            res.json( { error: true, message: error });
-        })
+            res.status(500).send({ message: error })
+        }
     })
 );
 
