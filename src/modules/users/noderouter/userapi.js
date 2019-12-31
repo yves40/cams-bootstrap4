@@ -199,10 +199,16 @@ router.post('/users/update', cors(corsutility.getCORS()),
             undefined,
             req.body.description
         );
-        let updateduser = await newuser.Update();
-        mongolog.informational('User ' + req.user.model.email + ' has been updated.', 
-                'UPDATE', req.body.email);
-        res.json(updateduser);
+        try {
+            let updateduser = await newuser.Update();
+            mongolog.informational('User ' + req.user.model.email + ' has been updated.', 
+                    'UPDATE', req.body.email);
+            res.status(200).json(updateduser);
+        }
+        catch(error) {
+            mongolog.error(error, 'USERMANAGEMENT', req.body.email);
+            res.status(500).json(updateduser);
+        }
     })
 );
 
@@ -249,7 +255,7 @@ router.post('/users/delete/email', cors(corsutility.getCORS()),
                 res.send(message);
             })
             .catch( (error) => {
-                res.send(error);
+                res.status(500).send(error);
             });
     })
 );
@@ -280,7 +286,7 @@ router.post('/users/mylog', cors(corsutility.getCORS()),
             res.send(logs);
         })
         .catch((errormessage => {
-            res.send(errormessage);
+            res.status(500).send(errormessage);
         }))
     }
 );
