@@ -90,7 +90,7 @@
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.86, Dec 31 2019 ';
+const Version = 'userapi:3.87, Dec 31 2019 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -118,7 +118,7 @@ router.post('/users/login', cors(corsutility.getCORS()),
         const userdecodedtoken = jwthelper.verifyToken(token);
         const tokendata = jwthelper.getTokenTimeMetrics(userdecodedtoken);
         mongolog.informational(req.user.model.email + ' logged in', 'LOGIN', req.user.model.email);
-        res.json( { message: req.user.model.email + ' logged', 
+        res.status(200).json( { message: req.user.model.email + ' logged', 
             token: token, 
             userdecodedtoken: userdecodedtoken,
             remainingtime: tokendata.remainingtime,
