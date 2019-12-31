@@ -59,13 +59,12 @@
       "name": "scanuserlog -mail yves",
       "program": "${workspaceFolder}\\src\\modules\\users\\batch\\scanuserlog.js",
       "args": [ "-mail", "yves" ] 
-    }
+    },
     {
       "type": "node",
       "request": "launch",
-      "name": "mongologreader --after ...",
-      "program": "${workspaceFolder}\\src\\modules\\core\\batch\\mongologreader.js",
-      "args": [ "-after", "Dec-06-2019" ] 
+      "name": "testpromise",
+      "program": "${workspaceFolder}\\src\\modules\\sandbox\\batch\\testpromise.js",
     }
   ]
 }
