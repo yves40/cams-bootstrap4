@@ -29,6 +29,7 @@
     Dec 26 2019   Log window management : refresh it when session soon expires
     Dec 27 2019   Log window management
     Dec 31 2019   Double user registration bug
+    Jan 02 2020   Getters to check user privileges
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -48,7 +49,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.98, Dec 31 2019 ',
+        Version: 'userstore:1.99, Jan 02 2020 ',
         theuser: null,
         token: null,
         tokenobject: '{}',
@@ -74,7 +75,6 @@ export default {
         },
         getSessionTime(state) { return state.tokenremainingtime; },
         getSessionTimeRaw(state) { return state.tokenremainingtimeraw; },
-        isLogged(state) {return state.theuser === null ? false : true ;},
         getTokenalert(state) { return state.tokenalert; },
         // Get a user logs
         getUserLogs(state) { return state.userlogs; },
@@ -83,7 +83,31 @@ export default {
             if ( state.theuser !== null) {
                 return state.theuser.model.profilecode === null ? [ 'NO PROFILE' ] : state.theuser.model.profilecode ; 
             }
-        }
+        },
+        isLogged(state) {return state.theuser === null ? false : true ;},
+        //------------------------------------------------------
+        // Check user profiles, returns a boolean
+        // Valid profiles : 
+        // [ "STD", "USERADMIN", "CAMADMIN", "SUPERADMIN" ];
+        //------------------------------------------------------
+        isUserAdmin(state) {
+            if(state.theuser !== null) {
+                return (state.theuser.model.profilecode.find(  (prof) => prof === 'USERADMIN' ) === 'USERADMIN' ? true : false);
+            }
+            else{ return false; }
+        },
+        isCamAdmin(state) {
+            if(state.theuser !== null) {
+                return (state.theuser.model.profilecode.find(  (prof) => prof === 'CAMADMIN' ) === 'CAMADMIN' ? true : false);
+            }
+            else{ return false; }
+        },
+        isSuperAdmin(state) {
+            if(state.theuser !== null) {
+                return (state.theuser.model.profilecode.find(  (prof) => prof === 'SUPERADMIN' ) === 'SUPERADMIN' ? true : false);
+            }
+            else{ return false; }
+        },
     },
     /*----------------------------------------------------------------------------
         VUEX mutations
