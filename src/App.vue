@@ -22,6 +22,8 @@
   Dec 05 2019   Manage token expiration message in menu
   Dec 17 2019   Edit page for logged user
   Dec 20 2019   Delete page for logged user
+  Jan 01 2020   1st test for user profile check (useradmin, camadmin...)
+  Jan 02 2020   Menu management, including privileged ones
 -->
 
 <template>
@@ -54,9 +56,9 @@
             <b-nav-text class="bg-danger menualert" v-if="tokenalert">
               Session expires in {{sessiontimeraw}} seconds
             </b-nav-text>
-            <b-nav-item v-if="logged" v-bind:to="{ name: 'identity' }">{{email}} ({{sessiontime}})</b-nav-item>
-            <b-nav-item v-if="!logged" v-bind:to="{ name: 'login' }">Login</b-nav-item>
-            <b-nav-item v-if="logged" v-bind:to="{ name: 'logout' }">Logout</b-nav-item>
+            <b-nav-item v-if="islogged" v-bind:to="{ name: 'identity' }">{{email}} ({{sessiontime}})</b-nav-item>
+            <b-nav-item v-if="!islogged" v-bind:to="{ name: 'login' }">Login</b-nav-item>
+            <b-nav-item v-if="islogged" v-bind:to="{ name: 'logout' }">Logout</b-nav-item>
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
@@ -103,7 +105,7 @@ export default {
   name: "app",
   data() {
       return {
-        version: "Cams Manager 2.22, Dec 20 2019",
+        version: "Cams Manager 2.31, Jan 02 2020 ",
         copyright: "oldtimerSoft",
         // These arrays are defining the displayed menus
         // enableflag drives the visibility of the URL
@@ -119,6 +121,26 @@ export default {
               {url: "identity",text: "Identity", enableflag: false, disableflag: false, },
               {url: "edit",text: "Edit profile", enableflag: false, disableflag: false, },
               {url: "deleteme",text: "Delete ME!", enableflag: false, disableflag: false, },
+            ]
+          },
+          {
+            text: "User Admin",
+            enableflag: false,
+            navoptions: [
+              {url: "notyet",text: "List", enableflag: true, disableflag: false, },
+              {url: "notyet",text: "Register", enableflag: true, disableflag: false, },
+              {url: "notyet",text: "Modify", enableflag: true, disableflag: false, },
+              {url: "notyet",text: "Delete", enableflag: true, disableflag: false, },
+            ]
+          },
+          {
+            text: "Cams Admin",
+            enableflag: false,
+            navoptions: [
+              {url: "notyet",text: "List", enableflag: true, disableflag: false, },
+              {url: "notyet",text: "Register", enableflag: true, disableflag: false, },
+              {url: "notyet",text: "Modify", enableflag: true, disableflag: false, },
+              {url: "notyet",text: "Delete", enableflag: true, disableflag: false, },
             ]
           },
           {
@@ -163,10 +185,13 @@ export default {
           name: 'getName',
           description: 'getDescription',
           lastlogin: 'getLastlogin',
-          logged: 'isLogged',
           sessiontime: 'getSessionTime',
           sessiontimeraw: 'getSessionTimeRaw',
-          tokenalert: 'getTokenalert'
+          tokenalert: 'getTokenalert',
+          isuseradmin: 'isUserAdmin',
+          iscamadmin: 'isCamAdmin',
+          issuperadmin: 'isSuperAdmin',
+          islogged: 'isLogged',
         }
     ),
     checkmongo() {
@@ -185,9 +210,11 @@ export default {
           settimer: 'settimer',
         }
     ),
+    // --------------------------------------------------------------------------------------
     // These methods are used by application pages to disable their menu entries
     // No need to display a login entry in a menu if you're on the login page
     // See the created() and beforeDestroy() methods in slave pages
+    // --------------------------------------------------------------------------------------
     enableMenu(label) {
       let outer = 0;
       for (outer in this.topmenu) {
@@ -216,6 +243,52 @@ export default {
       let menuentry = this.topmenu.find( menu => label === menu.text );
       if(menuentry) menuentry.enableflag = false;
     },
+    // Utility to be called by login and logout pages
+    // mode is either login or logout
+    setupMenus(mode) {
+      switch(mode) {
+        case 'login':
+            this.disableMenu('login');
+            this.disableMenu('register');
+            this.enableMenu('logout');
+            this.enableMenu('identity');
+            this.enableMenu('edit');
+            this.enableMenu('deleteme');
+            this.enableTopMenu('Bootstrap4');
+            if(!this.privilegedmenusupdated && this.$store.getters['userstore/isUserAdmin']) {
+              logger.debug(this.version + 'Activate user admin menu')
+              this.enableTopMenu('User Admin');
+            } 
+            if(!this.privilegedmenusupdated && this.$store.getters['userstore/isCamAdmin']) {
+              logger.debug(this.version + 'Activate cams admin menu')
+              this.enableTopMenu('Cams Admin');
+            }
+            break;
+          case 'logout':
+            this.disableMenu('logout');
+            this.enableMenu('login');
+            this.enableMenu('register');
+            this.disableMenu('identity');
+            this.disableMenu('edit');
+            this.disableMenu('deleteme');
+            this.disableTopMenu('Bootstrap4');
+            this.disableTopMenu('User Admin');
+            this.disableTopMenu('Cams Admin');
+            break;
+      }
+    }
   },
 };
 </script>
+
+  updated() {
+    if(this.$store.getters['userstore/isLogged']) {
+      this.privilegedmenusupdated = true; // Just after login
+    }
+    else{
+      this.disableTopMenu('User Admin');
+      this.disableTopMenu('Cams Admin');
+      this.disableTopMenu('Bootstrap4');
+    }
+  },
+

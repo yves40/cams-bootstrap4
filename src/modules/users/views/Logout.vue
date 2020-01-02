@@ -11,6 +11,7 @@
   Nov 07 2019   cams-Bootstrap4
   Nov 29 2019   Identiy menu entry
   Dec 17 2019   Edit user profile page de-activated
+  Jan 02 2020   New top menu management @ logout
  
 -->
 <template>
@@ -23,7 +24,7 @@ import { mapActions } from 'vuex'
 
 export default {
   data: () => ({
-    Version: 'Logout:1.21, Nov 29 2019 ',
+    Version: 'Logout:1.23, Jan 02 2020 ',
   }),
   mounted() {
     this.logout();
@@ -44,13 +45,7 @@ export default {
       this.logoutVuex({router: this.$router, path: this.$route.path, mode: logoutmode})
         .then((result) => {
           swal('You are disconnected!', result, 'success');
-          this.$parent.disableMenu('logout');
-          this.$parent.enableMenu('login');
-          this.$parent.enableMenu('register');
-          this.$parent.disableTopMenu('Bootstrap4');
-          this.$parent.disableMenu('identity');
-          this.$parent.disableMenu('edit');
-          this.$parent.disableMenu('deleteme');
+          this.$parent.setupMenus('logout');
         })
         .catch((err) => {
           swal('KO!', err, 'error');
@@ -59,16 +54,3 @@ export default {
   },
 };
 </script>
-
-<style>
-  h1 {
-    text-align: left;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 2em;
-  }
-  h2 {
-    text-align: left;
-    color: blue;
-    font-size:1em;
-  }
-</style>

@@ -20,6 +20,7 @@
   Nov 29 2019   Identiy menu entry
   Dec 17 2019   Edit user profile page activated
   Dec 21 2019   Manage the delete me menu
+  Jan 02 2020   Menu management
 -->
 <template>
   <div>
@@ -98,7 +99,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Login 1.84, Dec 21 2019 ",
+        version: "Login 1.85, Jan 02 2020 ",
         email: 'yves@free.fr',
         password: 'manager',
       };
@@ -151,13 +152,7 @@ export default {
       this.loginVuex({email: this.email, password: this.password, router: this.$router})
         .then((result) => {
           swal('OK!', result, 'success');
-          this.$parent.disableMenu('login');
-          this.$parent.disableMenu('register');
-          this.$parent.enableMenu('logout');
-          this.$parent.enableMenu('identity');
-          this.$parent.enableMenu('edit');
-          this.$parent.enableMenu('deleteme');
-          this.$parent.enableTopMenu('Bootstrap4');
+          this.$parent.setupMenus('login');
         })
         .catch((err) => {
           swal('KO!', err, 'error');
