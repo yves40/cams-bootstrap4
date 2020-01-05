@@ -24,8 +24,10 @@
 //    Dec 11 2019   Query on mongolog : lines limit parameter
 //    Dec 12 2019   session expiration in debug mode (shorter)
 //    Dec 20 2019   session expiration in debug mode (longer)
+//    Jan 05 2020   Mongodb bind listen on WIFI address
+//                  Seems to be 10 times quicker...
 //----------------------------------------------------------------------------
-const Version = 'properties:1.39, Dec 20 2019';
+const Version = 'properties:1.40, Jan 05 2020 ';
 
 const axios = require('axios');
 
@@ -34,8 +36,6 @@ const COREDELAY = 1000;
 // The webpack dev server
 const webserver = process.env.WEBSERVER || "http://localhost:8080";
 const webserverport = process.env.WEBSERVERPORT || 8080;
-// const mongodbserver =  process.env.MONGOSERVER || 'mongodb://vboxweb:4100/cams';
-const mongodbserver =  process.env.MONGOSERVER || 'mongodb://localhost:27017/cams';
 // The node server
 const nodeserver =  process.env.NODESERVER || 'http://localhost:8081';
 const nodeserverport = process.env.NODESERVERPORT || 8081;
@@ -43,6 +43,8 @@ const nodeserverport = process.env.NODESERVERPORT || 8081;
 // The web app on 8080 calls the node services on 8081
 const corsclientorigin = 'http://localhost:8080';  
 // Mongo DB params
+// const mongodbserver =  process.env.MONGOSERVER || 'mongodb://vboxweb:4100/cams';
+const mongodbserver =  process.env.MONGOSERVER || 'mongodb://192.168.47.24:27017/cams';
 const MONGODELAYCHECK = 1000;
 const MONGOTRACE = false;
 const MONGOUP = 1;
