@@ -26,8 +26,9 @@
 //    Dec 20 2019   session expiration in debug mode (longer)
 //    Jan 05 2020   Mongodb bind listen on WIFI address
 //                  Seems to be 10 times quicker...
+//    Jan 14 2020   WIP on multiple deployment hosts for mongodbserver 
 //----------------------------------------------------------------------------
-const Version = 'properties:1.40, Jan 05 2020 ';
+const Version = 'properties:1.42, Jan 14 2020 ';
 
 const axios = require('axios');
 
@@ -44,9 +45,14 @@ const nodeserverport = process.env.NODESERVERPORT || 8081;
 const corsclientorigin = 'http://localhost:8080';  
 // Mongo DB params
 // const mongodbserver =  process.env.MONGOSERVER || 'mongodb://vboxweb:4100/cams';
-const mongodbserver =  process.env.MONGOSERVER || 'mongodb://192.168.47.24:27017/cams';
+const mongodbserver =  process.env.MONGOSERVER || 'mongodb://localhost:27017/cams';    // Default
+// Possible alternatives
+const mongolist = [
+    { node: 'ASUSP4', url: 'mongodb://192.168.47.111:27017/cams'},
+    { node: 'ASUSP7', url: 'mongodb://192.168.47.24:27017/cams'},
+];
 const MONGODELAYCHECK = 1000;
-const MONGOTRACE = false;
+const MONGOTRACE = true;
 const MONGOUP = 1;
 const MONGODOWN = 0;
 const MONGOUSER = process.env.MONGOUSER ||'yves';
@@ -81,6 +87,7 @@ module.exports = {
     webserver: webserver,
     webserverport: webserverport,
     mongodbserver: mongodbserver,
+    mongolist: mongolist,
     nodeserverport: nodeserverport,
     loggerlevel: loggerlevel,
     nodeserver: nodeserver,

@@ -17,8 +17,9 @@
 //    Oct 22 2019   Change some log messages and set mongoose options
 //    Oct 24 2019   Checking mongo status, return boolean
 //                  Simplify !!
+//    Jan 14 2020   WIP on multiple deployment hosts for mongodbserver 
 //----------------------------------------------------------------------------
-const Version = "mongodb:1.45, Oct 24 2019 ";
+const Version = "mongodb:1.48, Jan 14 2020 ";
 
 const mongoose = require('mongoose');
 const properties = require('./properties');
@@ -52,32 +53,44 @@ function getMongoDBURI() {
 // Open mongo connection
 //----------------------------------------------------------------------------
 function getMongoDBConnection(traceflag = properties.MONGOTRACE) {
-  if(traceflag) logger.debug(Version + 'Connect to : ' + properties.mongodbserver);
-    mongoose.connect(properties.mongodbserver,{
-      useNewUrlParser: true, 
-      keepAlive: false, 
-      useFindAndModify: false,
-      useCreateIndex: true,
-      useUnifiedTopology: true,
+  if (DB !== null)return;
+  const nodename = process.env.COMPUTERNAME;
+  let urlconn = properties.mongodbserver;   // Default mongodb connection string
+  for (let i=0; i < properties.mongolist.length; ++i) {
+    if (properties.mongolist[i].node === nodename) {
+      urlconn = properties.mongolist[i].url;
+      break;
+    }
+  }
+  if(traceflag) {
+    logger.debug(Version + 'Connect to : ' + urlconn);
+    logger.debug(Version + 'On node : ' + nodename);
+  } 
+  mongoose.connect(urlconn,{
+    useNewUrlParser: true, 
+    keepAlive: false, 
+    useFindAndModify: false,
+    useCreateIndex: true,
+    useUnifiedTopology: true,
+  })
+  .then(function(MongooseObject) {
+    if(traceflag) logger.info(Version + 'Mongoose now ready');
+    DB = mongoose.connection;
+    // Set up handlers
+    DB.on('error',function (err) {  
+      if(traceflag) logger.error(Version + 'Mongoose error: ' + err);
+      }); 
+    DB.on('disconnected',function () {  
+      if(traceflag) logger.debug(Version + 'Mongoose disconnected');
+      }); 
+    DB.on('connected',function () {  
+      if(traceflag) logger.debug(Version + 'Mongoose connected');
+      });     
     })
-    .then(function(MongooseObject) {
-      if(traceflag) logger.info(Version + 'Mongoose now ready');
-      DB = mongoose.connection;
-      // Set up handlers
-      DB.on('error',function (err) {  
-        if(traceflag) logger.error(Version + 'Mongoose error: ' + err);
-        }); 
-      DB.on('disconnected',function () {  
-        if(traceflag) logger.debug(Version + 'Mongoose disconnected');
-        }); 
-      DB.on('connected',function () {  
-        if(traceflag) logger.debug(Version + 'Mongoose connected');
-        });     
-      })
-    .catch(function(reason) {
-      logger.info(reason.message);
-      DB = mongoose.connection;
-    })
+  .catch(function(reason) {
+    logger.info(reason.message);
+    DB = mongoose.connection;
+  })
 };
 //----------------------------------------------------------------------------
 // Close mongo connection
