@@ -29,9 +29,8 @@
 <template>
   <div id="app">
     <!-- ------------------------------------------------------------------------- -->
-    <!-- https://stackoverflow.com/questions/19827605/change-bootstrap-navbar-collapse-breakpoint-without-using-less --> 
     <div id="menu">
-      <b-navbar toggleable="md" class="navbar-dark bg-dark" fixed="top">
+      <b-navbar toggleable="md" class="navbar-dark bg-dark" fixed="top">  <!-- Toggle @ medium size which is 768px --> 
         <b-navbar-toggle target="collapsetop"></b-navbar-toggle>
         <b-collapse id=collapsetop is-nav>
           <b-navbar-brand v-bind:to="{ name: 'home' }">Home</b-navbar-brand>
