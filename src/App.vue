@@ -29,12 +29,13 @@
 <template>
   <div id="app">
     <!-- ------------------------------------------------------------------------- -->
+    <!-- https://stackoverflow.com/questions/19827605/change-bootstrap-navbar-collapse-breakpoint-without-using-less --> 
     <div id="menu">
-      <b-navbar toggleable="sm" class="navbar-dark bg-dark" fixed="top">
+      <b-navbar toggleable="md" class="navbar-dark bg-dark" fixed="top">
         <b-navbar-toggle target="collapsetop"></b-navbar-toggle>
         <b-collapse id=collapsetop is-nav>
           <b-navbar-brand v-bind:to="{ name: 'home' }">Home</b-navbar-brand>
-          <b-navbar-nav class="mr-auto"> 
+          <b-navbar-nav class="mr-auto" > 
             <div v-for="entry in topmenu" :key="entry.id"> <!-- Load menus and sub menus -->
               <b-nav-item-dropdown
                 :id="entry.text"
