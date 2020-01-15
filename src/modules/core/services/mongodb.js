@@ -18,8 +18,10 @@
 //    Oct 24 2019   Checking mongo status, return boolean
 //                  Simplify !!
 //    Jan 14 2020   WIP on multiple deployment hosts for mongodbserver 
+//    Jan 15 2020   Test mongoose connection poolSize parameter
+//                  No effect on number of opened connections by connect()
 //----------------------------------------------------------------------------
-const Version = "mongodb:1.48, Jan 14 2020 ";
+const Version = "mongodb:1.50, Jan 15 2020 ";
 
 const mongoose = require('mongoose');
 const properties = require('./properties');
@@ -72,6 +74,7 @@ function getMongoDBConnection(traceflag = properties.MONGOTRACE) {
     useFindAndModify: false,
     useCreateIndex: true,
     useUnifiedTopology: true,
+    poolSize: 5,
   })
   .then(function(MongooseObject) {
     if(traceflag) logger.info(Version + 'Mongoose now ready');
