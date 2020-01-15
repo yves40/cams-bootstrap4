@@ -131,11 +131,7 @@ export default {
   },  
   // ------------------------------------------------------------------------------------------------------------
   created() {
-    this.$parent.disableMenu('login');
-    this.$parent.enableMenu('register');
-    this.$parent.disableMenu('logout');
-    this.$parent.disableMenu('identity');
-    this.$parent.disableTopMenu('Bootstrap4');
+          this.$parent.setupMenus('login');
   },
   beforeDestroy() {
     this.$parent.enableMenu('login');
@@ -152,7 +148,7 @@ export default {
       this.loginVuex({email: this.email, password: this.password, router: this.$router})
         .then((result) => {
           swal('OK!', result, 'success');
-          this.$parent.setupMenus('login');
+          this.$parent.setupMenus('logged');
         })
         .catch((err) => {
           swal('KO!', err, 'error');

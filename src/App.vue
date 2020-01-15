@@ -248,6 +248,18 @@ export default {
     setupMenus(mode) {
       switch(mode) {
         case 'login':
+            logger.debug(this.version + "Logout menu actions")
+            this.disableMenu('logout');
+            this.disableMenu('login');
+            this.enableMenu('register');
+            this.disableMenu('identity');
+            this.disableMenu('edit');
+            this.disableMenu('deleteme');
+            this.disableTopMenu('Bootstrap4');
+            this.disableTopMenu('User Admin');
+            this.disableTopMenu('Cams Admin');
+            break;
+        case 'logged':
             this.disableMenu('login');
             this.disableMenu('register');
             this.enableMenu('logout');
@@ -255,11 +267,11 @@ export default {
             this.enableMenu('edit');
             this.enableMenu('deleteme');
             this.enableTopMenu('Bootstrap4');
-            if(!this.privilegedmenusupdated && this.$store.getters['userstore/isUserAdmin']) {
+            if(this.$store.getters['userstore/isUserAdmin']) {
               logger.debug(this.version + 'Activate user admin menu')
               this.enableTopMenu('User Admin');
             } 
-            if(!this.privilegedmenusupdated && this.$store.getters['userstore/isCamAdmin']) {
+            if(this.$store.getters['userstore/isCamAdmin']) {
               logger.debug(this.version + 'Activate cams admin menu')
               this.enableTopMenu('Cams Admin');
             }
@@ -280,15 +292,4 @@ export default {
   },
 };
 </script>
-
-  updated() {
-    if(this.$store.getters['userstore/isLogged']) {
-      this.privilegedmenusupdated = true; // Just after login
-    }
-    else{
-      this.disableTopMenu('User Admin');
-      this.disableTopMenu('Cams Admin');
-      this.disableTopMenu('Bootstrap4');
-    }
-  },
 
