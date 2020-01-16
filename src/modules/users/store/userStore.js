@@ -30,6 +30,7 @@
     Dec 27 2019   Log window management
     Dec 31 2019   Double user registration bug
     Jan 02 2020   Getters to check user privileges
+//    Jan 16 2020  Investigate error after deleting your account
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -49,7 +50,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:1.99, Jan 02 2020 ',
+        Version: 'userstore:2.00, Jan 16 2020 ',
         theuser: null,
         token: null,
         tokenobject: '{}',

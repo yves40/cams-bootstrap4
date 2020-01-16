@@ -24,6 +24,7 @@
   Dec 20 2019   Delete page for logged user
   Jan 01 2020   1st test for user profile check (useradmin, camadmin...)
   Jan 02 2020   Menu management, including privileged ones
+  Jan 16 2020   Cosmetic on lines order
 -->
 
 <template>
@@ -105,7 +106,7 @@ export default {
   name: "app",
   data() {
       return {
-        version: "Cams Manager 2.31, Jan 02 2020 ",
+        version: "Cams Manager 2.32, Jan 16 2020 ",
         copyright: "oldtimerSoft",
         // These arrays are defining the displayed menus
         // enableflag drives the visibility of the URL
@@ -249,9 +250,10 @@ export default {
       switch(mode) {
         case 'login':
             logger.debug(this.version + "Logout menu actions")
+            this.enableMenu('register');
+
             this.disableMenu('logout');
             this.disableMenu('login');
-            this.enableMenu('register');
             this.disableMenu('identity');
             this.disableMenu('edit');
             this.disableMenu('deleteme');
@@ -260,13 +262,14 @@ export default {
             this.disableTopMenu('Cams Admin');
             break;
         case 'logged':
-            this.disableMenu('login');
-            this.disableMenu('register');
             this.enableMenu('logout');
             this.enableMenu('identity');
             this.enableMenu('edit');
             this.enableMenu('deleteme');
             this.enableTopMenu('Bootstrap4');
+            
+            this.disableMenu('login');
+            this.disableMenu('register');
             if(this.$store.getters['userstore/isUserAdmin']) {
               logger.debug(this.version + 'Activate user admin menu')
               this.enableTopMenu('User Admin');
@@ -277,9 +280,10 @@ export default {
             }
             break;
           case 'logout':
-            this.disableMenu('logout');
             this.enableMenu('login');
             this.enableMenu('register');
+            
+            this.disableMenu('logout');
             this.disableMenu('identity');
             this.disableMenu('edit');
             this.disableMenu('deleteme');

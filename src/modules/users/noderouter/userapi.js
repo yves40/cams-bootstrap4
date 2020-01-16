@@ -86,11 +86,12 @@
 //    Dec 28 2019  Register user service : better code
 //    Dec 29 2019  Register user service : Bug with double registration
 //    Dec 31 2019  Register user service : Bug with double registration
+//    Jan 16 2020  Investigate error after deleting your account
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.87, Dec 31 2019 ';
+const Version = 'userapi:3.88, Jan 16 2020 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -154,12 +155,31 @@ router.post('/users/logout', cors(corsutility.getCORS()),
             }
             mongolog.informational( req.user.model.email + ' logged out', 'LOGOUT', req.user.model.email)
             req.logout();
-            res.json( { message: message, email: usermail } );
+            res.status(200).json( { message: message, email: usermail } );
         }
         else {
-            res.json( { message: 'Not logged '});
+            res.status(500).json( { message: 'Not logged '});
         }
 });
+
+//-----------------------------------------------------------------------------------
+// Remove One user by email
+//-----------------------------------------------------------------------------------
+router.post('/users/delete/email', cors(corsutility.getCORS()), 
+    passport.authenticate('jwt'),
+    helpers.asyncMiddleware(async (req, res, next) => {
+        mongolog.informational(req.user.model.email + ' : delete my account', 'ACCOUNT', req.user.model.email);
+        await new userclass(req.user.model.email).Delete()
+            .then( (message) => {
+                logger.debug(Version + 'Delete status from userclass is : ' + message); 
+                res.status(200).send(message);
+            })
+            .catch( (error) => {
+                res.status(500).send(error);
+            });
+    })
+);
+
 //-----------------------------------------------------------------------------------
 // Register user
 //-----------------------------------------------------------------------------------
@@ -238,26 +258,8 @@ router.post('/users/messages', cors(corsutility.getCORS()),
                     mongolog.fatal(message, category, req.user.model.email);
                     break;
         }  
-        res.send('OK');
+        res.status(200).send('OK');
     }
-);
-
-//-----------------------------------------------------------------------------------
-// Remove One user by email
-//-----------------------------------------------------------------------------------
-router.post('/users/delete/email', cors(corsutility.getCORS()), 
-    passport.authenticate('jwt'),
-    helpers.asyncMiddleware(async (req, res, next) => {
-        mongolog.informational(req.user.model.email + ' : delete my account', 'ACCOUNT', req.user.model.email);
-        await new userclass(req.user.model.email).Delete()
-            .then( (message) => {
-                logger.debug('Delete status from user class ' + message); 
-                res.send(message);
-            })
-            .catch( (error) => {
-                res.status(500).send(error);
-            });
-    })
 );
 
 //-----------------------------------------------------------------------------------
@@ -267,7 +269,7 @@ router.get('/users/list', cors(corsutility.getCORS()),
     passport.authenticate('jwt'), 
     helpers.asyncMiddleware(async (req, res, next) => {
         let allusers = await new userclass().listUsers();
-        res.send(allusers);   
+        res.status(200).send(allusers);   
     })
 );
 
@@ -283,7 +285,7 @@ router.post('/users/mylog', cors(corsutility.getCORS()),
             lineslimit = props.MONGOLOGLINESLIMIT;      // This is the default
         const mongologs = new mongologgerclass();
         mongologs.getUserLogs(req.user.model.email, lineslimit, severity).then((logs) => {
-            res.send(logs);
+            res.status(200).send(logs);
         })
         .catch((errormessage => {
             res.status(500).send(errormessage);

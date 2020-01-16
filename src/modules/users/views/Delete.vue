@@ -4,6 +4,7 @@
 
   Dec 20 2019   Initial
   Dec 21 2019   Use swal from bootstrap-sweetalert
+  Jan 16 2020   Better logic on user deletion service call
 -->
 <template>
   <div>
@@ -71,7 +72,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      version: "Delete 1.08, Dec 20 2019",
+      version: "Delete 1.16, Jan 16 2020",
     };
   },
   computed: {
@@ -87,15 +88,12 @@ export default {
  created() {
     this.$parent.disableMenu('deleteme');
   },
-  beforeDestroy() {
-    this.$parent.enableMenu('deleteme');
-  },
   methods: {
     // Some funny things with swal
     deleteme() {
       swal({
         title: "Are you sure?",
-        text: "Your will not be able to recover your account!",
+        text: "You will not be able to recover your account!",
         icon: "warning",
         dangerMode: true,
         buttons:{
@@ -125,8 +123,11 @@ export default {
             this.$router.push({ name: 'identity' });
             break;
           case "shoot": 
+            // Action call (asynchronous)
+            this.$store.dispatch('userstore/logout', {router: this.$router, path: this.$route.path, mode: 'afterdelete'});
+            // Mutation call
             this.$store.commit('userstore/delete');
-            this.$router.push({ name: 'logout', params: { mode: 'afterdelete'} });
+            this.$parent.setupMenus('logout');
             break;
         }
       })

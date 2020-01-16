@@ -30,6 +30,7 @@
 //    Dec 19 2019   WIP on user update, change call to a sync one
 //    Dec 20 2019   get method properly returns the profiles array 
 //    Dec 31 2019   Modify Add user handler
+//    Jan 16 2020   Log message on user not found on the get accessor
 //----------------------------------------------------------------------------
 const UserModel = require('../model/userModel').UserModel
 const bcryptjs = require('bcryptjs');
@@ -53,7 +54,7 @@ module.exports = class userclass {
             description = "None",
         ) 
     {
-        this.Version = 'userclass:1.89, Dec 31 2019 ';
+        this.Version = 'userclass:1.90, Jan 16 2020 ';
         this.model = new UserModel({ 
                             name: name, 
                             email: email, 
@@ -97,7 +98,7 @@ module.exports = class userclass {
                     resolve({ status: true, message: 'User read from mongo' });
                 }
                 else {
-                    reject( { status: false, message: 'User not found' });
+                    reject( { status: false, message: this.Version + 'User not found' });
                 }
             });
         })    
