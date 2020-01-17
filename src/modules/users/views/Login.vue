@@ -21,6 +21,7 @@
   Dec 17 2019   Edit user profile page activated
   Dec 21 2019   Manage the delete me menu
   Jan 02 2020   Menu management
+  Jan 17 2020   Buttons size and playing with toggleable breakpoints
 -->
 <template>
   <div>
@@ -65,13 +66,13 @@
 
               <div>
                 <b-navbar toggleable="sm">
-                  <b-navbar-toggle target="collapsemenu"></b-navbar-toggle>
-                  <b-collapse id=collapsemenu is-nav>
-                    <b-navbar-nav class="mr-auto">
-                        <b-button pill :disabled="checkall" v-on:click="login">Login</b-button>
-                        <b-button pill v-on:click="clear">Clear</b-button>
+                  <b-navbar-toggle target="collapsebuttons"></b-navbar-toggle>
+                  <b-collapse id=collapsebuttons is-nav>
+                    <b-navbar-nav>
+                        <b-button size="sm"  pill :disabled="checkall" v-on:click="login">Login</b-button>
+                        <b-button size="sm"  pill v-on:click="clear">Clear</b-button>
                         <!-- Have to route through a method call to avoid button oversizing -->
-                        <b-button pill  variant="danger" v-on:click="gotohome" >Cancel</b-button>
+                        <b-button size="sm" pill  variant="danger" v-on:click="gotohome" >Cancel</b-button>
                     </b-navbar-nav>
                   </b-collapse>
                 </b-navbar>
@@ -99,7 +100,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Login 1.85, Jan 02 2020 ",
+        version: "Login 1.86, Jan 17 2020 ",
         email: 'yves@free.fr',
         password: 'manager',
       };
