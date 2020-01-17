@@ -13,6 +13,7 @@
   Dec 17 2019   filterbox setter problem
   Dec 19 2019   Now display user profiles
   Dec 20 2019   User profiles display
+  Jan 07 2020   Fix small syntax error in vue log list ( b-row )
 -->
 <template>
   <div>
@@ -149,23 +150,24 @@
           The log dump window 
         -->
         <div class="viewframe" v-for="entry in userlogs" :key="entry.id">
-          <b-col cols="2"></b-col>
-          <b-col v-if="entry.severity < '2'" class="loginf">
-            {{entry.timestamp | formatdate}} - {{entry.message}}
-          </b-col>
-          <b-col v-else-if="entry.severity === '2'" class="logwarn">
-            {{entry.timestamp | formatdate}} - {{entry.message}}
-          </b-col>
-          <b-col v-else-if="entry.severity === '3'" class="logerr">
-            {{entry.timestamp | formatdate}} - {{entry.message}}
-          </b-col>
-          <b-col v-else-if="entry.severity === '4'" class="logfatal">
-            {{entry.timestamp | formatdate}} - {{entry.message}}
-          </b-col>
-          <b-col v-else class="logfatal">
-            {{entry.timestamp | formatdate}} - {{entry.message}}
-          </b-col>
-          <b-col cols="2"></b-col>
+          <b-row>
+            <b-col cols="1"></b-col>
+            <b-col v-if="entry.severity < '2'" class="loginf">
+              {{entry.timestamp | formatdate}} - {{entry.message}}
+            </b-col>
+            <b-col v-else-if="entry.severity === '2'" class="logwarn">
+              {{entry.timestamp | formatdate}} - {{entry.message}}
+            </b-col>
+            <b-col v-else-if="entry.severity === '3'" class="logerr">
+              {{entry.timestamp | formatdate}} - {{entry.message}}
+            </b-col>
+            <b-col v-else-if="entry.severity === '4'" class="logfatal">
+              {{entry.timestamp | formatdate}} - {{entry.message}}
+            </b-col>
+            <b-col v-else class="logfatal">
+              {{entry.timestamp | formatdate}} - {{entry.message}}
+            </b-col>
+          </b-row>
         </div>
 
       </div>
@@ -185,7 +187,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Identity 1.54, Dec 20 2019 ",
+        version: "Identity 1.55, Jan 07 2020 ",
       };
   },
   // ------------------------------------------------------------------------------------------------------------
