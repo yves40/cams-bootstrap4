@@ -27,8 +27,9 @@
 //    Jan 05 2020   Mongodb bind listen on WIFI address
 //                  Seems to be 10 times quicker...
 //    Jan 14 2020   WIP on multiple deployment hosts for mongodbserver 
+//    Jan 17 2020   session duration
 //----------------------------------------------------------------------------
-const Version = 'properties:1.42, Jan 14 2020 ';
+const Version = 'properties:1.43, Jan 17 2020 ';
 
 const axios = require('axios');
 
@@ -78,8 +79,8 @@ const axioscall = axios.create({
     withCredentials: true,
   });  
 // User session duration in seconds
-const tokenexpirationdelay = 120;
-const tokenexpirationalert = 20;    // Display a message in menu to inform user session is soon expired
+const tokenexpirationdelay = 600;
+const tokenexpirationalert = 60;    // Display a message in menu to inform user session is soon expired
 // Mongolog : default lines limit for returned data
 const MONGOLOGLINESLIMIT = 20;
 
