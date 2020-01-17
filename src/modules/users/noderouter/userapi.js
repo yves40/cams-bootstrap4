@@ -321,9 +321,12 @@ router.get('/users/listrequested', cors(corsutility.getCORS()),
     passport.authenticate('jwt'), 
     helpers.asyncMiddleware(async (req, res, next) => {
         let criteria = '_id email name';        // Defaults to be rendered
+        let filter = '';
         if(req.query.attrlist !== undefined)
             criteria = req.query.attrlist;
-        let allusers = await new userclass().listUsersRequestedAttributes(criteria);
+        if(req.query.filter !== undefined)
+            filter = req.query.filter;
+        let allusers = await new userclass().listUsersRequestedAttributes(criteria, filter);
         res.status(200).send(allusers);   
     })
 );

@@ -55,7 +55,7 @@ module.exports = class userclass {
             description = "None",
         ) 
     {
-        this.Version = 'userclass:1.91, Jan 17 2020 ';
+        this.Version = 'userclass:1.93, Jan 17 2020 ';
         this.model = new UserModel({ 
                             name: name, 
                             email: email, 
@@ -296,10 +296,12 @@ module.exports = class userclass {
     //-------------------------------------
     // List all user(s) : get the requested attributes
     //-------------------------------------
-    listUsersRequestedAttributes(attrlist = "_id email name") {
+    listUsersRequestedAttributes(attrlist = "_id email name", filter = '') {
         return new Promise((resolve, reject) => {
             (async () => {
-                await UserModel.find({}, attrlist, (function(err, userlist) {
+                let query = UserModel.find({}, attrlist);
+                query.select().where( { 'email': { '$regex' : filter, '$options' : 'i' }});
+                await query.exec(function(err, userlist) {
                         if (err) { 
                             reject(err);
                         }
@@ -310,7 +312,6 @@ module.exports = class userclass {
                             resolve(userlist);
                         }
                     })
-                )
             })();
         });
     }
