@@ -1,0 +1,5 @@
+GET http://localhost:8081/users/listrequested?attrlist=email name _id 
+Content-Type: application/json
+Authorization: jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMWVlMDc4ZWU5YmVjMzI2NGQzYmU2MyIsImVtYWlsIjoieXZlc0BmcmVlLmZyIiwiaWF0IjoxNTc5MjU1NDQ1LCJleHAiOjE1NzkyNTYwNDV9.Fu-dILTXL2FUolmrKzYRmyWkHhHK9AnC38K6SJukB3M
+
+

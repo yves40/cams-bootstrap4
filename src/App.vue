@@ -128,7 +128,7 @@ export default {
             text: "User Admin",
             enableflag: false,
             navoptions: [
-              {url: "notyet",text: "List", enableflag: true, disableflag: false, },
+              {url: "listusers",text: "List", enableflag: true, disableflag: false, },
               {url: "notyet",text: "Register", enableflag: true, disableflag: false, },
               {url: "notyet",text: "Modify", enableflag: true, disableflag: false, },
               {url: "notyet",text: "Delete", enableflag: true, disableflag: false, },

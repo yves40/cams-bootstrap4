@@ -31,6 +31,7 @@
 //    Dec 20 2019   get method properly returns the profiles array 
 //    Dec 31 2019   Modify Add user handler
 //    Jan 16 2020   Log message on user not found on the get accessor
+//    Jan 17 2020   WIP on users lists
 //----------------------------------------------------------------------------
 const UserModel = require('../model/userModel').UserModel
 const bcryptjs = require('bcryptjs');
@@ -54,7 +55,7 @@ module.exports = class userclass {
             description = "None",
         ) 
     {
-        this.Version = 'userclass:1.90, Jan 16 2020 ';
+        this.Version = 'userclass:1.91, Jan 17 2020 ';
         this.model = new UserModel({ 
                             name: name, 
                             email: email, 
@@ -272,12 +273,54 @@ module.exports = class userclass {
         });
     }
     //-------------------------------------
-    // List all user(s) emails and IDs
+    // List all user(s) : emails and IDs
     //-------------------------------------
     listUsersEmailsIds() {
         return new Promise((resolve, reject) => {
             (async () => {
                 await UserModel.find({}, 'email _id', (function(err, userlist) {
+                        if (err) { 
+                            reject(err);
+                        }
+                        if(userlist.length === 0) {
+                            reject("No user in the DB");
+                        }
+                        else {
+                            resolve(userlist);
+                        }
+                    })
+                )
+            })();
+        });
+    }
+    //-------------------------------------
+    // List all user(s) : get the requested attributes
+    //-------------------------------------
+    listUsersRequestedAttributes(attrlist = "_id email name") {
+        return new Promise((resolve, reject) => {
+            (async () => {
+                await UserModel.find({}, attrlist, (function(err, userlist) {
+                        if (err) { 
+                            reject(err);
+                        }
+                        if(userlist.length === 0) {
+                            reject("No user in the DB");
+                        }
+                        else {
+                            resolve(userlist);
+                        }
+                    })
+                )
+            })();
+        });
+    }
+    //-------------------------------------
+    // List all user(s) : emails and IDs and names
+    //-------------------------------------
+    listUsersEmailsIdsNames() {
+        return new Promise((resolve, reject) => {
+            (async () => {
+                await UserModel.find({}, 'email _id name', (function(err, userlist) {
                         if (err) { 
                             reject(err);
                         }

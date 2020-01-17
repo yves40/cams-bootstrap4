@@ -87,11 +87,12 @@
 //    Dec 29 2019  Register user service : Bug with double registration
 //    Dec 31 2019  Register user service : Bug with double registration
 //    Jan 16 2020  Investigate error after deleting your account
+//    Jan 17 2020  users list
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.88, Jan 16 2020 ';
+const Version = 'userapi:3.90, Jan 17 2020 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -263,18 +264,7 @@ router.post('/users/messages', cors(corsutility.getCORS()),
 );
 
 //-----------------------------------------------------------------------------------
-// List all users
-//-----------------------------------------------------------------------------------
-router.get('/users/list', cors(corsutility.getCORS()),
-    passport.authenticate('jwt'), 
-    helpers.asyncMiddleware(async (req, res, next) => {
-        let allusers = await new userclass().listUsers();
-        res.status(200).send(allusers);   
-    })
-);
-
-//-----------------------------------------------------------------------------------
-// Access user log
+// Access one user log
 //-----------------------------------------------------------------------------------
 router.post('/users/mylog', cors(corsutility.getCORS()),
     passport.authenticate('jwt'), 
@@ -294,13 +284,47 @@ router.post('/users/mylog', cors(corsutility.getCORS()),
 );
 
 //-----------------------------------------------------------------------------------
+// List all users
+//-----------------------------------------------------------------------------------
+router.get('/users/list', cors(corsutility.getCORS()),
+    passport.authenticate('jwt'), 
+    helpers.asyncMiddleware(async (req, res, next) => {
+        let allusers = await new userclass().listUsers();
+        res.status(200).send(allusers);   
+    })
+);
+
+//-----------------------------------------------------------------------------------
 // List all users emails and Ids
 //-----------------------------------------------------------------------------------
 router.get('/users/listemailsids', cors(corsutility.getCORS()), 
     passport.authenticate('jwt'), 
     helpers.asyncMiddleware(async (req, res, next) => {
         let allusers = await new userclass().listUsersEmailsIds();
-        res.send(allusers);   
+        res.status(200).send(allusers);   
+    })
+);
+//-----------------------------------------------------------------------------------
+// List all users emails, Ids, names
+//-----------------------------------------------------------------------------------
+router.get('/users/listemailsidsnames', cors(corsutility.getCORS()), 
+    passport.authenticate('jwt'), 
+    helpers.asyncMiddleware(async (req, res, next) => {
+        let allusers = await new userclass().listUsersEmailsIdsNames();
+        res.status(200).send(allusers);   
+    })
+);
+//-----------------------------------------------------------------------------------
+// List all users requested attributes
+//-----------------------------------------------------------------------------------
+router.get('/users/listrequested', cors(corsutility.getCORS()), 
+    passport.authenticate('jwt'), 
+    helpers.asyncMiddleware(async (req, res, next) => {
+        let criteria = '_id email name';        // Defaults to be rendered
+        if(req.query.attrlist !== undefined)
+            criteria = req.query.attrlist;
+        let allusers = await new userclass().listUsersRequestedAttributes(criteria);
+        res.status(200).send(allusers);   
     })
 );
 //-----------------------------------------------------------------------------------
@@ -310,7 +334,7 @@ router.get('/users/listemailsids', cors(corsutility.getCORS()),
 //-----------------------------------------------------------------------------------
 router.post('/users/deleteall', cors(corsutility.getCORS()),     helpers.asyncMiddleware(async (req, res, next) => {
         let message = await new userclass().DeleteAll();
-        res.send(message);   
+        res.status(200).send(message);   
     })
 )
 
