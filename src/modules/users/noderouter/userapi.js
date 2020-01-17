@@ -92,7 +92,7 @@
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.90, Jan 17 2020 ';
+const Version = 'userapi:3.92, Jan 17 2020 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -326,6 +326,8 @@ router.get('/users/listrequested', cors(corsutility.getCORS()),
             criteria = req.query.attrlist;
         if(req.query.filter !== undefined)
             filter = req.query.filter;
+
+        logger.debug(Version + "Loading user list withattributes : " + criteria);
         let allusers = await new userclass().listUsersRequestedAttributes(criteria, filter);
         res.status(200).send(allusers);   
     })
