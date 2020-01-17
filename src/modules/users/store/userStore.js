@@ -31,10 +31,10 @@
     Dec 31 2019   Double user registration bug
     Jan 02 2020   Getters to check user privileges
     Jan 16 2020  Investigate error after deleting your account
+    Jan 17 2020  Strange import suppressed
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
-import { generateCodeFrame } from 'vue-template-compiler';
 
 const logger = require('../../core/services/logger');
 const properties = require('../../core/services/properties');
@@ -50,7 +50,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:2.00, Jan 16 2020 ',
+        Version: 'userstore:2.01, Jan 17 2020 ',
         theuser: null,
         token: null,
         tokenobject: '{}',
