@@ -3,6 +3,7 @@
   List.vue
 
   Jan 17 2020   Initial
+  Jan 18 2020   Parameters for the user list sent to the userliststore
 -->
 <template>
   <div>
@@ -50,12 +51,13 @@
       <!-- 
         The users dump window 
       -->
-      <div class="viewframe" v-for="entry in userlist" :key="entry._id" >
-        <b-row>
-          <b-col cols="2" class="ml-1"><img src="../../../assets/edit_profile.png"></b-col>
-          <b-col>{{entry.email}} - {{entry.name}}</b-col>
-          <b-col cols="2"></b-col>
-        </b-row>
+      <div class="mt-2">
+        <div class="viewframe" v-for="entry in userlist" :key="entry._id" >
+          <b-row>
+            <b-col>{{entry.email}} - {{entry.name}}</b-col>
+            <b-col cols="8">{{entry.description}}</b-col>
+          </b-row>
+        </div>
       </div>
     </b-container>
   </div>
@@ -73,7 +75,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "List 1.12, Jan 17 2020 ",
+        version: "List 1.14, Jan 18 2020 ",
       }
   },
   // ------------------------------------------------------------------------------------------------------------

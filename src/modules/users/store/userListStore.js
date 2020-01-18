@@ -2,6 +2,7 @@
     userListStore.js    
 
     Jan 17 2020   Initial
+    Jan 18 2020   Send parameters with axios : params 
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -20,7 +21,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userListStore:1.06, Jan 17 2020 ',
+        Version: 'userListStore:1.07, Jan 18 2020 ',
         filter: '',     // Filter user list based on the interface field
         userlist: {},
     },
@@ -51,7 +52,7 @@ export default {
                         method: 'get',
                         url: '/users/listrequested',
                         headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
-                        data: {
+                        params: {
                             filter: filter,
                             attributes: '_id email name'
                         },

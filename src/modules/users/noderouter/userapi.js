@@ -88,11 +88,12 @@
 //    Dec 31 2019  Register user service : Bug with double registration
 //    Jan 16 2020  Investigate error after deleting your account
 //    Jan 17 2020  users list
+//    Jan 18 2020  users list : get parameters 
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.92, Jan 17 2020 ';
+const Version = 'userapi:3.93, Jan 18 2020 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -320,11 +321,11 @@ router.get('/users/listemailsidsnames', cors(corsutility.getCORS()),
 router.get('/users/listrequested', cors(corsutility.getCORS()), 
     passport.authenticate('jwt'), 
     helpers.asyncMiddleware(async (req, res, next) => {
-        let criteria = '_id email name';        // Defaults to be rendered
+        let criteria = '_id email name description';        // Defaults to be rendered
         let filter = '';
-        if(req.query.attrlist !== undefined)
+        if(req.params.attrlist !== undefined)
             criteria = req.query.attrlist;
-        if(req.query.filter !== undefined)
+        if(req.params.filter !== undefined)
             filter = req.query.filter;
 
         logger.debug(Version + "Loading user list withattributes : " + criteria);
