@@ -49,10 +49,28 @@
       -->
       <div class="mt-2 ml-1 mr-1">
         <div class="viewframe" v-for="entry in userlist" :key="entry._id" >
-          <b-row>
-            <b-col cols="4">{{entry.email}}</b-col>
-            <b-col cols="8"><b-link><img src="../../../assets/search.png"></b-link></b-col>            
+          <b-row class="pl-3 pr-3">
+            <b-col class="text-left" cols="4">{{entry.email}}</b-col>
+            <b-col class="text-left" cols="7">{{entry.name}}</b-col>
+            <b-col class="text-center" cols="1">
+              <b-link v-on:click="toggledetails"><img src='../../../assets/search.png'></b-link>
+          </b-col>
           </b-row>
+          <b-row class="pl-3 pr-3" v-show="showdetails">
+             
+            <b-card title="User details" 
+              sub-title="Some dates may not be relevant"
+              img-src="https://nationalinterest.org/sites/default/files/styles/desktop__1260_/public/main_images/86594302937.jpg?itok=CaHypYt6"
+              img-alt="the image" img-bottom class="mt-2 mb-2 ml-3 mr-3"
+            >
+              <li>{{entry.description}} </li>
+              <li>Last login : {{entry.lastlogin | formatdate}}</li>
+              <li>Last logout: {{entry.lastlogout | formatdate}} </li>
+              <li>Created    : {{entry.created | formatdate}}</li>
+              <li>Updated    : {{entry.updated | formatdate}}</li>
+            </b-card>
+          </b-row>
+          
         </div>
       </div>
     </b-container>
@@ -72,11 +90,17 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "List 1.25, Jan 19 2020 ",
+        version: "List 1.32, Jan 19 2020 ",
         timeoutsid: null,
+        showdetails: false,
       }
   },
   methods: {
+    toggledetails() {
+      if(this.showdetails === true) this.showdetails = false;
+      else this.showdetails = true;
+      logger.debug(this.version + 'show/hide')
+    },
   },
   // ------------------------------------------------------------------------------------------------------------
   computed: {
@@ -109,12 +133,6 @@ export default {
   },
   beforeDestroy() {
     this.$parent.enableMenu('listusers');
-  },
-  // ------------------------------------------------------------------------------------------------------------
-  methods: {
-    gotohome() {
-      this.$router.push({ name: 'home' });
-    },
   },
 }
 </script>

@@ -4,6 +4,7 @@
     Jan 17 2020   Initial
     Jan 18 2020   Send parameters with axios : params 
     Jan 19 2020   Track user search filter update in the UI 
+                  Spec user list attributes
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -21,7 +22,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userListStore:1.09, Jan 19 2020 ',
+        Version: 'userListStore:1.11, Jan 19 2020 ',
         filter: '',     // Filter user list based on the interface field
         userlist: {},
     },
@@ -54,7 +55,7 @@ export default {
                         headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
                         params: {
                             filter: filter,
-                            attributes: '_id email name'
+                            attrlist: '_id email name description lastlogin lastlogout created updated'
                         },
                  }
                 )
