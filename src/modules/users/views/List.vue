@@ -4,6 +4,7 @@
 
   Jan 17 2020   Initial
   Jan 18 2020   Parameters for the user list sent to the userliststore
+  Jan 19 2020   Link and zoom on user's details
 -->
 <template>
   <div>
@@ -21,11 +22,6 @@
         <b-col>
           <p>{{version}}</p>
         </b-col>
-        <b-col cols="2"></b-col>
-      </b-row>
-      <b-row>
-        <b-col cols="2"></b-col>
-        <b-col cols="8">{{storeversion}}</b-col>
         <b-col cols="2"></b-col>
       </b-row>
       <b-row>
@@ -51,11 +47,11 @@
       <!-- 
         The users dump window 
       -->
-      <div class="mt-2">
+      <div class="mt-2 ml-1 mr-1">
         <div class="viewframe" v-for="entry in userlist" :key="entry._id" >
           <b-row>
-            <b-col>{{entry.email}} - {{entry.name}}</b-col>
-            <b-col cols="8">{{entry.description}}</b-col>
+            <b-col cols="4">{{entry.email}}</b-col>
+            <b-col cols="8"><b-link><img src="../../../assets/search.png"></b-link></b-col>            
           </b-row>
         </div>
       </div>
@@ -69,14 +65,18 @@
 // ------------------------------------------------------------------------------------------------------------
 const logger = require('../../core/services/logger');
 const datetime = require('../../core/services/datetime');
+const helpers = require('../../core/services/helpers');
 
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   data() {
       return {
-        version: "List 1.14, Jan 18 2020 ",
+        version: "List 1.25, Jan 19 2020 ",
+        timeoutsid: null,
       }
+  },
+  methods: {
   },
   // ------------------------------------------------------------------------------------------------------------
   computed: {
@@ -92,7 +92,12 @@ export default {
           return this.$store.state.userliststore.filter;
         },
         set(value) {
-          this.$store.dispatch('userliststore/loadUsersList',  value );
+          // Use a timeout to avoid calling the store service for every keystroke 
+          if (this.timeoutsid !== null)
+              clearTimeout(this.timeoutsid);
+          this.timeoutsid = setTimeout( () => {
+            this.$store.dispatch('userliststore/loadUsersList',  value );
+          }, 600);
         }
       },
   },  

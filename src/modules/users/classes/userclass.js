@@ -32,6 +32,7 @@
 //    Dec 31 2019   Modify Add user handler
 //    Jan 16 2020   Log message on user not found on the get accessor
 //    Jan 17 2020   WIP on users lists
+//    Jan 19 2020   WIP on users lists ; 1
 //----------------------------------------------------------------------------
 const UserModel = require('../model/userModel').UserModel
 const bcryptjs = require('bcryptjs');
@@ -55,7 +56,7 @@ module.exports = class userclass {
             description = "None",
         ) 
     {
-        this.Version = 'userclass:1.93, Jan 17 2020 ';
+        this.Version = 'userclass:1.94, Jan 19 2020 ';
         this.model = new UserModel({ 
                             name: name, 
                             email: email, 
@@ -300,7 +301,8 @@ module.exports = class userclass {
         return new Promise((resolve, reject) => {
             (async () => {
                 let query = UserModel.find({}, attrlist);
-                query.select().where( { 'email': { '$regex' : filter, '$options' : 'i' }});
+                query.select().where( { 'email': { '$regex' : filter, '$options' : 'i' }}).sort( { email: 1});
+                
                 await query.exec(function(err, userlist) {
                         if (err) { 
                             reject(err);

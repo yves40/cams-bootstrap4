@@ -89,11 +89,12 @@
 //    Jan 16 2020  Investigate error after deleting your account
 //    Jan 17 2020  users list
 //    Jan 18 2020  users list : get parameters 
+//    Jan 19 2020  WIP : users list search
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.93, Jan 18 2020 ';
+const Version = 'userapi:3.94, Jan 19 2020 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -321,15 +322,15 @@ router.get('/users/listemailsidsnames', cors(corsutility.getCORS()),
 router.get('/users/listrequested', cors(corsutility.getCORS()), 
     passport.authenticate('jwt'), 
     helpers.asyncMiddleware(async (req, res, next) => {
-        let criteria = '_id email name description';        // Defaults to be rendered
+        let attributes = '_id email name description';        // Defaults to be rendered
         let filter = '';
-        if(req.params.attrlist !== undefined)
-            criteria = req.query.attrlist;
-        if(req.params.filter !== undefined)
+        if(req.query.attrlist !== undefined)
+            attributes = req.query.attrlist;
+        if(req.query.filter !== undefined)
             filter = req.query.filter;
 
-        logger.debug(Version + "Loading user list withattributes : " + criteria);
-        let allusers = await new userclass().listUsersRequestedAttributes(criteria, filter);
+        logger.debug(Version + "Loading user list with filter : " + filter);
+        let allusers = await new userclass().listUsersRequestedAttributes(attributes, filter);
         res.status(200).send(allusers);   
     })
 );

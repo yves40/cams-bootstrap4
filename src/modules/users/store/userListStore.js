@@ -3,6 +3,7 @@
 
     Jan 17 2020   Initial
     Jan 18 2020   Send parameters with axios : params 
+    Jan 19 2020   Track user search filter update in the UI 
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -11,7 +12,6 @@ const logger = require('../../core/services/logger');
 const properties = require('../../core/services/properties');
 const AXIOS = properties.axioscall;
 const datetime = require('../../core/services/datetime')
-const jwthelper = require('../services/jwthelper');
 
 Vue.use(Vuex);
 
@@ -21,7 +21,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userListStore:1.07, Jan 18 2020 ',
+        Version: 'userListStore:1.09, Jan 19 2020 ',
         filter: '',     // Filter user list based on the interface field
         userlist: {},
     },

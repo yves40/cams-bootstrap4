@@ -4,8 +4,9 @@
 //    Oct 29 2019   Initial
 //    Oct 31 2019   basic syntax error
 //    Nov 20 2019   Async call function
+//    Jan 19 2020   Debounce function
 //----------------------------------------------------------------------------
-const Version = "helpers:1.02, Nov 20 2019 ";
+const Version = "helpers:1.03, jan 19 2020 ";
 
 
 //----------------------------------------------------------------------------
@@ -33,9 +34,21 @@ const asyncMiddleware = fn =>
       .catch(next);
   };
 
+function debounce (fn, delay) {
+    var timeoutID = null
+    return function () {
+      clearTimeout(timeoutID)
+      var args = arguments
+      var that = this
+      timeoutID = setTimeout(function () {
+        fn.apply(that, args)
+      }, delay)
+    }
+}
 
 module.exports = {
     sleep,
     getIP,
     asyncMiddleware,
+    debounce,
 }
