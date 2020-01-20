@@ -14,6 +14,7 @@
     Nov 27 2019   Test mongologgerclass
     Dec 03 2019   favicon
     Dec 06 2019   Category for log message in mongo
+    Jan 20 2020   Static path for png files
 ----------------------------------------------------------------------------*/
 const mongoose = require('mongoose');
 const express = require('express');
@@ -28,7 +29,7 @@ const corshelper = require('./modules/core/services/corshelper');
 const cors = require('cors');
 const mongologgerclass = require('./modules/core/classes/mongologgerclass');
 
-const Version = 'server.js:1.31, Dec 06 2019';
+const Version = 'server.js:1.33, Jan 20 2020';
 
 const app = express();
 //---------------------------------------------------------------------------------------------------------
@@ -37,12 +38,13 @@ app.use(express.json());
 app.use(express.urlencoded( {extended: false}));
 //---------------------------------------------------------------------------------------------------------
 // Set a static folder containing html files
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 //---------------------------------------------------------------------------------------------------------
 // Add a second path for the root css file (main.css)
 // The additional 1st parameter of app.use is the virtual path
 // This path is just used by public/ static files to get the css file
-app.use('/style', express.static(path.join(__dirname, 'css')));
+app.use('/style', express.static( __dirname + '/css'));
+app.use('/images', express.static( __dirname + '/assets'));
 //---------------------------------------------------------------------------------------------------------
 // Test a simple middleware function tracking requests made on the server : see the httplogger.js source file
 // The imported function is installed in the MW chain
