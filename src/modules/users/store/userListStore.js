@@ -5,6 +5,8 @@
     Jan 18 2020   Send parameters with axios : params 
     Jan 19 2020   Track user search filter update in the UI 
                   Spec user list attributes
+    Jan 20 2020   Add individual hidden flag in the users array during the 
+                  mutation
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -22,7 +24,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userListStore:1.11, Jan 19 2020 ',
+        Version: 'userListStore:1.13, Jan 20 2020 ',
         filter: '',     // Filter user list based on the interface field
         userlist: {},
     },
@@ -39,6 +41,10 @@ export default {
     mutations: {
         refreshUsersList(state, usersdata) {
             state.userlist = usersdata;
+            state.userlist.forEach(element => {
+                element.hide = false;
+            });
+            console.log(JSON.stringify(state.userlist))
         }
     },
     /*----------------------------------------------------------------------------

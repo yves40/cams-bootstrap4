@@ -49,25 +49,26 @@
         The users dump window 
       -->
       <div class="mt-2 ml-1 mr-1">
-        <div class="viewframe" v-for="entry in userlist" :key="entry._id" >
+        <div class="viewframe" v-for="(entry, index) in userlist" :key="entry._id" @click="zoomselected(entry)" >
           <b-row class="pl-3 pr-3">
-            <b-col class="text-left" cols="4">{{entry.email}}</b-col>
-            <b-col class="text-left" cols="7">{{entry.name}}</b-col>
-            <b-col class="text-center" cols="1">
+            <b-col class="text-left ml-4" cols="4">{{entry.email}}</b-col>
+            <b-col class="text-center" cols="6">
               <b-link v-on:click="toggledetails"><img src='../../../assets/search.png'></b-link>
           </b-col>
           </b-row>
-          <b-row class="pl-3 pr-3" v-show="showdetails">
+          <b-row class="pl-3 pr-3" v-show="showdetails" >
              
             <b-card title="User details" 
               sub-title="Some dates may be unset"
               class="mt-2 mb-2 ml-3 mr-3"
             >
-              <li>{{entry.description}} </li>
-              <li>Last login : {{entry.lastlogin | formatdate}}</li>
-              <li>Last logout: {{entry.lastlogout | formatdate}} </li>
-              <li>Created    : {{entry.created | formatdate}}</li>
-              <li>Updated    : {{entry.updated | formatdate}}</li>
+              <li>ID          : {{entry._id}}</li>
+              <li>Pseudo      : {{entry.name}}</li>
+              <li>Description : {{entry.description}} </li>
+              <li>Last login  : {{entry.lastlogin | formatdate}}</li>
+              <li>Last logout : {{entry.lastlogout | formatdate}} </li>
+              <li>Created     : {{entry.created | formatdate}}</li>
+              <li>Updated     : {{entry.updated | formatdate}}</li>
             </b-card>
           </b-row>
           
@@ -91,7 +92,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "List 1.39, Jan 20 2020 ",
+        version: "List 1.40, Jan 20 2020 ",
         timeoutsid: null,
         showdetails: false,
       }
@@ -100,6 +101,9 @@ export default {
     toggledetails() {
       if(this.showdetails === true) this.showdetails = false;
       else this.showdetails = true;
+    },
+    zoomselected(selectedUser) {
+      console.log('User selected :' + selectedUser.email);
     },
   },
   // ------------------------------------------------------------------------------------------------------------
