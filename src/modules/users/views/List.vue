@@ -5,6 +5,7 @@
   Jan 17 2020   Initial
   Jan 18 2020   Parameters for the user list sent to the userliststore
   Jan 19 2020   Link and zoom on user's details
+  Jan 20 2020   Link and zoom on user's details, still some work
 -->
 <template>
   <div>
@@ -59,9 +60,8 @@
           <b-row class="pl-3 pr-3" v-show="showdetails">
              
             <b-card title="User details" 
-              sub-title="Some dates may not be relevant"
-              img-src="https://nationalinterest.org/sites/default/files/styles/desktop__1260_/public/main_images/86594302937.jpg?itok=CaHypYt6"
-              img-alt="the image" img-bottom class="mt-2 mb-2 ml-3 mr-3"
+              sub-title="Some dates may be unset"
+              class="mt-2 mb-2 ml-3 mr-3"
             >
               <li>{{entry.description}} </li>
               <li>Last login : {{entry.lastlogin | formatdate}}</li>
@@ -84,13 +84,14 @@
 const logger = require('../../core/services/logger');
 const datetime = require('../../core/services/datetime');
 const helpers = require('../../core/services/helpers');
+const props = require('../../core/services/properties');
 
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   data() {
       return {
-        version: "List 1.32, Jan 19 2020 ",
+        version: "List 1.39, Jan 20 2020 ",
         timeoutsid: null,
         showdetails: false,
       }
@@ -99,7 +100,6 @@ export default {
     toggledetails() {
       if(this.showdetails === true) this.showdetails = false;
       else this.showdetails = true;
-      logger.debug(this.version + 'show/hide')
     },
   },
   // ------------------------------------------------------------------------------------------------------------
