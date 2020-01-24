@@ -52,14 +52,14 @@
       <div class="mt-2 ml-1 mr-1">
         <div class="viewframe" v-for="(entry, index) in userlist" :key="entry._id"  >
           <b-row class="pl-3 pr-3">
-            <b-col class="text-left ml-3">{{entry.email}}  {{entry.show}}</b-col>
+            <b-col class="text-left ml-3" >{{entry.email}}</b-col>
             <b-col class="text-center" >
               <b-link @click="zoomselected(entry)"><img src='../../../assets/search.png'></b-link>
             </b-col>
           </b-row>
 
           <b-row class="pl-3 pr-3" >
-             <b-collapse :id="'userdetails-'+index" v-model="entry.show" :visible="entry.show">
+             <b-collapse :id="'userdetails-'+index" v-model="entry.show" >
                 <b-card title="User details" 
                   sub-title="Some dates may be unset"
                   class="mt-2 mb-2 ml-3 mr-3"
@@ -95,7 +95,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "List 1.62, Jan 24 2020 ",
+        version: "List 1.63, Jan 24 2020 ",
         timeoutsid: null,
       }
   },
