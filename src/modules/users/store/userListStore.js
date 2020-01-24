@@ -42,9 +42,8 @@ export default {
         refreshUsersList(state, usersdata) {
             state.userlist = usersdata;
             state.userlist.forEach(element => {
-                element.hide = false;
+                element.show = false;
             });
-            console.log(JSON.stringify(state.userlist))
         }
     },
     /*----------------------------------------------------------------------------
