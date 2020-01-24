@@ -6,6 +6,7 @@
   Jan 18 2020   Parameters for the user list sent to the userliststore
   Jan 19 2020   Link and zoom on user's details
   Jan 20 2020   Link and zoom on user's details, still some work
+  Jan 24 2020   Collapse tests for user details
 -->
 <template>
   <div>
@@ -49,27 +50,29 @@
         The users dump window 
       -->
       <div class="mt-2 ml-1 mr-1">
-        <div class="viewframe" v-for="(entry, index) in userlist" :key="entry._id" @click="zoomselected(entry)" >
+        <div class="viewframe" v-for="(entry, index) in userlist" :key="entry._id"  >
           <b-row class="pl-3 pr-3">
-            <b-col class="text-left ml-4" cols="4">{{entry.email}}</b-col>
-            <b-col class="text-center" cols="6">
-              <b-link v-on:click="toggledetails"><img src='../../../assets/search.png'></b-link>
-          </b-col>
+            <b-col class="text-left ml-3">{{entry.email}}  {{entry.show}}</b-col>
+            <b-col class="text-center" >
+              <b-link @click="zoomselected(entry)"><img src='../../../assets/search.png'></b-link>
+            </b-col>
           </b-row>
-          <b-row class="pl-3 pr-3" v-show="showdetails" >
-             
-            <b-card title="User details" 
-              sub-title="Some dates may be unset"
-              class="mt-2 mb-2 ml-3 mr-3"
-            >
-              <li>ID          : {{entry._id}}</li>
-              <li>Pseudo      : {{entry.name}}</li>
-              <li>Description : {{entry.description}} </li>
-              <li>Last login  : {{entry.lastlogin | formatdate}}</li>
-              <li>Last logout : {{entry.lastlogout | formatdate}} </li>
-              <li>Created     : {{entry.created | formatdate}}</li>
-              <li>Updated     : {{entry.updated | formatdate}}</li>
-            </b-card>
+
+          <b-row class="pl-3 pr-3" >
+             <b-collapse :id="'userdetails-'+index" v-model="entry.show" :visible="entry.show">
+                <b-card title="User details" 
+                  sub-title="Some dates may be unset"
+                  class="mt-2 mb-2 ml-3 mr-3"
+                >
+                  <li>ID          : {{entry._id}}</li>
+                  <li>Pseudo      : {{entry.name}}</li>
+                  <li>Description : {{entry.description}} </li>
+                  <li>Last login  : {{entry.lastlogin | formatdate}}</li>
+                  <li>Last logout : {{entry.lastlogout | formatdate}} </li>
+                  <li>Created     : {{entry.created | formatdate}}</li>
+                  <li>Updated     : {{entry.updated | formatdate}}</li>
+              </b-card>
+             </b-collapse>
           </b-row>
           
         </div>
@@ -92,18 +95,20 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "List 1.40, Jan 20 2020 ",
+        version: "List 1.62, Jan 24 2020 ",
         timeoutsid: null,
-        showdetails: false,
       }
   },
   methods: {
-    toggledetails() {
-      if(this.showdetails === true) this.showdetails = false;
-      else this.showdetails = true;
-    },
     zoomselected(selectedUser) {
-      console.log('User selected :' + selectedUser.email);
+      if(selectedUser.show) {
+          selectedUser.show = false;
+      }
+      else {
+          selectedUser.show = true; 
+      }
+      console.log(selectedUser.email + ' details are now :' + (selectedUser.show === false ? 'hidden' : 'visible'));
+      this.$forceUpdate();
     },
   },
   // ------------------------------------------------------------------------------------------------------------
