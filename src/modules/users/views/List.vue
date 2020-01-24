@@ -49,8 +49,9 @@
       <!-- 
         The users dump window 
       -->
+      <b-card class="mt-2">
       <div class="mt-2 ml-1 mr-1">
-        <div class="viewframe" v-for="(entry, index) in userlist" :key="entry._id"  >
+        <div  v-for="(entry, index) in userlist" :key="entry._id"  >
           <b-row class="pl-3 pr-3">
             <b-col class="text-left ml-3" >{{entry.email}}</b-col>
             <b-col class="text-center" >
@@ -60,7 +61,7 @@
 
           <b-row class="pl-3 pr-3" >
              <b-collapse :id="'userdetails-'+index" v-model="entry.show" >
-                <b-card title="User details" 
+              <b-card title="User details" 
                   sub-title="Some dates may be unset"
                   class="mt-2 mb-2 ml-3 mr-3"
                 >
@@ -74,9 +75,10 @@
               </b-card>
              </b-collapse>
           </b-row>
-          
         </div>
       </div>
+        
+      </b-card>
     </b-container>
   </div>
 </template>
