@@ -25,6 +25,7 @@
   Jan 01 2020   1st test for user profile check (useradmin, camadmin...)
   Jan 02 2020   Menu management, including privileged ones
   Jan 16 2020   Cosmetic on lines order
+  Jan 24 2020   WIP on url parameters in menus
 -->
 
 <template>
@@ -44,7 +45,7 @@
               >
                 <div v-for="submenu in entry.navoptions" :key="submenu.id">
                   <b-dropdown-item
-                      v-bind:to="submenu.url"
+                      :to="{ name: submenu.url, params: submenu.params}"
                       :disabled="submenu.disableflag"
                       v-show="submenu.enableflag"
                     >{{ submenu.text }}
@@ -106,7 +107,7 @@ export default {
   name: "app",
   data() {
       return {
-        version: "Cams Manager 2.32, Jan 16 2020 ",
+        version: "Cams Manager 2.34, Jan 24 2020 ",
         copyright: "oldtimerSoft",
         // These arrays are defining the displayed menus
         // enableflag drives the visibility of the URL
@@ -116,50 +117,50 @@ export default {
             text: "User",
             enableflag: true,
             navoptions: [
-              {url: "login",text: "Login", enableflag: true, disableflag: false, },
-              {url: "logout",text: "Logout", enableflag: false, disableflag: false,},
-              {url: "register",text: "Register", enableflag: true, disableflag: false, },
-              {url: "identity",text: "Identity", enableflag: false, disableflag: false, },
-              {url: "edit",text: "Edit profile", enableflag: false, disableflag: false, },
-              {url: "deleteme",text: "Delete ME!", enableflag: false, disableflag: false, },
+              {url: "login", params: {}, text: "Login", enableflag: true, disableflag: false, },
+              {url: "logout",params: {},text: "Logout", enableflag: false, disableflag: false,},
+              {url: "register", params: { mode: 'STD'},text: "Register", enableflag: true, disableflag: false, },
+              {url: "identity",params: {},text: "Identity", enableflag: false, disableflag: false, },
+              {url: "edit",params: {},text: "Edit profile", enableflag: false, disableflag: false, },
+              {url: "deleteme",params: {},text: "Delete ME!", enableflag: false, disableflag: false, },
             ]
           },
           {
             text: "User Admin",
             enableflag: false,
             navoptions: [
-              {url: "listusers",text: "List", enableflag: true, disableflag: false, },
-              {url: "notyet",text: "Register", enableflag: true, disableflag: false, },
-              {url: "notyet",text: "Modify", enableflag: true, disableflag: false, },
-              {url: "notyet",text: "Delete", enableflag: true, disableflag: false, },
+              {url: "listusers",params: {},text: "List", enableflag: true, disableflag: false, },
+              {url: "register",params: { mode: 'ADMIN'},text: "Register", enableflag: true, disableflag: false, },
+              {url: "notyet",params: {},text: "Modify", enableflag: true, disableflag: false, },
+              {url: "notyet",params: {},text: "Delete", enableflag: true, disableflag: false, },
             ]
           },
           {
             text: "Cams Admin",
             enableflag: false,
             navoptions: [
-              {url: "notyet",text: "List", enableflag: true, disableflag: false, },
-              {url: "notyet",text: "Register", enableflag: true, disableflag: false, },
-              {url: "notyet",text: "Modify", enableflag: true, disableflag: false, },
-              {url: "notyet",text: "Delete", enableflag: true, disableflag: false, },
+              {url: "notyet",params: {},text: "List", enableflag: true, disableflag: false, },
+              {url: "notyet",params: {},text: "Register", enableflag: true, disableflag: false, },
+              {url: "notyet",params: {},text: "Modify", enableflag: true, disableflag: false, },
+              {url: "notyet",params: {},text: "Delete", enableflag: true, disableflag: false, },
             ]
           },
           {
             text: "Bootstrap4",
             enableflag: false,
             navoptions: [
-              {url: "buttons",text: "buttons",enableflag: true,disableflag: false, },
-              { url: "tabs", text: "tabs", enableflag: true, disableflag: false,  },
-              { url: "form", text: "form", enableflag: true, disableflag: false,  },
-              {url: "pagination",text: "pagination",enableflag: true,disableflag: false, },
-              {url: "template",text: "template",enableflag: true,disableflag: false, }
+              {url: "buttons",params: {},text: "buttons",enableflag: true,disableflag: false, },
+              { url: "tabs", params: {},text: "tabs", enableflag: true, disableflag: false,  },
+              { url: "form",params: {}, text: "form", enableflag: true, disableflag: false,  },
+              {url: "pagination",params: {},text: "pagination",enableflag: true,disableflag: false, },
+              {url: "template",params: {},text: "template",enableflag: true,disableflag: false, }
             ]
           },
           {
             text: "About",
             enableflag: true,
             navoptions: [
-              {url: "about",text: "about",enableflag: true,disableflag: false, },
+              {url: "about",params: {},text: "about",enableflag: true,disableflag: false, },
             ]
           }
         ]

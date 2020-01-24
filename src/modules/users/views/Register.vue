@@ -14,6 +14,7 @@
   Nov 22 2019   Missing space
   Dec 22 2019   Default values
   Dec 31 2019   Double registration bug fixed
+  Jan 24 2020   Input param
 -->
 <template>
   <div>
@@ -177,6 +178,7 @@ export default {
   },  
   created() {
     this.$parent.disableMenu('register');
+    console.log(JSON.stringify(this.$route.params))
   },
   beforeDestroy() {
     this.$parent.enableMenu('register');
