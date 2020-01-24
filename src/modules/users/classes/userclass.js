@@ -56,7 +56,7 @@ module.exports = class userclass {
             description = "None",
         ) 
     {
-        this.Version = 'userclass:1.94, Jan 19 2020 ';
+        this.Version = 'userclass:1.95, Jan 19 2020 ';
         this.model = new UserModel({ 
                             name: name, 
                             email: email, 
@@ -308,10 +308,10 @@ module.exports = class userclass {
                             reject(err);
                         }
                         if(userlist.length === 0) {
-                            reject("No user in the DB");
+                            resolve( {message: "No user in the DB", data: [] });
                         }
                         else {
-                            resolve(userlist);
+                            resolve({message: userlist.length + ' user(s) found', data: userlist});
                         }
                     })
             })();

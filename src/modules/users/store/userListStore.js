@@ -25,7 +25,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userListStore:1.14, Jan 20 2020 ',
+        Version: 'userListStore:1.15, Jan 20 2020 ',
         filter: '',     // Filter user list based on the interface field
         userlist: {},
     },
@@ -75,7 +75,6 @@ export default {
                 )
                 .catch((error) => {
                     logger.error(state.Version + error);
-                    commit('resetList');
                     }
                 );
     

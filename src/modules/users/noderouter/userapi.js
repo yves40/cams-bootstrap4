@@ -90,11 +90,12 @@
 //    Jan 17 2020  users list
 //    Jan 18 2020  users list : get parameters 
 //    Jan 19 2020  WIP : users list search
+//    Jan 24 2020  User list management when empty list returned
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.94, Jan 19 2020 ';
+const Version = 'userapi:3.95, Jan 24 2020 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -330,8 +331,13 @@ router.get('/users/listrequested', cors(corsutility.getCORS()),
             filter = req.query.filter;
 
         logger.debug(Version + "Loading user list with filter : " + filter);
-        let allusers = await new userclass().listUsersRequestedAttributes(attributes, filter);
-        res.status(200).send(allusers);   
+        new userclass().listUsersRequestedAttributes(attributes, filter)
+        .then( (response) => {
+            res.status(200).send(response.data);   
+        })
+        .catch((error) => {
+            res.status(500).send(error);
+        })
     })
 );
 //-----------------------------------------------------------------------------------
