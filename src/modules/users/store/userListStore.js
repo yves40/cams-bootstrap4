@@ -7,6 +7,7 @@
                   Spec user list attributes
     Jan 20 2020   Add individual hidden flag in the users array during the 
                   mutation
+    Jan 24 2020   Change ma,agement of empty user list after search 
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -24,7 +25,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userListStore:1.13, Jan 20 2020 ',
+        Version: 'userListStore:1.14, Jan 20 2020 ',
         filter: '',     // Filter user list based on the interface field
         userlist: {},
     },
@@ -44,7 +45,10 @@ export default {
             state.userlist.forEach(element => {
                 element.show = false;
             });
-        }
+        },
+        resetList(state) {
+            state.userlist = {};    // Clear the list something bad happened
+        },
     },
     /*----------------------------------------------------------------------------
         VUEX actions (ASynchronous) 
@@ -71,6 +75,7 @@ export default {
                 )
                 .catch((error) => {
                     logger.error(state.Version + error);
+                    commit('resetList');
                     }
                 );
     
