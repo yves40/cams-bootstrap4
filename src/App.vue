@@ -26,6 +26,7 @@
   Jan 02 2020   Menu management, including privileged ones
   Jan 16 2020   Cosmetic on lines order
   Jan 24 2020   WIP on url parameters in menus
+  Jan 25 2020   User admin menu modified
 -->
 
 <template>
@@ -130,7 +131,7 @@ export default {
             enableflag: false,
             navoptions: [
               {url: "listusers",params: {},text: "List", enableflag: true, disableflag: false, },
-              {url: "register",params: { mode: 'ADMIN'},text: "Register", enableflag: true, disableflag: false, },
+              {url: "register",params: { mode: 'ADMIN'},text: "Add", enableflag: true, disableflag: false, },
               {url: "notyet",params: {},text: "Modify", enableflag: true, disableflag: false, },
               {url: "notyet",params: {},text: "Delete", enableflag: true, disableflag: false, },
             ]
