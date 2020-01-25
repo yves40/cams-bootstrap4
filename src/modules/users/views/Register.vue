@@ -15,7 +15,7 @@
   Dec 22 2019   Default values
   Dec 31 2019   Double registration bug fixed
   Jan 24 2020   Input param
-  Jan 25 2020   Administrator mode
+  Jan 25 2020   Administrator mode : I
 -->
 <template>
   <div>
@@ -95,12 +95,15 @@
               <b-form-input id="userdescription" v-model="userdescription" :state="descstate" trim></b-form-input>
             </b-form-group>
 
-            <b-form-checkbox-group id="userprivs" v-model="privileges" 
-              :options="profilecodes"
-              stacked>
-            </b-form-checkbox-group>
-
+            <!-- The user privilege management section -->
+            <div v-if="isadmin">
+              <b-form-checkbox-group id="userprivs" v-model="privileges" 
+                :options="profilecodes"
+                stacked>
+              </b-form-checkbox-group>
+            </div>
             <strong>{{ privileges }}</strong>
+
 
             <div>
               <b-navbar toggleable="sm">
@@ -124,7 +127,7 @@
 
 <script>
 
-const Logger = require('../../core/services/logger');
+const logger = require('../../core/services/logger');
 const profileclass = require('../classes/profileclass');
 
 import { mapGetters, mapActions } from 'vuex'
@@ -132,15 +135,16 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      version: "Register 1.42, Jan 25 2020",
+      version: "Register 1.47, Jan 25 2020",
       name: 'zab91',
       email: 'zab@free.fr',
       userdescription: 'This is the school master',
       password1: 'manager',
       password2: 'manager',
       status: 'Not Accepted',
-      privileges: new profileclass().getInitialValues(),
-      profilecodes: new profileclass().getProfileLabels(),
+      privileges: [ 'STD '],
+      profilecodes: [],
+      isadmin: false,
     };
   },
   computed: {
@@ -191,6 +195,16 @@ export default {
   },  
   created() {
     this.$parent.disableMenu('register');
+    this.isadmin = this.$store.getters['userstore/isUserAdmin']
+    logger.debug(this.version + ' Admin ? ' + (this.isadmin ? 'YES' : 'NO'));
+    if(this.isadmin) {
+      let pc = new profileclass();
+      this.privileges = pc.getInitialValues();
+      this.profilecodes = pc.getProfileLabels();
+    }
+
+      
+      console.log(this.profilecodes)
   },
   beforeDestroy() {
     this.$parent.enableMenu('register');
