@@ -15,6 +15,7 @@
   Dec 22 2019   Default values
   Dec 31 2019   Double registration bug fixed
   Jan 24 2020   Input param
+  Jan 25 2020   Administrator mode
 -->
 <template>
   <div>
@@ -94,6 +95,13 @@
               <b-form-input id="userdescription" v-model="userdescription" :state="descstate" trim></b-form-input>
             </b-form-group>
 
+            <b-form-checkbox-group id="userprivs" v-model="privileges" 
+              :options="profilecodes"
+              stacked>
+            </b-form-checkbox-group>
+
+            <strong>{{ privileges }}</strong>
+
             <div>
               <b-navbar toggleable="sm">
                 <b-navbar-toggle target="collapsemenu"></b-navbar-toggle>
@@ -117,17 +125,22 @@
 <script>
 
 const Logger = require('../../core/services/logger');
+const profileclass = require('../classes/profileclass');
+
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   data() {
     return {
-      version: "Register 1.31, Dec 31 2019",
+      version: "Register 1.42, Jan 25 2020",
       name: 'zab91',
       email: 'zab@free.fr',
       userdescription: 'This is the school master',
       password1: 'manager',
       password2: 'manager',
+      status: 'Not Accepted',
+      privileges: new profileclass().getInitialValues(),
+      profilecodes: new profileclass().getProfileLabels(),
     };
   },
   computed: {
@@ -178,7 +191,6 @@ export default {
   },  
   created() {
     this.$parent.disableMenu('register');
-    console.log(JSON.stringify(this.$route.params))
   },
   beforeDestroy() {
     this.$parent.enableMenu('register');
