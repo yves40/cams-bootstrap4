@@ -20,8 +20,9 @@
 //    Jan 14 2020   WIP on multiple deployment hosts for mongodbserver 
 //    Jan 15 2020   Test mongoose connection poolSize parameter
 //                  No effect on number of opened connections by connect()
+//    Jan 25 2020   Change mongo connection message
 //----------------------------------------------------------------------------
-const Version = "mongodb:1.50, Jan 15 2020 ";
+const Version = "mongodb:1.51, Jan 25 2020 ";
 
 const mongoose = require('mongoose');
 const properties = require('./properties');
@@ -66,7 +67,7 @@ function getMongoDBConnection(traceflag = properties.MONGOTRACE) {
   }
   if(traceflag) {
     logger.debug(Version + 'Connect to : ' + urlconn);
-    logger.debug(Version + 'On node : ' + nodename);
+    logger.debug(Version + 'From node : ' + nodename);
   } 
   mongoose.connect(urlconn,{
     useNewUrlParser: true, 
