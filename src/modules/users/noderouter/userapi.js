@@ -96,7 +96,7 @@
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.96, Jan 26 2020 ';
+const Version = 'userapi:3.97, Jan 26 2020 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -220,8 +220,8 @@ router.post('/users/update', cors(corsutility.getCORS()),
         let newuser = new userclass(
             req.user.model.email, 
             req.body.name,
-            undefined,
-            undefined,
+            undefined,          // The password field
+            req.body.privs,
             req.body.description
         );
         try {

@@ -4,6 +4,7 @@
 
   Dec 17 2019   Initial
   Dec 19 2019   Fix description of user not transmitted to the store call
+  Jan 26 2020   Work on user modification by an admin
 -->
 <template>
   <div>
@@ -50,6 +51,15 @@
               <b-form-input id="description" v-model="userdescription" :state="descstate" trim></b-form-input>
             </b-form-group>
 
+            <!-- The user privilege management section -->
+            <div v-if="isadmin">
+              <b-form-checkbox-group id="userprivs" v-model="privileges" 
+                :options="profilecodes"
+                stacked>
+              </b-form-checkbox-group>
+            </div>
+            <strong>{{ privileges }}</strong>
+
             <div>
               <b-navbar toggleable="sm">
                 <b-navbar-toggle target="collapsemenu"></b-navbar-toggle>
@@ -73,12 +83,18 @@
 <script>
 
 const logger = require('../../core/services/logger');
+const profileclass = require('../classes/profileclass');
+
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   data() {
     return {
-      version: "Edit 1.11, Dec 19 2019",
+      version: "Edit 1.18, Jan 26 2020 ",
+      isadmin: false,
+      privileges: [ 'STD '],
+      profilecodes: [],
+      userprofiles: [],
     };
   },
   computed: {
@@ -133,6 +149,15 @@ export default {
   },  
   created() {
     this.$parent.disableMenu('edit');
+    this.isadmin = this.$store.getters['userstore/isUserAdmin']
+    logger.debug(this.version + ' Admin ? ' + (this.isadmin ? 'YES' : 'NO'));
+    if(this.isadmin) {
+      let pc = new profileclass();
+      this.privileges = pc.getInitialValues();
+      this.profilecodes = pc.getProfileLabels()   // These are the standard profiles
+      // Now get user's current profiles
+      this.privileges = this.$store.getters['userstore/getUserProfiles'];
+    }
   },
   beforeDestroy() {
     this.$parent.enableMenu('edit');
@@ -147,10 +172,11 @@ export default {
       this.updateVuex({
           name: this.name,
           description: this.userdescription,
+          privs: this.privileges,
         })
         .then((result) => {
           swal('User ' + this.$store.state.userstore.theuser.model.email + ' updated', result, 'success');
-          this.$router.push({ name: 'identity' });
+          //this.$router.push({ name: 'identity' });
         })
         .catch((err) => {
           swal('KO!', err, 'error');
@@ -159,6 +185,7 @@ export default {
     clear() {
       this.$store.state.userstore.theuser.model.name = '';
       this.$store.state.userstore.theuser.model.description = '';
+      this.$store.state.userstore.theuser.model.profilecode = [ 'STD '];
     },
     gotohome() {
       this.$router.push({ name: 'home' });

@@ -33,6 +33,7 @@
 //    Jan 16 2020   Log message on user not found on the get accessor
 //    Jan 17 2020   WIP on users lists
 //    Jan 19 2020   WIP on users lists ; 1
+//    Jan 26 2020   WIP on users updates including privs
 //----------------------------------------------------------------------------
 const UserModel = require('../model/userModel').UserModel
 const bcryptjs = require('bcryptjs');
@@ -56,7 +57,7 @@ module.exports = class userclass {
             description = "None",
         ) 
     {
-        this.Version = 'userclass:1.95, Jan 19 2020 ';
+        this.Version = 'userclass:1.96, Jan 26 2020 ';
         this.model = new UserModel({ 
                             name: name, 
                             email: email, 
@@ -200,6 +201,7 @@ module.exports = class userclass {
                 { $set: {
                             name: this.model.name,
                             description : this.model.description,
+                            profilecode: this.model.profilecode,
                         },
                         updated: Date.now(),
                 },

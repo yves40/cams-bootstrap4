@@ -27,6 +27,7 @@
   Jan 16 2020   Cosmetic on lines order
   Jan 24 2020   WIP on url parameters in menus
   Jan 25 2020   User admin menu modified
+  Jan 26 2020   User admin menu modified to edit a user profile in ADMIN mode
 -->
 
 <template>
@@ -108,7 +109,7 @@ export default {
   name: "app",
   data() {
       return {
-        version: "Cams Manager 2.34, Jan 24 2020 ",
+        version: "Cams Manager 2.35, Jan 26 2020 ",
         copyright: "oldtimerSoft",
         // These arrays are defining the displayed menus
         // enableflag drives the visibility of the URL
@@ -122,7 +123,7 @@ export default {
               {url: "logout",params: {},text: "Logout", enableflag: false, disableflag: false,},
               {url: "register", params: { mode: 'STD'},text: "Register", enableflag: true, disableflag: false, },
               {url: "identity",params: {},text: "Identity", enableflag: false, disableflag: false, },
-              {url: "edit",params: {},text: "Edit profile", enableflag: false, disableflag: false, },
+              {url: "edit",params: { mode: 'STD'},text: "Edit profile", enableflag: false, disableflag: false, },
               {url: "deleteme",params: {},text: "Delete ME!", enableflag: false, disableflag: false, },
             ]
           },
@@ -132,7 +133,7 @@ export default {
             navoptions: [
               {url: "listusers",params: {},text: "List", enableflag: true, disableflag: false, },
               {url: "register",params: { mode: 'ADMIN'},text: "Add", enableflag: true, disableflag: false, },
-              {url: "notyet",params: {},text: "Modify", enableflag: true, disableflag: false, },
+              {url: "edit",params: { mode: 'ADMIN'},text: "Modify", enableflag: true, disableflag: false, },
               {url: "notyet",params: {},text: "Delete", enableflag: true, disableflag: false, },
             ]
           },

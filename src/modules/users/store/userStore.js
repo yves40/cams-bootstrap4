@@ -51,7 +51,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:2.02, Jan 26 2020 ',
+        Version: 'userstore:2.05, Jan 26 2020 ',
         theuser: null,
         token: null,
         tokenobject: '{}',
@@ -151,9 +151,10 @@ export default {
             state.tokenalert = false;
             state.logrefresh = false;
         },
-        update(state, name, description) {
-            state.name = name;
-            state.description = description;
+        update(state, payload) {
+            state.theuser.model.name = payload.name;
+            state.theuser.model.description = payload.description;
+            state.theuser.model.profilecode = payload.privs; 
         },
         delete(state) {
             AXIOS(
@@ -336,11 +337,13 @@ export default {
                         data: {
                             name : payload.name,
                             description: payload.description,
+                            privs: payload.privs,
                         },
                     }
                 )
                 .then((response) => {
-                        commit('update', payload.name, payload.description);
+                        commit('update', { name: payload.name, description: payload.description,
+                                    privs:  payload.privs} );
                         resolve('User updated');
                     },
                 )

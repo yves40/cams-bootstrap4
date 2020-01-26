@@ -117,7 +117,6 @@ export default {
       else {
           selectedUser.show = true; 
       }
-      console.log(selectedUser.email + ' details are now :' + (selectedUser.show === false ? 'hidden' : 'visible'));
       this.$forceUpdate();
     },
     collapseall() {
