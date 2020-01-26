@@ -8,6 +8,7 @@
   Jan 20 2020   Link and zoom on user's details, still some work
   Jan 24 2020   Collapse tests for user details
   Jan 26 2020   User details now includes profilecodes
+                Add buttons (collapse, expand...)
 -->
 <template>
   <div>
@@ -45,7 +46,8 @@
             </b-form-group>
           </b-form>
           <div class="mt-2 mb-2">
-            <b-button v-on:click="collapseall" variant="primary">Collapse All</b-button>
+            <b-button size="sm" v-on:click="collapseall" variant="primary">Collapse All</b-button>
+            <b-button size="sm" v-on:click="expandall" variant="primary">Expand All</b-button>
           </div>
         </b-col>
         <b-col cols="2"></b-col>
@@ -103,7 +105,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "List 1.65, Jan 26 2020 ",
+        version: "List 1.67, Jan 26 2020 ",
         timeoutsid: null,
       }
   },
@@ -120,6 +122,10 @@ export default {
     },
     collapseall() {
       this.$store.dispatch('userliststore/collapseAll');
+      this.$forceUpdate();
+    },
+    expandall() {
+      this.$store.dispatch('userliststore/expandAll');
       this.$forceUpdate();
     },
   },

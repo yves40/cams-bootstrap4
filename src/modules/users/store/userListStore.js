@@ -27,7 +27,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userListStore:1.16, Jan 27 2020 ',
+        Version: 'userListStore:1.17, Jan 27 2020 ',
         filter: '',     // Filter user list based on the interface field
         userlist: {},
     },
@@ -54,6 +54,11 @@ export default {
         collapse(state) {
             state.userlist.forEach(element => {
                 element.show = false;
+            });
+        },
+        expand(state) {
+            state.userlist.forEach(element => {
+                element.show = true;
             });
         }
     },
@@ -90,6 +95,10 @@ export default {
         // Reset the expanded flag into the user list
         collapseAll( {commit }) {
             commit('collapse');
+        },
+        // Set the expanded flag into the user list
+        expandAll( {commit }) {
+            commit('expand');
         }
     }
 }
