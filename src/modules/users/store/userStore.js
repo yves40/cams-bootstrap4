@@ -32,6 +32,7 @@
     Jan 02 2020   Getters to check user privileges
     Jan 16 2020  Investigate error after deleting your account
     Jan 17 2020  Strange import suppressed
+    Jan 26 2020  Now get user privileges from the UI
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -50,7 +51,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:2.01, Jan 17 2020 ',
+        Version: 'userstore:2.02, Jan 26 2020 ',
         theuser: null,
         token: null,
         tokenobject: '{}',
@@ -308,6 +309,7 @@ export default {
                             email: payload.email,
                             userdescription: payload.userdescription,
                             password: payload.password,
+                            privs: payload.privs,
                         },
                     }
                 )

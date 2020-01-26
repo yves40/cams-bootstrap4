@@ -16,6 +16,7 @@
   Dec 31 2019   Double registration bug fixed
   Jan 24 2020   Input param
   Jan 25 2020   Administrator mode : I
+  Jan 26 2020   Administrator mode : II
 -->
 <template>
   <div>
@@ -110,7 +111,12 @@
                 <b-navbar-toggle target="collapsemenu"></b-navbar-toggle>
                 <b-collapse id="collapsemenu" is-nav>
                   <b-navbar-nav class="mr-auto">
-                    <b-button pill :disabled="checkall" v-on:click="register">Register</b-button>
+                    <div v-if="isadmin">
+                      <b-button pill :disabled="checkall" v-on:click="register">Add</b-button>
+                    </div>
+                    <div v-else>
+                      <b-button pill :disabled="checkall" v-on:click="register">Register</b-button>
+                    </div>
                     <b-button pill  v-on:click="clear">Clear</b-button>
                     <b-button pill variant="danger" v-on:click="gotohome">Cancel</b-button>
                   </b-navbar-nav>
@@ -135,7 +141,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      version: "Register 1.47, Jan 25 2020",
+      version: "Register 1.49, Jan 26 2020",
       name: 'zab91',
       email: 'zab@free.fr',
       userdescription: 'This is the school master',
@@ -202,9 +208,6 @@ export default {
       this.privileges = pc.getInitialValues();
       this.profilecodes = pc.getProfileLabels();
     }
-
-      
-      console.log(this.profilecodes)
   },
   beforeDestroy() {
     this.$parent.enableMenu('register');
@@ -221,10 +224,14 @@ export default {
           email: this.email, 
           userdescription: this.userdescription,
           password: this.password1,
+          privs: this.privileges,
         })
         .then((result) => {
           swal('OK', result, 'success');
-          this.$router.push({ name: 'login' });
+          if(!this.isadmin)
+            this.$router.push({ name: 'login' });
+          else
+            this.$router.push({ name: 'listusers' });
         })
         .catch((err) => {
           swal('KO!', err, 'error');

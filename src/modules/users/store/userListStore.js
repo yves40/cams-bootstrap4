@@ -8,6 +8,8 @@
     Jan 20 2020   Add individual hidden flag in the users array during the 
                   mutation
     Jan 24 2020   Change ma,agement of empty user list after search 
+    Jan 26 2020   Now get the user list with profilecodes
+                  Add some methods to colllapse UI in users list
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -25,7 +27,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userListStore:1.15, Jan 20 2020 ',
+        Version: 'userListStore:1.16, Jan 27 2020 ',
         filter: '',     // Filter user list based on the interface field
         userlist: {},
     },
@@ -49,6 +51,11 @@ export default {
         resetList(state) {
             state.userlist = {};    // Clear the list something bad happened
         },
+        collapse(state) {
+            state.userlist.forEach(element => {
+                element.show = false;
+            });
+        }
     },
     /*----------------------------------------------------------------------------
         VUEX actions (ASynchronous) 
@@ -64,7 +71,7 @@ export default {
                         headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
                         params: {
                             filter: filter,
-                            attrlist: '_id email name description lastlogin lastlogout created updated'
+                            attrlist: '_id email name description lastlogin lastlogout created updated profilecode'
                         },
                  }
                 )
@@ -80,6 +87,10 @@ export default {
     
             })
         },
+        // Reset the expanded flag into the user list
+        collapseAll( {commit }) {
+            commit('collapse');
+        }
     }
 }
 

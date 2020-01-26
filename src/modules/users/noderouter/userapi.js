@@ -91,11 +91,12 @@
 //    Jan 18 2020  users list : get parameters 
 //    Jan 19 2020  WIP : users list search
 //    Jan 24 2020  User list management when empty list returned
+//    Jan 26 2020  Now get user privs from UI during registration
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.95, Jan 24 2020 ';
+const Version = 'userapi:3.96, Jan 26 2020 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -193,7 +194,7 @@ router.post('/users/register', cors(corsutility.getCORS()),
             req.body.email, 
             req.body.name,
             req.body.password,
-            ["STD"],
+            req.body.privs,
             req.body.userdescription
         );
         try {

@@ -141,7 +141,7 @@ export default {
             enableflag: false,
             navoptions: [
               {url: "notyet",params: {},text: "List", enableflag: true, disableflag: false, },
-              {url: "notyet",params: {},text: "Register", enableflag: true, disableflag: false, },
+              {url: "notyet",params: {},text: "Add", enableflag: true, disableflag: false, },
               {url: "notyet",params: {},text: "Modify", enableflag: true, disableflag: false, },
               {url: "notyet",params: {},text: "Delete", enableflag: true, disableflag: false, },
             ]

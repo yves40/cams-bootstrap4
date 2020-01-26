@@ -7,6 +7,7 @@
   Jan 19 2020   Link and zoom on user's details
   Jan 20 2020   Link and zoom on user's details, still some work
   Jan 24 2020   Collapse tests for user details
+  Jan 26 2020   User details now includes profilecodes
 -->
 <template>
   <div>
@@ -43,6 +44,9 @@
               </b-form-input>
             </b-form-group>
           </b-form>
+          <div class="mt-2 mb-2">
+            <b-button v-on:click="collapseall" variant="primary">Collapse All</b-button>
+          </div>
         </b-col>
         <b-col cols="2"></b-col>
       </b-row>
@@ -59,6 +63,7 @@
             </b-col>
           </b-row>
 
+          <!-- Details -->
           <b-row class="pl-3 pr-3" >
              <b-collapse :id="'userdetails-'+index" v-model="entry.show" >
               <b-card title="User details" 
@@ -72,6 +77,7 @@
                   <li>Last logout : {{entry.lastlogout | formatdate}} </li>
                   <li>Created     : {{entry.created | formatdate}}</li>
                   <li>Updated     : {{entry.updated | formatdate}}</li>
+                  <li>Privileges  : {{entry.profilecode}}</li>
               </b-card>
              </b-collapse>
           </b-row>
@@ -97,7 +103,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "List 1.63, Jan 24 2020 ",
+        version: "List 1.65, Jan 26 2020 ",
         timeoutsid: null,
       }
   },
@@ -110,6 +116,10 @@ export default {
           selectedUser.show = true; 
       }
       console.log(selectedUser.email + ' details are now :' + (selectedUser.show === false ? 'hidden' : 'visible'));
+      this.$forceUpdate();
+    },
+    collapseall() {
+      this.$store.dispatch('userliststore/collapseAll');
       this.$forceUpdate();
     },
   },
