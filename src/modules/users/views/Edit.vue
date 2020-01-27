@@ -17,6 +17,7 @@
       </b-col>
       <b-col cols="2"></b-col>
     </b-row>
+
     <b-row>
       <b-col cols="2"></b-col>
       <b-col>
@@ -24,11 +25,23 @@
       </b-col>
       <b-col cols="2"></b-col>
     </b-row>
+
+    <b-row class="pb-2">
+      <b-col cols="2"></b-col>
+      <b-col cols="4">
+        <span>Editing : <strong>{{targetuser.email}}</strong></span>
+      </b-col>
+      <b-col>
+        <div v-if="!selfedit">
+          <b-button @click="backtolist">Back to list</b-button>
+        </div>
+      </b-col>
+    </b-row>
+
     <b-row>
       <b-col cols="2"></b-col>
       <b-col >
         <div >
-
             <b-form-group
               id="name"
               label="Your pseudo"
@@ -91,7 +104,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      version: "Edit 1.24, Jan 27 2020 ",
+      version: "Edit 1.28, Jan 27 2020 ",
       isadmin: false,
       privileges: [ 'STD '],
       profilecodes: [],
@@ -108,27 +121,27 @@ export default {
     ),
     name: {
       get() {
-        return this.$store.state.userstore.loggeduser.model.name;
+        return this.targetuser.name;
       },
       set(value) {
-        this.$store.state.userstore.loggeduser.model.name = value;
+        this.targetuser.name = value;
       },
     },
     userdescription: {
       get() {
-        return this.$store.state.userstore.loggeduser.model.description;
+        return this.targetuser.description;
       },
       set(value) {
-        this.$store.state.userstore.loggeduser.model.description = value;
+        this.targetuser.description = value;
       },
     },
     namestate() {
-      return this.$store.state.userstore.loggeduser.model.name.length >= 5 ? true : false
+      return this.targetuser.name.length >= 5 ? true : false
     },
     invalidName() {
-      if (this.$store.state.userstore.loggeduser.model.name.length >= 5) {
+      if (this.targetuser.name.length >= 5) {
         return ''
-      } else if (this.$store.state.userstore.loggeduser.model.name.length > 0) {
+      } else if (this.targetuser.name.length > 0) {
         return 'Enter at least 5 characters'
       } else {
         return 'Please enter your pseudo'
@@ -138,7 +151,7 @@ export default {
       return this.namestate === true ? 'Thank you' : ''
     }, 
     descstate() {
-      return (this.$store.state.userstore.loggeduser.model.description.length >= 10 && this.$store.state.userstore.loggeduser.model.description.length <= 40) ? true : false
+      return (this.targetuser.description.length >= 10 && this.targetuser.description.length <= 40) ? true : false
     },
     checkall() {
       const mongodown = this.$store.getters['mongostore/IsMongoDown'];
@@ -156,18 +169,17 @@ export default {
     logger.debug(this.version + ' Admin ? ' + (this.isadmin ? 'YES' : 'NO'));
     if(this.isadmin) {
       let pc = new profileclass();
-      this.privileges = pc.getInitialValues();
       this.profilecodes = pc.getProfileLabels()   // These are the standard profiles
-      // Now get user's current profiles
-      this.privileges = this.$store.getters['userstore/getUserProfiles'];
     }
     // Is it a user self editing it's profie or an admin editing another user ?
     if ( this.$route.params.email !== undefined) {
       this.selfedit = false;
       this.targetuser = this.$route.params;
+      this.privileges = this.targetuser.profilecode;
     }
     else {
       this.targetuser = this.$store.state.userstore.loggeduser.model
+      this.privileges = this.$store.state.userstore.loggeduser.model.profilecode;
     }
   },
   beforeDestroy() {
@@ -181,12 +193,12 @@ export default {
     ),
     update() {
       this.updateVuex({
-          name: this.name,
-          description: this.userdescription,
+          name: this.targetuser.name,
+          description: this.targetuser.description,
           privs: this.privileges,
         })
         .then((result) => {
-          swal('User ' + this.$store.state.userstore.loggeduser.model.email + ' updated', result, 'success');
+          swal('User ' + this.targetuser.email + ' updated', result, 'success');
           if ( this.selfedit)
             this.$router.push({ name: 'identity' });
           else
@@ -197,12 +209,15 @@ export default {
         });
     },
     clear() {
-      this.$store.state.userstore.loggeduser.model.name = '';
-      this.$store.state.userstore.loggeduser.model.description = '';
-      this.$store.state.userstore.loggeduser.model.profilecode = [ 'STD '];
+      this.targetuser.name = '';
+      this.targetuser.description = '';
+      this.targetuser.profilecode = [ 'STD '];
     },
     gotohome() {
       this.$router.push({ name: 'home' });
+    },
+    backtolist() {
+      this.$router.push({ name: 'listusers' });
     },
   }
 };
