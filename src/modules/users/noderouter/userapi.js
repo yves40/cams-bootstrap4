@@ -92,11 +92,12 @@
 //    Jan 19 2020  WIP : users list search
 //    Jan 24 2020  User list management when empty list returned
 //    Jan 26 2020  Now get user privs from UI during registration
+//    Jan 27 2020  theuser changed to loggeduser
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.97, Jan 26 2020 ';
+const Version = 'userapi:3.98, Jan 27 2020 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -128,7 +129,7 @@ router.post('/users/login', cors(corsutility.getCORS()),
             token: token, 
             userdecodedtoken: userdecodedtoken,
             remainingtime: tokendata.remainingtime,
-            theuser: req.user,      // Send back the identified user object
+            loggeduser: req.user,      // Send back the identified user object
          } );
 });
 //-----------------------------------------------------------------------------------
