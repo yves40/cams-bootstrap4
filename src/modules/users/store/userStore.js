@@ -33,6 +33,7 @@
     Jan 16 2020  Investigate error after deleting your account
     Jan 17 2020  Strange import suppressed
     Jan 26 2020  Now get user privileges from the UI
+    Jan 27 2020  theuser changed to loggeduser
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -51,8 +52,8 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:2.05, Jan 26 2020 ',
-        theuser: null,
+        Version: 'userstore:2.06, Jan 27 2020 ',
+        loggeduser: null,
         token: null,
         tokenobject: '{}',
         tokenvalidtime: null,
@@ -69,11 +70,11 @@ export default {
     ----------------------------------------------------------------------------*/
     getters: {
         getVersion(state) {return state.Version;},
-        getEmail(state) {return state.theuser === null ? 'Not logged' : state.theuser.model.email;},
-        getName(state) {return state.theuser === null ? 'Not logged' : state.theuser.model.name;},
-        getDescription(state) {return state.theuser === null ? 'Not logged' : state.theuser.model.description;},
+        getEmail(state) {return state.loggeduser === null ? 'Not logged' : state.loggeduser.model.email;},
+        getName(state) {return state.loggeduser === null ? 'Not logged' : state.loggeduser.model.name;},
+        getDescription(state) {return state.loggeduser === null ? 'Not logged' : state.loggeduser.model.description;},
         getLastlogin(state) {
-            return state.theuser === null ? 'Not logged' : datetime.getDateTime(state.theuser.model.lastlogin);
+            return state.loggeduser === null ? 'Not logged' : datetime.getDateTime(state.loggeduser.model.lastlogin);
         },
         getSessionTime(state) { return state.tokenremainingtime; },
         getSessionTimeRaw(state) { return state.tokenremainingtimeraw; },
@@ -82,31 +83,31 @@ export default {
         getUserLogs(state) { return state.userlogs; },
         getFilters(state) { return state.filterbox; },
         getUserProfiles(state) {  
-            if ( state.theuser !== null) {
-                return state.theuser.model.profilecode === null ? [ 'NO PROFILE' ] : state.theuser.model.profilecode ; 
+            if ( state.loggeduser !== null) {
+                return state.loggeduser.model.profilecode === null ? [ 'NO PROFILE' ] : state.loggeduser.model.profilecode ; 
             }
         },
-        isLogged(state) {return state.theuser === null ? false : true ;},
+        isLogged(state) {return state.loggeduser === null ? false : true ;},
         //------------------------------------------------------
         // Check user profiles, returns a boolean
-        // Valid profiles : 
-        // [ "STD", "USERADMIN", "CAMADMIN", "SUPERADMIN" ];
+        // Valid profiles are defined in the userclass: 
+        // [ "STD", "USERADMIN", ..... ];
         //------------------------------------------------------
         isUserAdmin(state) {
-            if(state.theuser !== null) {
-                return (state.theuser.model.profilecode.find(  (prof) => prof === 'USERADMIN' ) === 'USERADMIN' ? true : false);
+            if(state.loggeduser !== null) {
+                return (state.loggeduser.model.profilecode.find(  (prof) => prof === 'USERADMIN' ) === 'USERADMIN' ? true : false);
             }
             else{ return false; }
         },
         isCamAdmin(state) {
-            if(state.theuser !== null) {
-                return (state.theuser.model.profilecode.find(  (prof) => prof === 'CAMADMIN' ) === 'CAMADMIN' ? true : false);
+            if(state.loggeduser !== null) {
+                return (state.loggeduser.model.profilecode.find(  (prof) => prof === 'CAMADMIN' ) === 'CAMADMIN' ? true : false);
             }
             else{ return false; }
         },
         isSuperAdmin(state) {
-            if(state.theuser !== null) {
-                return (state.theuser.model.profilecode.find(  (prof) => prof === 'SUPERADMIN' ) === 'SUPERADMIN' ? true : false);
+            if(state.loggeduser !== null) {
+                return (state.loggeduser.model.profilecode.find(  (prof) => prof === 'SUPERADMIN' ) === 'SUPERADMIN' ? true : false);
             }
             else{ return false; }
         },
@@ -116,7 +117,7 @@ export default {
     ----------------------------------------------------------------------------*/
     mutations: { // Synchronous
         updateloginstate(state, payload) {
-            state.theuser = payload.theuser;
+            state.loggeduser = payload.loggeduser;
             state.token = payload.token;
             state.tokenobject = jwthelper.verifyToken(payload.token);
             const tokendata = jwthelper.getTokenTimeMetrics(state.tokenobject);
@@ -147,14 +148,14 @@ export default {
             );
         },
         deleteloginstate(state) {
-            state.theuser = null;
+            state.loggeduser = null;
             state.tokenalert = false;
             state.logrefresh = false;
         },
         update(state, payload) {
-            state.theuser.model.name = payload.name;
-            state.theuser.model.description = payload.description;
-            state.theuser.model.profilecode = payload.privs; 
+            state.loggeduser.model.name = payload.name;
+            state.loggeduser.model.description = payload.description;
+            state.loggeduser.model.profilecode = payload.privs; 
         },
         delete(state) {
             AXIOS(
@@ -174,7 +175,7 @@ export default {
             );
         },
         refreshtokentime(state) {
-            if (state.theuser) {
+            if (state.loggeduser) {
                 const decodedtoken = jwthelper.verifyToken(state.token);
                 const tokendata = jwthelper.getTokenTimeMetrics(decodedtoken);
                 state.tokenremainingtime = tokendata.remainingtime;
@@ -188,7 +189,7 @@ export default {
                                 url: '/users/messages',
                                 headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
                                 data: {
-                                    message: 'Session soon expired for user ' + state.theuser.model.email,
+                                    message: 'Session soon expired for user ' + state.loggeduser.model.email,
                                     severity: 'W',
                                 },
                              }
@@ -212,7 +213,7 @@ export default {
                             url: '/users/messages',
                             headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
                             data: {
-                                message: 'Session killed  for user ' + state.theuser.model.email,
+                                message: 'Session killed  for user ' + state.loggeduser.model.email,
                                 severity: 'F',
                             },
                          }
@@ -226,7 +227,7 @@ export default {
                     );
                     state.therouter.push({ name: 'login' });
                     state.therouter = null;
-                    state.theuser = null;
+                    state.loggeduser = null;
                     state.tokenalert = false;
                     state.logrefresh = false;
                 }
@@ -254,7 +255,7 @@ export default {
                 )
                 .then((response) => {
                     window.localStorage.setItem('jwt', response.data.token);
-                    commit('updateloginstate', { theuser: response.data.theuser, token:response.data.token });
+                    commit('updateloginstate', { loggeduser: response.data.loggeduser, token:response.data.token });
                     commit('updateuserlogs');
                     resolve('User ' + payload.email + ' logged');
                     state.therouter = payload.router;
