@@ -91,12 +91,13 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      version: "Edit 1.21, Jan 27 2020 ",
+      version: "Edit 1.24, Jan 27 2020 ",
       isadmin: false,
       privileges: [ 'STD '],
       profilecodes: [],
       userprofiles: [],
       targetuser: null,
+      selfedit: true,
     };
   },
   computed: {
@@ -162,6 +163,7 @@ export default {
     }
     // Is it a user self editing it's profie or an admin editing another user ?
     if ( this.$route.params.email !== undefined) {
+      this.selfedit = false;
       this.targetuser = this.$route.params;
     }
     else {
@@ -185,7 +187,10 @@ export default {
         })
         .then((result) => {
           swal('User ' + this.$store.state.userstore.loggeduser.model.email + ' updated', result, 'success');
-          //this.$router.push({ name: 'identity' });
+          if ( this.selfedit)
+            this.$router.push({ name: 'identity' });
+          else
+            this.$router.push({ name: 'listusers' });
         })
         .catch((err) => {
           swal('KO!', err, 'error');
