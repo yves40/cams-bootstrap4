@@ -9,6 +9,7 @@
   Jan 24 2020   Collapse tests for user details
   Jan 26 2020   User details now includes profilecodes
                 Add buttons (collapse, expand...)
+  Jan 27 2020   Add a user edit button
 -->
 <template>
   <div>
@@ -62,6 +63,7 @@
             <b-col class="text-left ml-3" >{{entry.email}}</b-col>
             <b-col class="text-center" >
               <b-link @click="zoomselected(entry)"><img src='../../../assets/search.png'></b-link>
+              <b-link @click="edituser(entry)"><img src='../../../assets/edit_profile.png'></b-link>
             </b-col>
           </b-row>
 
@@ -105,7 +107,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "List 1.67, Jan 26 2020 ",
+        version: "List 1.68, Jan 27 2020 ",
         timeoutsid: null,
       }
   },
@@ -118,6 +120,9 @@ export default {
           selectedUser.show = true; 
       }
       this.$forceUpdate();
+    },
+    edituser(selectedUser) {
+      this.$router.push({ name: 'edit', params: selectedUser });
     },
     collapseall() {
       this.$store.dispatch('userliststore/collapseAll');

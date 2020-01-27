@@ -5,6 +5,7 @@
   Dec 17 2019   Initial
   Dec 19 2019   Fix description of user not transmitted to the store call
   Jan 26 2020   Work on user modification by an admin
+  Jan 27 2020   Work on user modification by an admin; Now get the modified user
 -->
 <template>
   <div>
@@ -90,11 +91,12 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      version: "Edit 1.18, Jan 26 2020 ",
+      version: "Edit 1.21, Jan 27 2020 ",
       isadmin: false,
       privileges: [ 'STD '],
       profilecodes: [],
       userprofiles: [],
+      targetuser: null,
     };
   },
   computed: {
@@ -105,27 +107,27 @@ export default {
     ),
     name: {
       get() {
-        return this.$store.state.userstore.theuser.model.name;
+        return this.$store.state.userstore.loggeduser.model.name;
       },
       set(value) {
-        this.$store.state.userstore.theuser.model.name = value;
+        this.$store.state.userstore.loggeduser.model.name = value;
       },
     },
     userdescription: {
       get() {
-        return this.$store.state.userstore.theuser.model.description;
+        return this.$store.state.userstore.loggeduser.model.description;
       },
       set(value) {
-        this.$store.state.userstore.theuser.model.description = value;
+        this.$store.state.userstore.loggeduser.model.description = value;
       },
     },
     namestate() {
-      return this.$store.state.userstore.theuser.model.name.length >= 5 ? true : false
+      return this.$store.state.userstore.loggeduser.model.name.length >= 5 ? true : false
     },
     invalidName() {
-      if (this.$store.state.userstore.theuser.model.name.length >= 5) {
+      if (this.$store.state.userstore.loggeduser.model.name.length >= 5) {
         return ''
-      } else if (this.$store.state.userstore.theuser.model.name.length > 0) {
+      } else if (this.$store.state.userstore.loggeduser.model.name.length > 0) {
         return 'Enter at least 5 characters'
       } else {
         return 'Please enter your pseudo'
@@ -135,7 +137,7 @@ export default {
       return this.namestate === true ? 'Thank you' : ''
     }, 
     descstate() {
-      return (this.$store.state.userstore.theuser.model.description.length >= 10 && this.$store.state.userstore.theuser.model.description.length <= 40) ? true : false
+      return (this.$store.state.userstore.loggeduser.model.description.length >= 10 && this.$store.state.userstore.loggeduser.model.description.length <= 40) ? true : false
     },
     checkall() {
       const mongodown = this.$store.getters['mongostore/IsMongoDown'];
@@ -158,6 +160,13 @@ export default {
       // Now get user's current profiles
       this.privileges = this.$store.getters['userstore/getUserProfiles'];
     }
+    // Is it a user self editing it's profie or an admin editing another user ?
+    if ( this.$route.params.email !== undefined) {
+      this.targetuser = this.$route.params;
+    }
+    else {
+      this.targetuser = this.$store.state.userstore.loggeduser.model
+    }
   },
   beforeDestroy() {
     this.$parent.enableMenu('edit');
@@ -175,7 +184,7 @@ export default {
           privs: this.privileges,
         })
         .then((result) => {
-          swal('User ' + this.$store.state.userstore.theuser.model.email + ' updated', result, 'success');
+          swal('User ' + this.$store.state.userstore.loggeduser.model.email + ' updated', result, 'success');
           //this.$router.push({ name: 'identity' });
         })
         .catch((err) => {
@@ -183,9 +192,9 @@ export default {
         });
     },
     clear() {
-      this.$store.state.userstore.theuser.model.name = '';
-      this.$store.state.userstore.theuser.model.description = '';
-      this.$store.state.userstore.theuser.model.profilecode = [ 'STD '];
+      this.$store.state.userstore.loggeduser.model.name = '';
+      this.$store.state.userstore.loggeduser.model.description = '';
+      this.$store.state.userstore.loggeduser.model.profilecode = [ 'STD '];
     },
     gotohome() {
       this.$router.push({ name: 'home' });
