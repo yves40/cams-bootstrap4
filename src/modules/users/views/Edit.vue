@@ -193,6 +193,7 @@ export default {
     ),
     update() {
       this.updateVuex({
+          email: this.targetuser.email,
           name: this.targetuser.name,
           description: this.targetuser.description,
           privs: this.privileges,

@@ -97,7 +97,7 @@
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.98, Jan 27 2020 ';
+const Version = 'userapi:3.99, Jan 27 2020 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -213,13 +213,14 @@ router.post('/users/register', cors(corsutility.getCORS()),
 
 //-----------------------------------------------------------------------------------
 // Update user
+// Jan 27 2020 : Modify to update another user than the calling user 
 //-----------------------------------------------------------------------------------
 router.post('/users/update', cors(corsutility.getCORS()), 
     passport.authenticate('jwt'),
     helpers.asyncMiddleware(async (req, res, next) => {
         logger.debug(Version + 'Update user : ' + req.user.model.email);
         let newuser = new userclass(
-            req.user.model.email, 
+            req.body.email, 
             req.body.name,
             undefined,          // The password field
             req.body.privs,

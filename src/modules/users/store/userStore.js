@@ -52,7 +52,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:2.06, Jan 27 2020 ',
+        Version: 'userstore:2.08, Jan 27 2020 ',
         loggeduser: null,
         token: null,
         tokenobject: '{}',
@@ -336,6 +336,7 @@ export default {
                         url: '/users/update',
                         headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
                         data: {
+                            email: payload.email,
                             name : payload.name,
                             description: payload.description,
                             privs: payload.privs,
