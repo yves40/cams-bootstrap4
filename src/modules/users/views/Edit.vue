@@ -6,6 +6,7 @@
   Dec 19 2019   Fix description of user not transmitted to the store call
   Jan 26 2020   Work on user modification by an admin
   Jan 27 2020   Work on user modification by an admin; Now get the modified user
+  Jan 28 2020   Fix some binding
 -->
 <template>
   <div>
@@ -51,7 +52,7 @@
               :valid-feedback="validName"
               :state="namestate"
             >
-              <b-form-input id="name" v-model="name" :state="namestate" trim></b-form-input>
+              <b-form-input id="name" v-model="targetuser.name" :state="namestate" trim></b-form-input>
             </b-form-group>
 
             <b-form-group
@@ -62,7 +63,7 @@
               label-cols-sm="3"
               :state="descstate"
             >
-              <b-form-input id="description" v-model="userdescription" :state="descstate" trim></b-form-input>
+              <b-form-input id="description" v-model="targetuser.description" :state="descstate" trim></b-form-input>
             </b-form-group>
 
             <!-- The user privilege management section -->
@@ -104,7 +105,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      version: "Edit 1.28, Jan 27 2020 ",
+      version: "Edit 1.29, Jan 28 2020 ",
       isadmin: false,
       privileges: [ 'STD '],
       profilecodes: [],

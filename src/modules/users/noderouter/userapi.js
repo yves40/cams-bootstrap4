@@ -93,11 +93,12 @@
 //    Jan 24 2020  User list management when empty list returned
 //    Jan 26 2020  Now get user privs from UI during registration
 //    Jan 27 2020  theuser changed to loggeduser
+//    Jan 28 2020  Wrong user reported in log after update 
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
 
-const Version = 'userapi:3.99, Jan 27 2020 ';
+const Version = 'userapi:4.00, Jan 28 2020 ';
 
 const corsutility = require("../../core/services/corshelper");
 const logger = require("../../core/services/logger");
@@ -228,7 +229,7 @@ router.post('/users/update', cors(corsutility.getCORS()),
         );
         try {
             let updateduser = await newuser.Update();
-            mongolog.informational('User ' + req.user.model.email + ' has been updated.', 
+            mongolog.informational('User ' + req.body.email + ' has been updated.', 
                     'UPDATE', req.body.email);
             res.status(200).json(updateduser);
         }

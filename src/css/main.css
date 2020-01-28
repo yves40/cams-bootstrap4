@@ -61,5 +61,8 @@ ul {
 .logerr { color:red; font-size: small;}
 .logwarn { color: forestgreen; font-size: small;}
 .logfatal { color: red; font-size: small; }
-.logheader { padding-top: 1em; }
 
+.underlined { text-decoration: underline; }
+.textcenter { text-align: center;}
+.textleft { text-align: left; }
+.textrught { text-align: right; }

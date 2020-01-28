@@ -14,6 +14,7 @@
   Dec 19 2019   Now display user profiles
   Dec 20 2019   User profiles display
   Jan 07 2020   Fix small syntax error in vue log list ( b-row )
+  Jan 28 2020   Display user privs in a compressed form
 -->
 <template>
   <div>
@@ -49,127 +50,52 @@
       </b-row>
 
       <!-- 
-        User data
-      -->
-      <div class="viewframeinner">
-        <b-row>
-          <b-col cols="2"></b-col>
-          <b-col>
-            <p>Your email</p>
-          </b-col>
-          <b-col>
-            <p>{{email}}</p>
-          </b-col>
-          <b-col cols="2"></b-col>
-        </b-row>
-
-        <b-row>
-          <b-col cols="2"></b-col>
-          <b-col>
-            <p>Pseudo</p>
-          </b-col>
-          <b-col>
-            <p>{{name}}</p>
-          </b-col>
-          <b-col cols="2"></b-col>
-        </b-row>
-        
-        <b-row>
-          <b-col cols="2"></b-col>
-          <b-col>
-            <p>Description</p>
-          </b-col>
-          <b-col>
-            <p>{{description}}</p>
-          </b-col>
-          <b-col cols="2"></b-col>
-        </b-row>
-      </div>
-      <!-- 
         The user profiles dump section 
       -->
-      <b-row>
-        <b-col cols="2"></b-col>
-        <b-col >Your privileges</b-col>
-        <b-col cols="2"></b-col>
-      </b-row>
-      <div class="viewframeinner" v-for="profile in profiles" :key="profile.id">
-        <b-row>
-          <b-col cols="2"></b-col>
-          <b-col>
-            {{profile}}
-          </b-col>
-          <b-col cols="2"></b-col>
-        </b-row>
-      </div>
+      <b-card>
+        <b-card-text>
+            <li>email      : {{email}}</li>
+            <li>Pseudo     : {{name}}</li>
+            <li>description: {{description}}</li>
+            <li>Privileges : <strong>{{profiles}}</strong></li>
+        </b-card-text>
+      </b-card>
 
-      <div class="viewframe">
-        <b-row>
-          <b-col cols="2"></b-col>
-          <b-col>
-            <p>Remaining session time</p>
-          </b-col>
-          <b-col>
-            <p>{{sessiontime}}</p>
-          </b-col>
-          <b-col cols="2"></b-col>
-        </b-row>
-      </div>
+      <b-card>
+        <b-card-text>
+            Remaining session time : <strong>{{sessiontime}}</strong>
+            <b-form-checkbox-group stacked v-model="filterbox" id="checkboxes">
+              <b-form-checkbox value="0">Debug</b-form-checkbox>
+              <b-form-checkbox value="1">Information</b-form-checkbox>
+              <b-form-checkbox value="2">Warning</b-form-checkbox>
+              <b-form-checkbox value="3">Error</b-form-checkbox>
+              <b-form-checkbox value="4">Fatal</b-form-checkbox>
+            </b-form-checkbox-group>
+            <div class="textcenter underlined">Users logs</div>
+        </b-card-text>
+      </b-card>
       <!-- 
-        Logs
+        The log dump window 
       -->
-      <div class="viewframe">
-
-        <!-- 
-          The log dump header
-        -->
-        <b-row class="logheader">
-          <b-col cols="2"></b-col>
-          <b-col >
-            <p>User recent activity</p>
-          </b-col>
-          <b-col cols="2"></b-col>
-        </b-row>
-        <!-- 
-          Filter with check boxes
-        -->
+      <div class="viewframe" v-for="entry in userlogs" :key="entry.id">
         <b-row>
-          <b-col cols="2"></b-col>
-          <b-col >
-                <b-form-checkbox-group v-model="filterbox" id="checkboxes">
-                  <b-form-checkbox value="0">Debug</b-form-checkbox>
-                  <b-form-checkbox value="1">Information</b-form-checkbox>
-                  <b-form-checkbox value="2">Warning</b-form-checkbox>
-                  <b-form-checkbox value="3">Error</b-form-checkbox>
-                  <b-form-checkbox value="4">Fatal</b-form-checkbox>
-                </b-form-checkbox-group>
+          <b-col cols="1"></b-col>
+          <b-col v-if="entry.severity < '2'" class="loginf">
+            {{entry.timestamp | formatdate}} - {{entry.message}}
           </b-col>
-          <b-col cols="2"></b-col>
+          <b-col v-else-if="entry.severity === '2'" class="logwarn">
+            {{entry.timestamp | formatdate}} - {{entry.message}}
+          </b-col>
+          <b-col v-else-if="entry.severity === '3'" class="logerr">
+            {{entry.timestamp | formatdate}} - {{entry.message}}
+          </b-col>
+          <b-col v-else-if="entry.severity === '4'" class="logfatal">
+            {{entry.timestamp | formatdate}} - {{entry.message}}
+          </b-col>
+          <b-col v-else class="logfatal">
+            {{entry.timestamp | formatdate}} - {{entry.message}}
+          </b-col>
         </b-row>
-        <!-- 
-          The log dump window 
-        -->
-        <div class="viewframe" v-for="entry in userlogs" :key="entry.id">
-          <b-row>
-            <b-col cols="1"></b-col>
-            <b-col v-if="entry.severity < '2'" class="loginf">
-              {{entry.timestamp | formatdate}} - {{entry.message}}
-            </b-col>
-            <b-col v-else-if="entry.severity === '2'" class="logwarn">
-              {{entry.timestamp | formatdate}} - {{entry.message}}
-            </b-col>
-            <b-col v-else-if="entry.severity === '3'" class="logerr">
-              {{entry.timestamp | formatdate}} - {{entry.message}}
-            </b-col>
-            <b-col v-else-if="entry.severity === '4'" class="logfatal">
-              {{entry.timestamp | formatdate}} - {{entry.message}}
-            </b-col>
-            <b-col v-else class="logfatal">
-              {{entry.timestamp | formatdate}} - {{entry.message}}
-            </b-col>
-          </b-row>
-        </div>
-
       </div>
     </b-container>
   </div>
@@ -187,7 +113,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Identity 1.55, Jan 07 2020 ",
+        version: "Identity 1.57, Jan 28 2020 ",
       };
   },
   // ------------------------------------------------------------------------------------------------------------
