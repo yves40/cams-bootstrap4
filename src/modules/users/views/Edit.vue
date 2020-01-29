@@ -183,7 +183,6 @@ export default {
       this.targetuser = this.$store.state.userstore.loggeduser.model
       this.privileges = this.$store.state.userstore.loggeduser.model.profilecode;
     }
-    console.log(JSON.stringify(this.targetuser));
   },
   beforeDestroy() {
     this.$parent.enableMenu('edit');
