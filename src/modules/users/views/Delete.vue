@@ -5,6 +5,8 @@
   Dec 20 2019   Initial
   Dec 21 2019   Use swal from bootstrap-sweetalert
   Jan 16 2020   Better logic on user deletion service call
+  Jan 29 2020   Generic delete for any user : User object parameter passed
+
 -->
 <template>
   <div>
@@ -28,7 +30,7 @@
     <b-row>
       <b-col cols="2"></b-col>
       <b-col>
-        <p><b>{{email}}</b> with pseudo {{name}}, known as : {{description}}</p>
+        <p><b>{{targetuser.email}}</b> with pseudo {{targetuser.name}}, known as : {{targetuser.description}}</p>
       </b-col>
       <b-col cols="2"></b-col>
     </b-row>
@@ -36,7 +38,7 @@
     <b-row>
       <b-col cols="2"></b-col>
       <b-col>
-        <p>Delete your account now ? </p>
+        <p>Delete now ? </p>
       </b-col>
       <b-col cols="2"></b-col>
     </b-row>
@@ -50,7 +52,12 @@
                 <b-navbar-toggle target="collapsemenu"></b-navbar-toggle>
                 <b-collapse id="collapsemenu" is-nav>
                   <b-navbar-nav class="mr-auto">
-                    <b-button pill variant="danger"  v-on:click="deleteme">Delete Me</b-button>
+                    <div v-if="selfedit">
+                      <b-button pill variant="danger"  v-on:click="deleteme">Delete Me</b-button>
+                    </div>
+                    <div v-else>
+                      <b-button pill variant="danger"  v-on:click="deleteme">Delete {{targetuser.email}}</b-button>
+                    </div>
                     <b-button pill variant="primary" v-on:click="gotohome">Cancel</b-button>
                   </b-navbar-nav>
                 </b-collapse>
@@ -72,28 +79,28 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      version: "Delete 1.16, Jan 16 2020",
+      version: "Delete 1.19, Jan 29 2020",
+      selfedit: true,
+      targetuser: null,
     };
   },
-  computed: {
-    ...mapGetters (
-        'userstore', { 
-          email: 'getEmail',
-          name: 'getName',
-          description: 'getDescription',
-        }
-    ),
-  },  
  
  created() {
     this.$parent.disableMenu('deleteme');
+    if ( this.$route.params.email !== undefined) {
+      this.selfedit = false;
+      this.targetuser = this.$route.params;
+    }
+    else {
+      this.targetuser = this.$store.state.userstore.loggeduser.model
+    }
   },
   methods: {
     // Some funny things with swal
     deleteme() {
       swal({
         title: "Are you sure?",
-        text: "You will not be able to recover your account!",
+        text: "You will not be able to recover the account!",
         icon: "warning",
         dangerMode: true,
         buttons:{
@@ -103,12 +110,12 @@ export default {
             visible: true,
           },
           cancel: {
-            text: "Back to identity",
+            text: "Back",
             value: "abort",
             visible: true,
           },
           confirm: {
-            text: "Shoot me!!!",
+            text: "Shoot !",
             value: "shoot",
             visible: true,
           },
@@ -120,14 +127,24 @@ export default {
             this.$router.push({ name: 'home' });
             break;
           case "abort": 
-            this.$router.push({ name: 'identity' });
+            if (this.selfedit)
+              this.$router.push({ name: 'identity' });
+            else
+              this.$router.push({ name: 'listusers' });
             break;
           case "shoot": 
-            // Action call (asynchronous)
-            this.$store.dispatch('userstore/logout', {router: this.$router, path: this.$route.path, mode: 'afterdelete'});
-            // Mutation call
-            this.$store.commit('userstore/delete');
-            this.$parent.setupMenus('logout');
+            if (this.selfedit) {    // --------------------------------  User delete itself ? 
+              // Action call (asynchronous)
+              this.$store.dispatch('userstore/logout', {router: this.$router, path: this.$route.path, mode: 'afterdelete'});
+              // Mutation SYNC call
+              this.$store.commit('userstore/delete');
+              this.$parent.setupMenus('logout');
+            }
+            else {                  // --------------------------------  User is deleted by an admin 
+              // Action ASYNC call
+              this.$store.dispatch('userstore/delete', { email: this.targetuser.email} );
+              this.$router.push({ name: 'listusers' });
+            }
             break;
         }
       })
