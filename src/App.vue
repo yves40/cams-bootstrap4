@@ -29,6 +29,7 @@
   Jan 25 2020   User admin menu modified
   Jan 26 2020   User admin menu modified to edit a user profile in ADMIN mode
   Jan 29 2020   Menu entry text modified
+                Start work on superadmin log browser vue
 -->
 
 <template>
@@ -110,7 +111,7 @@ export default {
   name: "app",
   data() {
       return {
-        version: "Cams Manager 2.35, Jan 26 2020 ",
+        version: "Cams Manager 2.36, Jan 29 2020 ",
         copyright: "oldtimerSoft",
         // These arrays are defining the displayed menus
         // enableflag drives the visibility of the URL
@@ -146,6 +147,13 @@ export default {
               {url: "notyet",params: {},text: "Add", enableflag: true, disableflag: false, },
               {url: "notyet",params: {},text: "Modify", enableflag: true, disableflag: false, },
               {url: "notyet",params: {},text: "Delete", enableflag: true, disableflag: false, },
+            ]
+          },
+          {
+            text: "Logs",
+            enableflag: false,
+            navoptions: [
+              {url: "logs",params: {},text: "Search logs", enableflag: true, disableflag: false, },
             ]
           },
           {
@@ -281,6 +289,9 @@ export default {
             if(this.$store.getters['userstore/isCamAdmin']) {
               logger.debug(this.version + 'Activate cams admin menu')
               this.enableTopMenu('Cams Admin');
+            }
+            if(this.$store.getters['userstore/isSuperAdmin']) {
+              this.enableTopMenu('Logs');
             }
             break;
           case 'logout':

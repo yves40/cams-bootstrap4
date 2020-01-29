@@ -27,27 +27,16 @@
       <b-col cols="2"></b-col>
     </b-row>
 
-    <b-row>
-      <b-col cols="2"></b-col>
-      <b-col>
-        <p><b>{{targetuser.email}}</b> with pseudo {{targetuser.name}}, known as : {{targetuser.description}}</p>
-      </b-col>
-      <b-col cols="2"></b-col>
-    </b-row>
+    <b-card>
+      <b-card-text>
+        <li><strong>{{targetuser.email}}</strong></li>
+        <li>{{targetuser.name}}</li>
+        <li>{{targetuser.description}}</li>
+      </b-card-text>
+      <p> Beware !!!!!! Deleting an account will be irreversible</p>
+    </b-card>
 
-    <b-row>
-      <b-col cols="2"></b-col>
-      <b-col>
-        <p>Delete now ? </p>
-      </b-col>
-      <b-col cols="2"></b-col>
-    </b-row>
-
-    <b-row>
-      <b-col cols="2"></b-col>
-      <b-col >
-        <div >
-            <div>
+    <b-card>
               <b-navbar toggleable="sm">
                 <b-navbar-toggle target="collapsemenu"></b-navbar-toggle>
                 <b-collapse id="collapsemenu" is-nav>
@@ -62,11 +51,7 @@
                   </b-navbar-nav>
                 </b-collapse>
               </b-navbar>
-            </div>
-        </div>
-      </b-col>
-      <b-col cols="2"></b-col>
-    </b-row>
+    </b-card>
     </b-container>
   </div>
 </template>
@@ -79,7 +64,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      version: "Delete 1.19, Jan 29 2020",
+      version: "Delete 1.22, Jan 29 2020",
       selfedit: true,
       targetuser: null,
     };
