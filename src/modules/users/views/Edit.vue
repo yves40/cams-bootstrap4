@@ -7,7 +7,7 @@
   Jan 26 2020   Work on user modification by an admin
   Jan 27 2020   Work on user modification by an admin; Now get the modified user
   Jan 28 2020   Fix some binding
-  Jan 29 2020   Add a parameter for update call the the user store
+  Jan 29 2020   Add a parameter for update call to the user store
 -->
 <template>
   <div>
