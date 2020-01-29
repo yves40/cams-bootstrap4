@@ -10,6 +10,7 @@
   Jan 26 2020   User details now includes profilecodes
                 Add buttons (collapse, expand...)
   Jan 27 2020   Add a user edit button
+  Jan 29 2020   Add a user delete button
 -->
 <template>
   <div>
@@ -64,6 +65,9 @@
             <b-col class="text-center" >
               <b-link @click="zoomselected(entry)"><img src='../../../assets/search.png'></b-link>
               <b-link @click="edituser(entry)"><img src='../../../assets/edit_profile.png'></b-link>
+              <div class="inlineright">
+                <b-link @click="deleteuser(entry)"><img src='../../../assets/delete.png'></b-link>
+              </div>
             </b-col>
           </b-row>
 
@@ -107,7 +111,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "List 1.68, Jan 27 2020 ",
+        version: "List 1.69, Jan 29 2020 ",
         timeoutsid: null,
       }
   },
@@ -131,6 +135,9 @@ export default {
     expandall() {
       this.$store.dispatch('userliststore/expandAll');
       this.$forceUpdate();
+    },
+    deleteuser(selecteduser) {
+      this.$router.push( { name: 'deleteme', params: selecteduser });
     },
   },
   // ------------------------------------------------------------------------------------------------------------

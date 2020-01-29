@@ -28,6 +28,7 @@
   Jan 24 2020   WIP on url parameters in menus
   Jan 25 2020   User admin menu modified
   Jan 26 2020   User admin menu modified to edit a user profile in ADMIN mode
+  Jan 29 2020   Menu entry text modified
 -->
 
 <template>
@@ -123,7 +124,7 @@ export default {
               {url: "logout",params: {},text: "Logout", enableflag: false, disableflag: false,},
               {url: "register", params: { mode: 'STD'},text: "Register", enableflag: true, disableflag: false, },
               {url: "identity",params: {},text: "Identity", enableflag: false, disableflag: false, },
-              {url: "edit",params: { mode: 'STD'},text: "Edit profile", enableflag: false, disableflag: false, },
+              {url: "edit",params: { mode: 'STD'},text: "My profile", enableflag: false, disableflag: false, },
               {url: "deleteme",params: {},text: "Delete ME!", enableflag: false, disableflag: false, },
             ]
           },

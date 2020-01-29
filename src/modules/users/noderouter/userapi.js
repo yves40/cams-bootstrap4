@@ -94,6 +94,7 @@
 //    Jan 26 2020  Now get user privs from UI during registration
 //    Jan 27 2020  theuser changed to loggeduser
 //    Jan 28 2020  Wrong user reported in log after update 
+//    Jan 29 2020  More code to delete any user by passing an email
 //----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
@@ -170,7 +171,7 @@ router.post('/users/logout', cors(corsutility.getCORS()),
 });
 
 //-----------------------------------------------------------------------------------
-// Remove One user by email
+// Remove the logged user (user self-delete)
 //-----------------------------------------------------------------------------------
 router.post('/users/delete/email', cors(corsutility.getCORS()), 
     passport.authenticate('jwt'),
@@ -179,6 +180,23 @@ router.post('/users/delete/email', cors(corsutility.getCORS()),
         await new userclass(req.user.model.email).Delete()
             .then( (message) => {
                 logger.debug(Version + 'Delete status from userclass is : ' + message); 
+                res.status(200).send(message);
+            })
+            .catch( (error) => {
+                res.status(500).send(error);
+            });
+    })
+);
+
+//-----------------------------------------------------------------------------------
+// Remove the identified user (mail parameter is passed )
+//-----------------------------------------------------------------------------------
+router.post('/users/delete', cors(corsutility.getCORS()), 
+    passport.authenticate('jwt'),
+    helpers.asyncMiddleware(async (req, res, next) => {
+        mongolog.informational('Delete account' + req.body.email , 'ACCOUNT', req.user.model.email);
+        await new userclass(req.body.email).Delete()
+            .then( (message) => {
                 res.status(200).send(message);
             })
             .catch( (error) => {

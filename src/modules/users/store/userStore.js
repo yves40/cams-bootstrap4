@@ -35,6 +35,7 @@
     Jan 26 2020  Now get user privileges from the UI
     Jan 27 2020  theuser changed to loggeduser
     Jan 29 2020  Bug with update when editiong another user. Do not commit the loggeduser
+                 Implement user generic delete (admin mode)
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -53,7 +54,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:2.09, Jan 29 2020 ',
+        Version: 'userstore:2.11, Jan 29 2020 ',
         loggeduser: null,
         token: null,
         tokenobject: '{}',
@@ -158,22 +159,44 @@ export default {
             state.loggeduser.model.description = payload.description;
             state.loggeduser.model.profilecode = payload.privs; 
         },
-        delete(state) {
-            AXIOS(
-                {
-                    method: 'post',
-                    url: '/users/delete/email',
-                    headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
-                 }
-            )
-            .then((response) => {
-                logger.debug(state.Version + response.data);
-                }
-            )
-            .catch((error) => {
-                logger.error(state.Version + error);
-                }
-            );
+        delete(state, payload = undefined) {
+            if (payload === undefined) { // Delete ME !!!
+                AXIOS(
+                    {
+                        method: 'post',
+                        url: '/users/delete/email',
+                        headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
+                     }
+                )
+                .then((response) => {
+                    logger.debug(state.Version + response.data);
+                    }
+                )
+                .catch((error) => {
+                    logger.error(state.Version + error);
+                    }
+                );
+            }
+            else {      // Delete a specific user
+                AXIOS(
+                    {
+                        method: 'post',
+                        url: '/users/delete',
+                        headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
+                        data: {
+                            email: payload.email
+                        }
+                     }
+                )
+                .then((response) => {
+                    logger.debug(state.Version + response.data);
+                    }
+                )
+                .catch((error) => {
+                    logger.error(state.Version + error);
+                    }
+                );
+            }
         },
         refreshtokentime(state) {
             if (state.loggeduser) {
@@ -372,6 +395,12 @@ export default {
         deleteMe({ commit })
         {
             commit('delete');
+        },
+        // Delete a user : called by an admin so it can be any user
+        delete({ commit, state }, payload)
+        {
+            logger.debug(state.Version + 'Deleting now ' + payload.email);
+            commit('delete', { email: payload.email } );
         }
     },
 }
