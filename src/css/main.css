@@ -66,3 +66,5 @@ ul {
 .textcenter { text-align: center;}
 .textleft { text-align: left; }
 .textright { text-align: right; }
+
+div.inlineright { float:right; }
