@@ -34,6 +34,7 @@
     Jan 17 2020  Strange import suppressed
     Jan 26 2020  Now get user privileges from the UI
     Jan 27 2020  theuser changed to loggeduser
+    Jan 29 2020  Bug with update when editiong another user. Do not commit the loggeduser
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -52,7 +53,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:2.08, Jan 27 2020 ',
+        Version: 'userstore:2.09, Jan 29 2020 ',
         loggeduser: null,
         token: null,
         tokenobject: '{}',
@@ -152,7 +153,7 @@ export default {
             state.tokenalert = false;
             state.logrefresh = false;
         },
-        update(state, payload) {
+        update(state, payload) {  
             state.loggeduser.model.name = payload.name;
             state.loggeduser.model.description = payload.description;
             state.loggeduser.model.profilecode = payload.privs; 
@@ -344,9 +345,11 @@ export default {
                     }
                 )
                 .then((response) => {
+                    if(payload.updatemode) {      // Don't commit if this is not the logged user editiong himself
                         commit('update', { name: payload.name, description: payload.description,
-                                    privs:  payload.privs} );
-                        resolve('User updated');
+                            privs:  payload.privs} );            
+                    }
+                    resolve('User updated');
                     },
                 )
                 .catch((error) => {

@@ -7,6 +7,7 @@
   Jan 26 2020   Work on user modification by an admin
   Jan 27 2020   Work on user modification by an admin; Now get the modified user
   Jan 28 2020   Fix some binding
+  Jan 29 2020   Add a parameter for update call the the user store
 -->
 <template>
   <div>
@@ -105,7 +106,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      version: "Edit 1.29, Jan 28 2020 ",
+      version: "Edit 1.30, Jan 29 2020 ",
       isadmin: false,
       privileges: [ 'STD '],
       profilecodes: [],
@@ -182,6 +183,7 @@ export default {
       this.targetuser = this.$store.state.userstore.loggeduser.model
       this.privileges = this.$store.state.userstore.loggeduser.model.profilecode;
     }
+    console.log(JSON.stringify(this.targetuser));
   },
   beforeDestroy() {
     this.$parent.enableMenu('edit');
@@ -198,6 +200,7 @@ export default {
           name: this.targetuser.name,
           description: this.targetuser.description,
           privs: this.privileges,
+          updatemode: this.selfedit,
         })
         .then((result) => {
           swal('User ' + this.targetuser.email + ' updated', result, 'success');
