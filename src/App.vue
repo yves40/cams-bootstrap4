@@ -305,6 +305,7 @@ export default {
             this.disableTopMenu('Bootstrap4');
             this.disableTopMenu('User Admin');
             this.disableTopMenu('Cams Admin');
+            this.disableTopMenu('Logs');
             break;
       }
     }
