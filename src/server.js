@@ -15,6 +15,7 @@
     Dec 03 2019   favicon
     Dec 06 2019   Category for log message in mongo
     Jan 20 2020   Static path for png files
+    Jan 30 2020   Logs services added 
 ----------------------------------------------------------------------------*/
 const mongoose = require('mongoose');
 const express = require('express');
@@ -70,6 +71,7 @@ app.use(passport.session());
 app.use(require('./modules/core/noderouter/api'));      // api testing middleware
 app.use(require('./modules/core/noderouter/mongoapi')); // mongodb services
 app.use(require('./modules/users/noderouter/userapi')); // users services
+app.use(require('./modules/core/noderouter/logsapi')); // Logs services
 //---------------------------------------------------------------------------------------------------------
 // get my logger
 const logparams = logger.getLoggerInfo();
