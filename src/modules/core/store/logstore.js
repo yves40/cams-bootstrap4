@@ -15,10 +15,14 @@ Vue.use(Vuex);
     VUEX states
 ----------------------------------------------------------------------------*/
 const state = {
-    Version: 'logstore.js:1.01, Jan 30 2020 ',
+    Version: 'logstore.js:1.03, Jan 30 2020 ',
     today: datetime.getDate(),
     hourminute: datetime.getShortTime(),
-    logs: null,
+    logs: [ 
+        { age: 40, name: 'Yves', email: 'yves@free.fr' },
+        { age: 40, name: 'Yves', email: 'yves@free.fr' },
+        { age: 40, name: 'Yves', email: 'yves@free.fr' },
+    ],
 };
 /*----------------------------------------------------------------------------
     VUEX Getters
@@ -28,7 +32,8 @@ const getters = {
         return state.Version;
     },
     getLogs() {
-      return state.logs;
+        console.log(JSON.stringify(state.logs));
+        return state.logs;
     },
 };
 /*----------------------------------------------------------------------------
@@ -65,7 +70,7 @@ const actions = {
           },
       );
     commit('updatelogs', thelogs);
-  }
+  }, 
 };
 
 export default {

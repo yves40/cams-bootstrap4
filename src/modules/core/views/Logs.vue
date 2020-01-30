@@ -3,6 +3,7 @@
   Logs.vue
 
   Jan 29 2020   Initial
+  Jan 30 2020   WIP on log search filter
 
 -->
 <template>
@@ -16,6 +17,23 @@
         </b-col>
         <b-col cols="2"></b-col>
       </b-row>
+
+      <div>
+        <b-table striped hover :items="all_logs"></b-table>
+      </div>
+
+      <b-card>
+        <b-card-text>
+            <b-form-checkbox-group stacked v-model="filterbox" id="checkboxes">
+              <b-form-checkbox value="0">Debug</b-form-checkbox>
+              <b-form-checkbox value="1">Information</b-form-checkbox>
+              <b-form-checkbox value="2">Warning</b-form-checkbox>
+              <b-form-checkbox value="3">Error</b-form-checkbox>
+              <b-form-checkbox value="4">Fatal</b-form-checkbox>
+            </b-form-checkbox-group>
+            <div class="textcenter underlined">Users logs</div>
+        </b-card-text>
+      </b-card>
 
       <!-- 
         The log dump window 
@@ -56,7 +74,14 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Logs 1.00, Jan 29 2020 ",
+        version: "Logs 1.07, Jan 30 2020 ",
+        /*
+        all_logs: [],
+        [ 
+          { age: 40, name: 'Yves', email: 'yves@free.fr' },
+          { age: 40, name: 'Yves', email: 'yves@free.fr' },
+          { age: 40, name: 'Yves', email: 'yves@free.fr' },
+        ],*/
       };
   },
   // ------------------------------------------------------------------------------------------------------------
@@ -64,7 +89,10 @@ export default {
     ...mapGetters (
         'userstore', { 
           userlogs: 'getUserLogs',
-        }
+        },
+        'logstore', { 
+          all_logs: 'getLogs',
+        },
     ),
     filterbox: 
       {
@@ -82,6 +110,7 @@ export default {
   // ------------------------------------------------------------------------------------------------------------
   created() {
     this.$parent.disableMenu('logs');
+    // this.alllogs = this.$store.getters['logstore/getLogs'];
   },
   beforeDestroy() {
     this.$parent.enableMenu('logs');
