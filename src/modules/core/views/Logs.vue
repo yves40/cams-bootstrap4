@@ -20,10 +20,11 @@
       </b-row>
 
       <div>
-        <b-table striped hover :items="all_logs"></b-table>
-      </div>
-      <div v-for="logentry in thelogs" :key="logentry.id">
-        {{logentry.message}}
+        <b-table striped hover small bordered :items="thelogs" :fields="fields" responsive="sm">
+          <template v-slot:cell(timestamp)="item">
+            <b>{{item.value  | formatdate}}</b>
+          </template>
+        </b-table>
       </div>
 
       <b-card>
@@ -78,8 +79,16 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Logs 1.24, Jan 31 2020 ",
+        version: "Logs 1.27, Jan 31 2020 ",
         all_logs: [ ],
+        fields: [         // Some displayed fields in the table
+          {key : 'module', sortable: false},
+          {key: 'category', sortable:true},
+          {key: 'email', sortable:true},
+          {key: 'message'},
+          {key: 'timestamp', label: 'Time', sortable:true},
+          {key: 'severity', sortable:true, label: 'Level'},
+        ]
       };
   },
   // ------------------------------------------------------------------------------------------------------------
