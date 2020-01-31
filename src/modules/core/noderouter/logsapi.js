@@ -1,15 +1,35 @@
 /*----------------------------------------------------------------------------
     jan 30 2020   Initial
+    jan 31 2020   Bug on lines limit
 ----------------------------------------------------------------------------*/
+const Version = 'logsapi.js:1.04, Jan 31 2020 ';
+
 const express = require('express');
 const router = express.Router();
-const mongodb = require('../services/mongodb');
-const datetime = require('../services/datetime');
+const cors = require('cors');
+const passport = require('passport');
 
-const Version = 'logsapi.js:1.00, Jan 30 2020 ';
+const corsutility = require("../services/corshelper");
+const mongologgerclass = require('../classes/mongologgerclass');
+let mongolog = new mongologgerclass(Version, 'LOGSAPI');
 
-// Few dummy routes APIs tests
-router.get('/logs/list', (req, res) => {
-});
+
+/*
+    Load a bunch of logs. Limited to a max number and started with
+    most recent
+*/
+router.get('/logs/list', 
+    cors(corsutility.getCORS()),
+    passport.authenticate('jwt'),
+    (req, res) => {
+        let lineslimit = parseInt(req.query.lineslimit);
+        const mongologs = new mongologgerclass();
+        mongologs.getLogs(lineslimit).then((logs) => {
+            res.status(200).send(logs);
+        })
+        .catch((errormessage => {
+            res.status(500).send(errormessage);
+        }))
+    });
 
 module.exports = router ;

@@ -4,6 +4,7 @@
 
   Jan 29 2020   Initial
   Jan 30 2020   WIP on log search filter
+  Jan 31 2020   Work on log list 
 
 -->
 <template>
@@ -20,6 +21,9 @@
 
       <div>
         <b-table striped hover :items="all_logs"></b-table>
+      </div>
+      <div v-for="logentry in thelogs" :key="logentry.id">
+        {{logentry.message}}
       </div>
 
       <b-card>
@@ -74,24 +78,21 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Logs 1.07, Jan 30 2020 ",
-        /*
-        all_logs: [],
-        [ 
-          { age: 40, name: 'Yves', email: 'yves@free.fr' },
-          { age: 40, name: 'Yves', email: 'yves@free.fr' },
-          { age: 40, name: 'Yves', email: 'yves@free.fr' },
-        ],*/
+        version: "Logs 1.24, Jan 31 2020 ",
+        all_logs: [ ],
       };
   },
   // ------------------------------------------------------------------------------------------------------------
   computed: {
     ...mapGetters (
+        'logstore', { 
+          updatecount: 'getUpdateCount',
+          thelogs: 'getLogs',
+        },
+    ),
+    ...mapGetters (
         'userstore', { 
           userlogs: 'getUserLogs',
-        },
-        'logstore', { 
-          all_logs: 'getLogs',
         },
     ),
     filterbox: 
@@ -110,7 +111,7 @@ export default {
   // ------------------------------------------------------------------------------------------------------------
   created() {
     this.$parent.disableMenu('logs');
-    // this.alllogs = this.$store.getters['logstore/getLogs'];
+    this.$store.dispatch('logstore/loadLogs');
   },
   beforeDestroy() {
     this.$parent.enableMenu('logs');

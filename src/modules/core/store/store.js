@@ -6,6 +6,7 @@
     Oct 06 2019     Install common services
     Oct 23 2019     Add mongo 
     Jan 20 2020     WIP on users listing interface
+    Jan 30 2020     logstore
 ----------------------------------------------------------------------------*/
 
 import Vue from 'vue';
@@ -16,7 +17,8 @@ const logger = require('../services/logger');
 // Get various stores
 import corestore from './corestore';
 import userstore from '../../users/store/userstore';
-import userliststore from '../../users/store/userListStore'
+import userliststore from '../../users/store/userListStore';
+import logstore from './logstore';
 import mongostore from './mongostore';
 
 export default new Vuex.Store({
@@ -25,5 +27,6 @@ export default new Vuex.Store({
         userstore: userstore,
         userliststore: userliststore,
         mongostore: mongostore,
+        logstore: logstore,
     }
   });
