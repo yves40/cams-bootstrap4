@@ -34,6 +34,7 @@
 //    Jan 17 2020   WIP on users lists
 //    Jan 19 2020   WIP on users lists ; 1
 //    Jan 26 2020   WIP on users updates including privs
+//    Feb 01 2020   Remove : mongo.getMongoDBConnection();
 //----------------------------------------------------------------------------
 const UserModel = require('../model/userModel').UserModel
 const bcryptjs = require('bcryptjs');
@@ -45,7 +46,7 @@ const objectid = require('mongodb').ObjectId;
 
 const validprofiles = [ "STD", "USERADMIN", "CAMADMIN", "SUPERADMIN" ];
 
-mongo.getMongoDBConnection();
+// mongo.getMongoDBConnection();
 
 module.exports = class userclass {
 
