@@ -23,7 +23,7 @@
 //    Jan 25 2020   Change mongo connection message
 //    Feb 01 2020   Mongodb connection management
 //----------------------------------------------------------------------------
-const Version = "mongodb:1.67, Feb 01 2020 ";
+const Version = "mongodb:1.70, Feb 01 2020 ";
 
 const mongoose = require('mongoose');
 const properties = require('./properties');
@@ -42,7 +42,6 @@ const DISCONNECTING = 3;
 let DB = null;
 let intervalID = null;    // In case the connection is lost, will hold the interval ID
                           // used to periodically trigger a control function
-let retrycount = 0;
 let errorcount = 0;
 //----------------------------------------------------------------------------
 // Version
@@ -76,10 +75,7 @@ function connectMongo(traceflag) {
       break;
     }
   }
-  ++retrycount;
-  if(traceflag && (retrycount % 10 === 0)) {  // Reduce the number of log messages
-    logger.debug(Version + 'Connect to : ' + urlconn + ' from node ' + nodename + ' Retry:' + retrycount);
-  }
+  logger.debug(Version + 'Connect to : ' + urlconn + ' from node ' + nodename);
   mongoose.connect(urlconn,{
     useNewUrlParser: true, 
     keepAlive: false, 
@@ -96,7 +92,7 @@ function connectMongo(traceflag) {
   })
   .then( () =>  {
       if(traceflag) logger.debug(Version + 'Mongoose ready' );
-      DB = mongoose.connection;
+      DB = mongoose.connection; 
       // -----------------------------------------------------------------------------
       // Set up handlers
       // -----------------------------------------------------------------------------
@@ -106,19 +102,20 @@ function connectMongo(traceflag) {
       }); 
       DB.on('disconnected',function () {  
         if(traceflag) logger.debug(Version + 'Mongoose disconnected');
+        errorcount++;
+        /*
           DB = null;
           if (intervalID === null) {
             logger.debug(Version + 'Arm the monitor to get mongo back');
             intervalID = setInterval(helloMongo, properties.MONGOSERVERCHECK);  // Check every n seconds that mongo is back
           }
+        */
       }); 
       DB.on('connected',function () {  
         if(traceflag) logger.debug(Version + 'Mongoose connected');
-        retrycount = 0;
       });
       DB.on('reconnected', () => {
-        if(traceflag) logger.debug(Version + 'Mongoose reconnected' + 'Connection :' + retrycount);
-        retrycount = 0;
+        if(traceflag) logger.debug(Version + 'Mongoose reconnected, errors catched :' + errorcount);
       })
     },
     err => {
@@ -130,7 +127,7 @@ function connectMongo(traceflag) {
 // Monitoring function when connection is lost
 //----------------------------------------------------------------------------
 function helloMongo(traceflag = properties.MONGOTRACE) {
-  logger.debug(Version + '!!!!!!!!!!!!!!!!! Checking mongo is back...' + ' Retry:' + retrycount)
+  logger.debug(Version + '!!!!!!!!!!!!!!!!! Checking mongo is back...')
   clearInterval(intervalID);
   connectMongo(true);
 }
