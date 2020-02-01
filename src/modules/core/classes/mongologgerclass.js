@@ -135,7 +135,6 @@ module.exports = class mongologger {
         }
         // Check line limit
         if (lineslimit !== undefined) query.limit(lineslimit);
-        console.log('Call logs with a line limit of ' + lineslimit)
         await query.exec(function(err, thelist) {
           if (err) reject(err);
           else {

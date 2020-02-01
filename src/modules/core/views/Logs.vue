@@ -47,6 +47,7 @@
         <b-row>
           <b-col cols="1"></b-col>
           <b-col v-if="entry.severity < '2'" class="loginf">
+            
             {{entry.timestamp | formatdate}} - {{entry.message}}
           </b-col>
           <b-col v-else-if="entry.severity === '2'" class="logwarn">
@@ -119,11 +120,11 @@ export default {
   
   // ------------------------------------------------------------------------------------------------------------
   created() {
-    this.$parent.disableMenu('logs');
+    //this.$parent.disableMenu('logs');
     this.$store.dispatch('logstore/loadLogs');
   },
   beforeDestroy() {
-    this.$parent.enableMenu('logs');
+    //this.$parent.enableMenu('logs');
   },
   // ------------------------------------------------------------------------------------------------------------
   methods: {

@@ -26,7 +26,6 @@ router.get('/logs/list',
         const mongologs = new mongologgerclass();
         mongologs.getLogs(lineslimit).then((logs) => {
             res.status(200).send(logs);
-            console.log(logs[0])
         })
         .catch((errormessage => {
             res.status(500).send(errormessage);
