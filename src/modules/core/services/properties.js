@@ -29,8 +29,9 @@
 //    Jan 14 2020   WIP on multiple deployment hosts for mongodbserver 
 //    Jan 17 2020   session duration
 //    Jan 20 2020   asusp4 now accesses mongodb in asusp7
+//    Feb 01 2020   Mongodb interval check when connection lost
 //----------------------------------------------------------------------------
-const Version = 'properties:1.44, Jan 20 2020 ';
+const Version = 'properties:1.45, Feb 01 2020 ';
 
 const axios = require('axios');
 
@@ -53,7 +54,8 @@ const mongolist = [
     { node: 'ASUSP4', url: 'mongodb://192.168.47.24:27017/cams'},   // Instead of local .111
     { node: 'ASUSP7', url: 'mongodb://192.168.47.24:27017/cams'},
 ];
-const MONGODELAYCHECK = 1000;
+const MONGODELAYCHECK = 1000;   // For the web interface
+const MONGOSERVERCHECK = 10000  // For the Express server to retry mongodb connection 
 const MONGOTRACE = true;
 const MONGOUP = 1;
 const MONGODOWN = 0;
@@ -96,6 +98,7 @@ module.exports = {
     corsclientorigin: corsclientorigin,
     COREDELAY,
     MONGODELAYCHECK: MONGODELAYCHECK,
+    MONGOSERVERCHECK: MONGOSERVERCHECK,
     MONGOTRACE: MONGOTRACE,
     httptrace: httptrace,
     DEBUG,
