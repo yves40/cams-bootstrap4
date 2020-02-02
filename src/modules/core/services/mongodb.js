@@ -21,9 +21,10 @@
 //    Jan 15 2020   Test mongoose connection poolSize parameter
 //                  No effect on number of opened connections by connect()
 //    Jan 25 2020   Change mongo connection message
-//    Feb 01 2020   Mongodb connection management
+//    Feb 01 2020   Mongodb connection management.
+//    Feb 02 2020   Mongodb connection management..
 //----------------------------------------------------------------------------
-const Version = "mongodb:1.70, Feb 01 2020 ";
+const Version = "mongodb:1.73, Feb 02 2020 ";
 
 const mongoose = require('mongoose');
 const properties = require('./properties');
@@ -40,9 +41,9 @@ const DISCONNECTING = 3;
 // Globals
 //----------------------------------------------------------------------------
 let DB = null;
-let intervalID = null;    // In case the connection is lost, will hold the interval ID
-                          // used to periodically trigger a control function
-let errorcount = 0;
+let errorcount = 0;     // Track error number
+let pendingrequest = 0;
+const MAXREQUEST = 2;
 //----------------------------------------------------------------------------
 // Version
 //----------------------------------------------------------------------------
@@ -61,76 +62,70 @@ function getMongoDBURI() {
 //----------------------------------------------------------------------------
 function getMongoDBConnection(traceflag = properties.MONGOTRACE) {
   if (DB !== null) return DB;
-  connectMongo(traceflag);
-};
-//----------------------------------------------------------------------------
-// Open the mongo connection
-//----------------------------------------------------------------------------
-function connectMongo(traceflag) {
-  const nodename = process.env.COMPUTERNAME;
-  let urlconn = properties.mongodbserver;   // Default mongodb connection string
-  for (let i=0; i < properties.mongolist.length; ++i) {
-    if (properties.mongolist[i].node === nodename) {
-      urlconn = properties.mongolist[i].url;
-      break;
+
+  if(pendingrequest < MAXREQUEST) {   // Avoid requesting a connection if too many are alreay queued
+    ++pendingrequest;
+    const nodename = process.env.COMPUTERNAME;
+    let urlconn = properties.mongodbserver;   // Default mongodb connection string
+    for (let i=0; i < properties.mongolist.length; ++i) {
+      if (properties.mongolist[i].node === nodename) {
+        urlconn = properties.mongolist[i].url;
+        break;
+      }
     }
-  }
-  logger.debug(Version + 'Connect to : ' + urlconn + ' from node ' + nodename);
-  mongoose.connect(urlconn,{
-    useNewUrlParser: true, 
-    keepAlive: false, 
-    useFindAndModify: false,
-    useCreateIndex: true,
-    useUnifiedTopology: true,
-    poolSize: 2,
-    /*  Inoperant
-    reconnectTries: 1,
-    reconnectInterval: 1000, // Reconnect every sec
-    connectTimeoutMS: 2000, // Give up initial connection after 2 seconds
-    socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-    */
-  })
-  .then( () =>  {
-      if(traceflag) logger.debug(Version + 'Mongoose ready' );
-      DB = mongoose.connection; 
-      // -----------------------------------------------------------------------------
-      // Set up handlers
-      // -----------------------------------------------------------------------------
-      DB.on('error',function (err) {  
-        if(traceflag) logger.error(Version + 'Mongoose error: ' + err);
-        errorcount++;
-      }); 
-      DB.on('disconnected',function () {  
-        if(traceflag) logger.debug(Version + 'Mongoose disconnected');
-        errorcount++;
-        /*
-          DB = null;
-          if (intervalID === null) {
-            logger.debug(Version + 'Arm the monitor to get mongo back');
-            intervalID = setInterval(helloMongo, properties.MONGOSERVERCHECK);  // Check every n seconds that mongo is back
-          }
-        */
-      }); 
-      DB.on('connected',function () {  
-        if(traceflag) logger.debug(Version + 'Mongoose connected');
-      });
-      DB.on('reconnected', () => {
-        if(traceflag) logger.debug(Version + 'Mongoose reconnected, errors catched :' + errorcount);
-      })
-    },
-    err => {
-      ++errorcount;
-      //logger.error(Version + err.message.split('at ')[0]);
+    logger.debug(Version + 'Connect to : ' + urlconn + ' from node ' + nodename);
+    mongoose.connect(urlconn,{
+      useNewUrlParser: true, 
+      keepAlive: false, 
+      useFindAndModify: false,
+      useCreateIndex: true,
+      useUnifiedTopology: true,
+      poolSize: 2,
+      /*  Inoperant
+      reconnectTries: 1,
+      reconnectInterval: 1000, // Reconnect every sec
+      connectTimeoutMS: 2000, // Give up initial connection after 2 seconds
+      socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+      */
     })
-}
-//----------------------------------------------------------------------------
-// Monitoring function when connection is lost
-//----------------------------------------------------------------------------
-function helloMongo(traceflag = properties.MONGOTRACE) {
-  logger.debug(Version + '!!!!!!!!!!!!!!!!! Checking mongo is back...')
-  clearInterval(intervalID);
-  connectMongo(true);
-}
+    .then( () =>  {
+        if(traceflag) logger.debug(Version + 'Mongoose ready' );
+        DB = mongoose.connection; 
+        logger.debug(Version + 'Pool currently handles ' + mongoose.connections.length + ' connections');
+        // -----------------------------------------------------------------------------
+        // Set up handlers
+        // -----------------------------------------------------------------------------
+        DB.on('error',function (err) {  
+          if(traceflag) logger.error(Version + 'Mongoose error: ' + err);
+          errorcount++;
+        }); 
+        DB.on('disconnected',function () {  
+          if(traceflag) logger.debug(Version + 'Mongoose disconnected');
+          logger.debug(Version + 'Pool currently handles ' + mongoose.connections.length + ' connections');
+          errorcount++;
+        }); 
+        DB.on('connected',function () {  
+          if(traceflag) logger.debug(Version + 'Mongoose connected');
+          errorcount = 0;
+          --pendingrequest;
+        });
+        DB.on('reconnected', () => {
+          if(traceflag) logger.debug(Version + 'Mongoose reconnected, errors catched :' + errorcount);
+          errorcount = 0;
+        })
+        return DB;
+      },
+      err => {
+        ++errorcount;
+        logger.error(Version + err.message.split('at ')[0] + ' [' + errorcount + ']');
+      })
+      .catch( err => {
+        console.log('WOW');
+      }) 
+        
+  }
+};
+
 //----------------------------------------------------------------------------
 // Close mongo connection
 //----------------------------------------------------------------------------
