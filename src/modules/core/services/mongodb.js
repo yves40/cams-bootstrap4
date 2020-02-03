@@ -23,8 +23,9 @@
 //    Jan 25 2020   Change mongo connection message
 //    Feb 01 2020   Mongodb connection management.
 //    Feb 02 2020   Mongodb connection management..
+//    Feb 03 2020   Mongodb connection management...
 //----------------------------------------------------------------------------
-const Version = "mongodb:1.73, Feb 02 2020 ";
+const Version = "mongodb:1.76, Feb 03 2020 ";
 
 const mongoose = require('mongoose');
 const properties = require('./properties');
@@ -58,6 +59,13 @@ function getMongoDBURI() {
 };
 
 //----------------------------------------------------------------------------
+// Test : I know this is a bad practice
+//----------------------------------------------------------------------------
+process.on('uncaughtException', function (err) {
+  console.log(err);
+})
+
+//----------------------------------------------------------------------------
 // Open mongo connection
 //----------------------------------------------------------------------------
 function getMongoDBConnection(traceflag = properties.MONGOTRACE) {
@@ -80,7 +88,7 @@ function getMongoDBConnection(traceflag = properties.MONGOTRACE) {
       useFindAndModify: false,
       useCreateIndex: true,
       useUnifiedTopology: true,
-      poolSize: 2,
+      poolSize: 10,       // This is a maximum. Not used immediately
       /*  Inoperant
       reconnectTries: 1,
       reconnectInterval: 1000, // Reconnect every sec
@@ -89,9 +97,8 @@ function getMongoDBConnection(traceflag = properties.MONGOTRACE) {
       */
     })
     .then( () =>  {
-        if(traceflag) logger.debug(Version + 'Mongoose ready' );
+        if(traceflag) logger.debug(Version + 'Mongoose connection OK' );
         DB = mongoose.connection; 
-        logger.debug(Version + 'Pool currently handles ' + mongoose.connections.length + ' connections');
         // -----------------------------------------------------------------------------
         // Set up handlers
         // -----------------------------------------------------------------------------
@@ -101,7 +108,6 @@ function getMongoDBConnection(traceflag = properties.MONGOTRACE) {
         }); 
         DB.on('disconnected',function () {  
           if(traceflag) logger.debug(Version + 'Mongoose disconnected');
-          logger.debug(Version + 'Pool currently handles ' + mongoose.connections.length + ' connections');
           errorcount++;
         }); 
         DB.on('connected',function () {  
@@ -120,9 +126,8 @@ function getMongoDBConnection(traceflag = properties.MONGOTRACE) {
         logger.error(Version + err.message.split('at ')[0] + ' [' + errorcount + ']');
       })
       .catch( err => {
-        console.log('WOW');
+        console.error(JSON.stringify(err));
       }) 
-        
   }
 };
 
