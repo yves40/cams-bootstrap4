@@ -25,9 +25,11 @@
 //    Feb 02 2020   Mongodb connection management..
 //    Feb 03 2020   Mongodb connection management...
 //----------------------------------------------------------------------------
-const Version = "mongodb:1.76, Feb 03 2020 ";
+const Version = "mongodb:1.82, Feb 03 2020 ";
 
 const mongoose = require('mongoose');
+const domain = require('domain');
+
 const properties = require('./properties');
 const logger = require('./logger');
 
@@ -42,9 +44,6 @@ const DISCONNECTING = 3;
 // Globals
 //----------------------------------------------------------------------------
 let DB = null;
-let errorcount = 0;     // Track error number
-let pendingrequest = 0;
-const MAXREQUEST = 2;
 //----------------------------------------------------------------------------
 // Version
 //----------------------------------------------------------------------------
@@ -59,20 +58,23 @@ function getMongoDBURI() {
 };
 
 //----------------------------------------------------------------------------
-// Test : I know this is a bad practice
+// Using a domain to handle errors and uncaughtException 
+// Interesting article here : https://shapeshed.com/uncaught-exceptions-in-node/
+// Domains are an experimental feature added in Node 0.8 to make handling 
+// exceptions more flexible and more sophisticated.
 //----------------------------------------------------------------------------
-process.on('uncaughtException', function (err) {
-  console.log(err);
+let mongodomain = domain.create();
+mongodomain.on('error', function (err) {
+  logger.error('Got a problem with mongo : ' + err.message + ' ==== ' + err.name);
 })
 
 //----------------------------------------------------------------------------
 // Open mongo connection
 //----------------------------------------------------------------------------
 function getMongoDBConnection(traceflag = properties.MONGOTRACE) {
-  if (DB !== null) return DB;
+  mongodomain.run( () => {
+    if (DB !== null) return DB;
 
-  if(pendingrequest < MAXREQUEST) {   // Avoid requesting a connection if too many are alreay queued
-    ++pendingrequest;
     const nodename = process.env.COMPUTERNAME;
     let urlconn = properties.mongodbserver;   // Default mongodb connection string
     for (let i=0; i < properties.mongolist.length; ++i) {
@@ -104,32 +106,27 @@ function getMongoDBConnection(traceflag = properties.MONGOTRACE) {
         // -----------------------------------------------------------------------------
         DB.on('error',function (err) {  
           if(traceflag) logger.error(Version + 'Mongoose error: ' + err);
-          errorcount++;
         }); 
         DB.on('disconnected',function () {  
           if(traceflag) logger.debug(Version + 'Mongoose disconnected');
-          errorcount++;
         }); 
         DB.on('connected',function () {  
           if(traceflag) logger.debug(Version + 'Mongoose connected');
-          errorcount = 0;
-          --pendingrequest;
         });
         DB.on('reconnected', () => {
-          if(traceflag) logger.debug(Version + 'Mongoose reconnected, errors catched :' + errorcount);
-          errorcount = 0;
+          if(traceflag) logger.debug(Version + 'Mongoose reconnected');
         })
         return DB;
       },
       err => {
-        ++errorcount;
-        logger.error(Version + err.message.split('at ')[0] + ' [' + errorcount + ']');
+        logger.error(Version + err.message.split('at ')[0]);
       })
       .catch( err => {
         console.error(JSON.stringify(err));
       }) 
+  });
+    
   }
-};
 
 //----------------------------------------------------------------------------
 // Close mongo connection
