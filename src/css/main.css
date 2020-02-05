@@ -8,7 +8,8 @@
     Oct 27 2019   Class for vertical menu buttons 
     Dec 05 2019   WIP on session message in menu
     Dec 13 2019   Log window styles 
-    Dec 31 2019   Log list styles
+    Dec 31 2019   Log list styles.
+    feb 05 2020   Log list styles..
 
 */
 
@@ -68,3 +69,5 @@ ul {
 .textright { text-align: right; }
 
 div.inlineright { float:right; }
+
+.small { font-size: small; }

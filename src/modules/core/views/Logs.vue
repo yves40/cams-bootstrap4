@@ -4,7 +4,8 @@
 
   Jan 29 2020   Initial
   Jan 30 2020   WIP on log search filter
-  Jan 31 2020   Work on log list 
+  Jan 31 2020   Work on log list.
+  Feb 05 2020   Work on log list..
 
 -->
 <template>
@@ -19,14 +20,6 @@
         <b-col cols="2"></b-col>
       </b-row>
 
-      <div>
-        <b-table striped hover small bordered :items="thelogs" :fields="fields" responsive="sm">
-          <template v-slot:cell(timestamp)="item">
-            <b>{{item.value  | formatdate}}</b>
-          </template>
-        </b-table>
-      </div>
-
       <b-card>
         <b-card-text>
             <b-form-checkbox-group stacked v-model="filterbox" id="checkboxes">
@@ -36,13 +29,20 @@
               <b-form-checkbox value="3">Error</b-form-checkbox>
               <b-form-checkbox value="4">Fatal</b-form-checkbox>
             </b-form-checkbox-group>
-            <div class="textcenter underlined">Users logs</div>
+            <div class="textcenter underlined">Logs</div>
         </b-card-text>
       </b-card>
+      <div>
+        <b-table striped hover small bordered :items="thelogs" :fields="fields" responsive="sm" tbody-tr-class="small">
+          <template v-slot:cell(timestamp)="item">
+            {{item.value  | formatdate}}
+          </template>
+        </b-table>
+      </div>
+
 
       <!-- 
         The log dump window 
-      -->
       <div class="viewframe" v-for="entry in userlogs" :key="entry.id">
         <b-row>
           <b-col cols="1"></b-col>
@@ -64,6 +64,7 @@
           </b-col>
         </b-row>
       </div>
+      -->
     </b-container>
   </div>
 </template>
@@ -80,15 +81,15 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Logs 1.27, Jan 31 2020 ",
+        version: "Logs 1.29, Feb 05 2020 ",
         all_logs: [ ],
         fields: [         // Some displayed fields in the table
-          {key : 'module', sortable: false},
-          {key: 'category', sortable:true},
+          {key: 'timestamp', label: 'Time', sortable:true},
           {key: 'email', sortable:true},
           {key: 'message'},
-          {key: 'timestamp', label: 'Time', sortable:true},
-          {key: 'severity', sortable:true, label: 'Level'},
+          // {key: 'severity', sortable:true, label: 'Level'},
+          {key: 'category', sortable:true},
+          {key : 'module', sortable: false},
         ]
       };
   },
@@ -112,7 +113,8 @@ export default {
         },
         set(value) {
           // Call a Vuex mutation (synchronous) to refresh the log query
-          // and update the store 
+          // and update the store
+          console.log('Update with filters ' + value)
           this.$store.commit('userstore/updateuserlogs', value );
         }
       },
