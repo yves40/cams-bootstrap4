@@ -1,8 +1,9 @@
 /*----------------------------------------------------------------------------
     jan 30 2020   Initial
     jan 31 2020   Bug on lines limit
+    feb 05 2020   Filter on logs with severity
 ----------------------------------------------------------------------------*/
-const Version = 'logsapi.js:1.04, Jan 31 2020 ';
+const Version = 'logsapi.js:1.05, Feb 05 2020 ';
 
 const express = require('express');
 const router = express.Router();
@@ -23,8 +24,9 @@ router.get('/logs/list',
     passport.authenticate('jwt'),
     (req, res) => {
         let lineslimit = parseInt(req.query.lineslimit);
+        let filter = req.query.filter;
         const mongologs = new mongologgerclass();
-        mongologs.getLogs(lineslimit).then((logs) => {
+        mongologs.getLogs(lineslimit, filter).then((logs) => {
             res.status(200).send(logs);
         })
         .catch((errormessage => {

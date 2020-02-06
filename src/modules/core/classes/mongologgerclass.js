@@ -13,6 +13,8 @@
 //    Dec 17 2019   Check severity level for logs is processed properly
 //    Dec 19 2019   Remove some log trace
 //    Jan 30 2020   Method to get all users and application logs
+//    Feb 05 2020   Filter on logs with severity
+
 //----------------------------------------------------------------------------
 "use strict"
 const MongoLogModel = require('../model/mongoLogModel');
@@ -27,7 +29,7 @@ module.exports = class mongologger {
   constructor (modulename = 'Unspecified', 
               category = 'Unspecified', 
               email = 'Irelevant' ) {
-      this.Version = 'mongologgerclass:1.46, Jan 30 2020 ';
+      this.Version = 'mongologgerclass:1.47, Feb 05 2020 ';
       this.DEBUG = 0;
       this.INFORMATIONAL = 1;
       this.WARNING = 2;

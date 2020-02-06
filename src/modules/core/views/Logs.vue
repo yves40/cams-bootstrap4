@@ -29,6 +29,20 @@
               <b-form-checkbox value="3">Error</b-form-checkbox>
               <b-form-checkbox value="4">Fatal</b-form-checkbox>
             </b-form-checkbox-group>
+        <b-form inline>
+          <label class="sr-only" for="messagefilter">Message filter</label>
+          <b-form-group class="mt-2"
+            description="Message search filter (based on message field)"
+              label="Message filter"
+          >
+            <b-form-input
+              id="messagefilter"
+              class="mb-2"
+              v-model="messagefilter"
+              placeholder="Message">
+            </b-form-input>
+          </b-form-group>
+        </b-form>
             <div class="textcenter underlined">Logs</div>
         </b-card-text>
       </b-card>
@@ -81,7 +95,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Logs 1.29, Feb 05 2020 ",
+        version: "Logs 1.32, Feb 05 2020 ",
         all_logs: [ ],
         fields: [         // Some displayed fields in the table
           {key: 'timestamp', label: 'Time', sortable:true},
@@ -90,7 +104,8 @@ export default {
           // {key: 'severity', sortable:true, label: 'Level'},
           {key: 'category', sortable:true},
           {key : 'module', sortable: false},
-        ]
+        ],
+        timeoutsid: null,
       };
   },
   // ------------------------------------------------------------------------------------------------------------
@@ -114,8 +129,22 @@ export default {
         set(value) {
           // Call a Vuex mutation (synchronous) to refresh the log query
           // and update the store
-          console.log('Update with filters ' + value)
-          this.$store.commit('userstore/updateuserlogs', value );
+          this.$store.dispatch('logstore/loadLogs', value );
+        }
+      },
+    messagefilter: 
+      {
+        get() {
+          return this.$store.state.logstore.filter;
+        },
+        set(value) {
+          // Use a timeout to avoid calling the store service for every keystroke 
+          if (this.timeoutsid !== null)
+              clearTimeout(this.timeoutsid);
+          this.timeoutsid = setTimeout( () => {
+            console.log('this.$store.dispatch(logstore/loadLogs,' +   value + ')');
+            // this.$store.dispatch('logstore/loadLogs',  value );
+          }, 600);
         }
       },
   },  

@@ -4,6 +4,7 @@
     Jan 29 2020     Initial
     Jan 30 2020     WIP I
     Jan 31 2020     WIP II
+    Feb 05 2020     WIP III
 ----------------------------------------------------------------------------*/
 
 import Vue from 'vue';
@@ -19,11 +20,12 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state:  {
-        Version: 'logstore.js:1.07, Jan 31 2020 ',
+        Version: 'logstore.js:1.09, Feb 05 2020 ',
         today: datetime.getDate(),
         hourminute: datetime.getShortTime(),
         updatecount: 0,
         logs: [ ],
+        filter: '',
     },
     /*----------------------------------------------------------------------------
         VUEX Getters
@@ -52,14 +54,14 @@ export default {
         VUEX actions
     ----------------------------------------------------------------------------*/
     actions:  { 
-        loadLogs( {commit, state } ) {
+        loadLogs( {commit, state }, filter = [ "0", "1", "2", "3", "4" ] ) {
             properties.axioscall(
             {
                 method: 'get',
                 url: '/logs/list',
                 headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
                 params: {
-                    "filter": 'None',
+                    "filter": filter,
                     "lineslimit": 100,     
                 }
             }
