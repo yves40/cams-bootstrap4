@@ -29,7 +29,7 @@ module.exports = class mongologger {
   constructor (modulename = 'Unspecified', 
               category = 'Unspecified', 
               email = 'Irelevant' ) {
-      this.Version = 'mongologgerclass:1.48, Feb 07 2020 ';
+      this.Version = 'mongologgerclass:1.50, Feb 07 2020 ';
       this.DEBUG = 0;
       this.INFORMATIONAL = 1;
       this.WARNING = 2;
@@ -131,13 +131,8 @@ module.exports = class mongologger {
       (async () => {
         let query = Mongolog.find({ });
         query.select('module category email message timestamp severity').sort({timestamp: -1});  // Sorted by most recent dates
-        // Check required severity
-        if(severity !== undefined) {
-          query.select().where('severity').in(severity);
-        }
-        if(messagefilter !== undefined) {
-          query.select().where({ 'message' : { '$regex' : messagefilter, '$options' : 'i' } });
-        }
+        // Check required severity and message
+        query.select().where('severity').in(severity).where({ 'message' : { '$regex' : messagefilter, '$options' : 'i' } });
         // Check line limit
         if (lineslimit !== undefined) query.limit(lineslimit);
         await query.exec(function(err, thelist) {

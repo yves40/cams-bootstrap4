@@ -5,6 +5,7 @@
     Jan 30 2020     WIP I
     Jan 31 2020     WIP II
     Feb 05 2020     WIP III
+    Feb 07 2020     Handle the message filter for log search
 ----------------------------------------------------------------------------*/
 
 import Vue from 'vue';
@@ -20,12 +21,13 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state:  {
-        Version: 'logstore.js:1.09, Feb 05 2020 ',
+        Version: 'logstore.js:1.15, Feb 07 2020 ',
         today: datetime.getDate(),
         hourminute: datetime.getShortTime(),
         updatecount: 0,
         logs: [ ],
-        filter: '',
+        severityfilter: [ '0', '1', '2', '3', '4' ],
+        messagefilter: '',
     },
     /*----------------------------------------------------------------------------
         VUEX Getters
@@ -54,15 +56,20 @@ export default {
         VUEX actions
     ----------------------------------------------------------------------------*/
     actions:  { 
-        loadLogs( {commit, state }, filter = [ "0", "1", "2", "3", "4" ] ) {
+        loadLogs( {commit, state}, payload ) {
+            if (payload !== undefined) {
+                state.severityfilter = payload[0];
+                state.messagefilter = payload[1];
+            }
             properties.axioscall(
             {
                 method: 'get',
                 url: '/logs/list',
                 headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
                 params: {
-                    "filter": filter,
-                    "lineslimit": 100,     
+                    "severityfilter": state.severityfilter,
+                    "lineslimit": 100,
+                    "messagefilter": state.messagefilter
                 }
             }
             )

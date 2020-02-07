@@ -6,6 +6,7 @@
   Jan 30 2020   WIP on log search filter
   Jan 31 2020   Work on log list.
   Feb 05 2020   Work on log list..
+  Feb 07 2020   Work on log list...Manage the message search filter
 
 -->
 <template>
@@ -95,7 +96,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Logs 1.32, Feb 05 2020 ",
+        version: "Logs 1.38, Feb 07 2020 ",
         all_logs: [ ],
         fields: [         // Some displayed fields in the table
           {key: 'timestamp', label: 'Time', sortable:true},
@@ -124,26 +125,25 @@ export default {
     filterbox: 
       {
         get() {
-          return this.$store.state.userstore.filterbox;
+          return this.$store.state.logstore.severityfilter;
         },
         set(value) {
           // Call a Vuex mutation (synchronous) to refresh the log query
           // and update the store
-          this.$store.dispatch('logstore/loadLogs', value );
+          this.$store.dispatch('logstore/loadLogs', [ value, this.messagefilter ] );
         }
       },
     messagefilter: 
       {
         get() {
-          return this.$store.state.logstore.filter;
+          return this.$store.state.logstore.messagefilter;
         },
         set(value) {
           // Use a timeout to avoid calling the store service for every keystroke 
           if (this.timeoutsid !== null)
               clearTimeout(this.timeoutsid);
           this.timeoutsid = setTimeout( () => {
-            console.log('this.$store.dispatch(logstore/loadLogs,' +   value + ')');
-            // this.$store.dispatch('logstore/loadLogs',  value );
+            this.$store.dispatch('logstore/loadLogs', [ this.filterbox, value ]);
           }, 600);
         }
       },
