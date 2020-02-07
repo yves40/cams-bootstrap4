@@ -14,7 +14,7 @@
 //    Dec 19 2019   Remove some log trace
 //    Jan 30 2020   Method to get all users and application logs
 //    Feb 05 2020   Filter on logs with severity
-
+//    Feb 07 2020   Filter on logs with severity and message
 //----------------------------------------------------------------------------
 "use strict"
 const MongoLogModel = require('../model/mongoLogModel');
@@ -29,7 +29,7 @@ module.exports = class mongologger {
   constructor (modulename = 'Unspecified', 
               category = 'Unspecified', 
               email = 'Irelevant' ) {
-      this.Version = 'mongologgerclass:1.47, Feb 05 2020 ';
+      this.Version = 'mongologgerclass:1.48, Feb 07 2020 ';
       this.DEBUG = 0;
       this.INFORMATIONAL = 1;
       this.WARNING = 2;
@@ -126,7 +126,7 @@ module.exports = class mongologger {
   // Pass user email and optional lines limit for the returned data
   // Severity if passed defines the log type we want in DIWEF
   //----------------------------------------------------------------------------
-  getLogs(lineslimit = undefined, severity = undefined) {
+  getLogs(lineslimit = undefined, severity = undefined, messagefilter = undefined) {
     return new Promise((resolve, reject) => {
       (async () => {
         let query = Mongolog.find({ });
@@ -134,6 +134,9 @@ module.exports = class mongologger {
         // Check required severity
         if(severity !== undefined) {
           query.select().where('severity').in(severity);
+        }
+        if(messagefilter !== undefined) {
+          query.select().where({ 'message' : { '$regex' : messagefilter, '$options' : 'i' } });
         }
         // Check line limit
         if (lineslimit !== undefined) query.limit(lineslimit);
