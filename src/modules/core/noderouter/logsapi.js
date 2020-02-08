@@ -3,8 +3,9 @@
     jan 31 2020   Bug on lines limit
     feb 05 2020   Filter on logs with severity
     feb 07 2020   Filter on logs with severity and message filter
+    feb 08 2020   Log info removed
 ----------------------------------------------------------------------------*/
-const Version = 'logsapi.js:1.09, Feb 07 2020 ';
+const Version = 'logsapi.js:1.10, Feb 08 2020 ';
 
 const express = require('express');
 const router = express.Router();
@@ -24,7 +25,6 @@ router.get('/logs/list',
     cors(corsutility.getCORS()),
     passport.authenticate('jwt'),
     (req, res) => {
-        console.log(req.query)
         let lineslimit = parseInt(req.query.lineslimit);
         let severityfilter = req.query.severityfilter;
         let messagefilter = req.query.messagefilter;
