@@ -11,9 +11,9 @@
 
 import Vue from 'vue';
 import Vuex from 'vuex'
-import datetime from '../services/datetime';
 import logger from '../services/logger';
 import properties from '../services/properties'
+import datetime from '../services/datetime'
 
 Vue.use(Vuex);
 export default { 
@@ -22,7 +22,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state:  {
-        Version: 'logstore.js:1.16, Feb 09 2020 ',
+        Version: 'logstore.js:1.20, Feb 09 2020 ',
         today: datetime.getDate(),
         hourminute: datetime.getShortTime(),
         updatecount: 0,
@@ -30,7 +30,7 @@ export default {
         severityfilter: [ '0', '1', '2', '3', '4' ],
         messagefilter: '',
         startdate: '',
-        enddate: '',
+        enddate: datetime.getDateBrowser(),
     },
     /*----------------------------------------------------------------------------
         VUEX Getters
