@@ -25,8 +25,8 @@ function getDate() {
     return months[d.getMonth()] + '-' + d.getDate() + '-' + d.getFullYear() + ' ';
 }
 function getDateBrowser() {  // For bootstrap / browser date picker format
-    let d = new Date();
-    return d.getFullYear() + '-' +  d.getMonth().toString().padStart(2, "0") + '-' + d.getDate().toString().padStart(2, "0");
+    let d = new Date(Date.now());
+    return d.getFullYear() + '-' +  (d.getMonth() + 1).toString().padStart(2, "0") + '-' + d.getDate().toString().padStart(2, "0");
 }
 function getTime() {
     let d = new Date();
