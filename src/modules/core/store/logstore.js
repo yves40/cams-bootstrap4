@@ -6,6 +6,7 @@
     Jan 31 2020     WIP II
     Feb 05 2020     WIP III
     Feb 07 2020     Handle the message filter for log search
+    Feb 09 2020     Add dates to filter results
 ----------------------------------------------------------------------------*/
 
 import Vue from 'vue';
@@ -21,13 +22,15 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state:  {
-        Version: 'logstore.js:1.15, Feb 07 2020 ',
+        Version: 'logstore.js:1.16, Feb 09 2020 ',
         today: datetime.getDate(),
         hourminute: datetime.getShortTime(),
         updatecount: 0,
         logs: [ ],
         severityfilter: [ '0', '1', '2', '3', '4' ],
         messagefilter: '',
+        startdate: '',
+        enddate: '',
     },
     /*----------------------------------------------------------------------------
         VUEX Getters

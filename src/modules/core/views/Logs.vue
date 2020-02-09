@@ -7,6 +7,7 @@
   Jan 31 2020   Work on log list.
   Feb 05 2020   Work on log list..
   Feb 07 2020   Work on log list...Manage the message search filter
+  Feb 09 2020   Add dates to filter results
 
 -->
 <template>
@@ -20,33 +21,50 @@
         </b-col>
         <b-col cols="2"></b-col>
       </b-row>
+      <b-card-group>
+        <b-card header="Log level displayed">
+          <b-card-text>
+              <b-form-checkbox-group stacked v-model="filterbox" id="checkboxes">
+                <b-form-checkbox value="0">Debug</b-form-checkbox>
+                <b-form-checkbox value="1">Information</b-form-checkbox>
+                <b-form-checkbox value="2">Warning</b-form-checkbox>
+                <b-form-checkbox value="3">Error</b-form-checkbox>
+                <b-form-checkbox value="4">Fatal</b-form-checkbox>
+              </b-form-checkbox-group>
+          </b-card-text>
+        </b-card>
 
-      <b-card>
-        <b-card-text>
-            <b-form-checkbox-group stacked v-model="filterbox" id="checkboxes">
-              <b-form-checkbox value="0">Debug</b-form-checkbox>
-              <b-form-checkbox value="1">Information</b-form-checkbox>
-              <b-form-checkbox value="2">Warning</b-form-checkbox>
-              <b-form-checkbox value="3">Error</b-form-checkbox>
-              <b-form-checkbox value="4">Fatal</b-form-checkbox>
-            </b-form-checkbox-group>
-        <b-form inline>
-          <label class="sr-only" for="messagefilter">Message filter</label>
-          <b-form-group class="mt-2"
-            description="Message search filter (based on message field)"
-              label="Message filter"
-          >
-            <b-form-input
-              id="messagefilter"
-              class="mb-2"
-              v-model="messagefilter"
-              placeholder="Message">
-            </b-form-input>
-          </b-form-group>
-        </b-form>
-            <div class="textcenter underlined">Logs</div>
-        </b-card-text>
-      </b-card>
+        <b-card header="Message filter">
+          <b-form inline>
+            <b-form-group class="mt-2">
+              <b-form-input
+                id="messagefilter"
+                class="mb-2"
+                v-model="messagefilter"
+                placeholder="Search filter">
+              </b-form-input>
+            </b-form-group>
+          </b-form>
+          <b-container>
+            <b-row>
+              <b-col sm="3" align-self="center">
+                  <label for="startdate">Since</label>
+              </b-col>
+              <b-col sm="9">
+                  <b-form-input id="startdate" type="date" v-model="startdate"></b-form-input>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col sm="3" align-self="center">
+                <label for="enddate">Before</label>
+              </b-col>
+              <b-col sm="9">
+                <b-form-input id="endtdate" type="date" v-model="enddate"></b-form-input>
+              </b-col>
+            </b-row>
+          </b-container>
+        </b-card>
+      </b-card-group>
       <div>
         <b-table striped hover small bordered :items="thelogs" :fields="fields" responsive="sm" tbody-tr-class="small">
           <template v-slot:cell(timestamp)="item">
@@ -55,31 +73,6 @@
         </b-table>
       </div>
 
-
-      <!-- 
-        The log dump window 
-      <div class="viewframe" v-for="entry in userlogs" :key="entry.id">
-        <b-row>
-          <b-col cols="1"></b-col>
-          <b-col v-if="entry.severity < '2'" class="loginf">
-            
-            {{entry.timestamp | formatdate}} - {{entry.message}}
-          </b-col>
-          <b-col v-else-if="entry.severity === '2'" class="logwarn">
-            {{entry.timestamp | formatdate}} - {{entry.message}}
-          </b-col>
-          <b-col v-else-if="entry.severity === '3'" class="logerr">
-            {{entry.timestamp | formatdate}} - {{entry.message}}
-          </b-col>
-          <b-col v-else-if="entry.severity === '4'" class="logfatal">
-            {{entry.timestamp | formatdate}} - {{entry.message}}
-          </b-col>
-          <b-col v-else class="logfatal">
-            {{entry.timestamp | formatdate}} - {{entry.message}}
-          </b-col>
-        </b-row>
-      </div>
-      -->
     </b-container>
   </div>
 </template>
@@ -96,7 +89,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Logs 1.38, Feb 07 2020 ",
+        version: "Logs 1.45, Feb 09 2020 ",
         all_logs: [ ],
         fields: [         // Some displayed fields in the table
           {key: 'timestamp', label: 'Time', sortable:true},
@@ -147,6 +140,22 @@ export default {
           }, 600);
         }
       },
+      startdate: {
+        get() {
+          return this.$store.state.logstore.startdate;
+        },
+        set(value) {
+          console.log(value)
+        }
+      },
+      enddate: {
+        get() {
+          return this.$store.state.logstore.enddate;
+        },
+        set(value) {
+          console.log(value)
+        }
+      }
   },  
   
   // ------------------------------------------------------------------------------------------------------------
