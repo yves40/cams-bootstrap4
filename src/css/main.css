@@ -68,6 +68,8 @@ ul {
 .textleft { text-align: left; }
 .textright { text-align: right; }
 
+.verticalalign { vertical-align: middle; }
+
 div.inlineright { float:right; }
 
 .small { font-size: small; }
