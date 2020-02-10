@@ -6,8 +6,9 @@
 //    Oct 12 2019   export default is a problem for node
 //    Oct 29 2019   Get other functions from helpers
 //    Feb 09 2020   date format for browser use jj/mm/aaaa
+//    Feb 10 2020   More work 
 //----------------------------------------------------------------------------
-const Version = 'datetime:1.08, Feb 09 2020';
+const Version = 'datetime:1.11, Feb 10 2020';
 
 const months = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
 
@@ -24,8 +25,15 @@ function getDate() {
     let d = new Date();
     return months[d.getMonth()] + '-' + d.getDate() + '-' + d.getFullYear() + ' ';
 }
-function getDateBrowser() {  // For bootstrap / browser date picker format
-    let d = new Date(Date.now());
+function getDateBrowserFormat(offset = 0) {  // For bootstrap / browser date picker format
+    let d;
+    if(offset === 0) {
+        d = new Date(Date.now());
+    }
+    else {
+        d = new Date();
+        d.setDate(d.getDate() + offset);
+    }
     return d.getFullYear() + '-' +  (d.getMonth() + 1).toString().padStart(2, "0") + '-' + d.getDate().toString().padStart(2, "0");
 }
 function getTime() {
@@ -75,7 +83,7 @@ function convertSecondsToHMS(seconds) {
 module.exports =  {
     getDateTime: getDateTime,
     getDate: getDate,
-    getDateBrowser: getDateBrowser,
+    getDateBrowserFormat: getDateBrowserFormat,
     getTime: getTime,
     getShortTime: getShortTime,
     getHoursMinutes,

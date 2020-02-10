@@ -8,6 +8,7 @@
   Feb 05 2020   Work on log list..
   Feb 07 2020   Work on log list...Manage the message search filter
   Feb 09 2020   Add dates to filter results
+  Feb 10 2020   Date filters
 
 -->
 <template>
@@ -48,7 +49,7 @@
           <b-container>
             <b-row>
               <b-col sm="3" align-self="center">
-                  <label for="startdate">Since</label>
+                  <label for="startdate">From</label>
               </b-col>
               <b-col sm="9">
                   <b-form-input id="startdate" type="date" v-model="startdate"></b-form-input>
@@ -56,7 +57,7 @@
             </b-row>
             <b-row>
               <b-col sm="3" align-self="center">
-                <label for="enddate">Before</label>
+                <label for="enddate">To</label>
               </b-col>
               <b-col sm="9">
                 <b-form-input id="endtdate" type="date" v-model="enddate"></b-form-input>
@@ -89,7 +90,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Logs 1.45, Feb 09 2020 ",
+        version: "Logs 1.47, Feb 10 2020 ",
         all_logs: [ ],
         fields: [         // Some displayed fields in the table
           {key: 'timestamp', label: 'Time', sortable:true},
@@ -123,7 +124,7 @@ export default {
         set(value) {
           // Call a Vuex mutation (synchronous) to refresh the log query
           // and update the store
-          this.$store.dispatch('logstore/loadLogs', [ value, this.messagefilter ] );
+          this.$store.dispatch('logstore/loadLogs', [ value, this.messagefilter, this.startdate, this.enddate ] );
         }
       },
     messagefilter: 
@@ -136,7 +137,7 @@ export default {
           if (this.timeoutsid !== null)
               clearTimeout(this.timeoutsid);
           this.timeoutsid = setTimeout( () => {
-            this.$store.dispatch('logstore/loadLogs', [ this.filterbox, value ]);
+            this.$store.dispatch('logstore/loadLogs', [ this.filterbox, value, this.startdate, this.enddate ]);
           }, 600);
         }
       },
@@ -145,7 +146,7 @@ export default {
           return this.$store.state.logstore.startdate;
         },
         set(value) {
-          console.log(value)
+          this.$store.dispatch('logstore/loadLogs', [ this.filterbox, this.messagefilter, value, this.enddate ]);
         }
       },
       enddate: {
@@ -153,7 +154,7 @@ export default {
           return this.$store.state.logstore.enddate;
         },
         set(value) {
-          console.log(value)
+          this.$store.dispatch('logstore/loadLogs', [ this.filterbox, this.messagefilter, this.startdate, value ]);
         }
       }
   },  
