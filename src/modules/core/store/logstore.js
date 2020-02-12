@@ -24,7 +24,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state:  {
-        Version: 'logstore.js:1.24, Feb 12 2020 ',
+        Version: 'logstore.js:1.25, Feb 12 2020 ',
         today: datetime.getDate(),
         hourminute: datetime.getShortTime(),
         updatecount: 0,
@@ -33,6 +33,8 @@ export default {
         messagefilter: '',
         startdate: datetime.getDateBrowserFormat(),
         enddate: datetime.getDateBrowserFormat(-10),
+        starthour: '',
+        endhour: '',
     },
     /*----------------------------------------------------------------------------
         VUEX Getters

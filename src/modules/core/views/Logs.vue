@@ -23,8 +23,9 @@
         </b-col>
         <b-col cols="2"></b-col>
       </b-row>
-      <b-card-group>
-        <b-card header="Log level displayed">
+      <b-row>
+        <b-col md="3">
+        <b-card header="Log level displayed" >
           <b-card-text>
               <b-form-checkbox-group stacked v-model="filterbox" id="checkboxes">
                 <b-form-checkbox value="0">Debug</b-form-checkbox>
@@ -35,8 +36,9 @@
               </b-form-checkbox-group>
           </b-card-text>
         </b-card>
-
-        <b-card header="Message filter">
+        </b-col>
+        <b-col md="9">
+        <b-card header="Filters">
           <b-form inline>
             <b-form-group class="mt-2">
               <b-form-input
@@ -52,23 +54,31 @@
               <b-col sm="3" align-self="center">
                   <label for="startdate">From</label>
               </b-col>
-              <b-col sm="9">
+              <b-col sm="5">
                   <b-form-input id="startdate" type="date" v-model="startdate"></b-form-input>
+              </b-col>
+              <b-col sm="3">
+                  <b-form-input id="starthour" type="time" v-model="starthour"></b-form-input>
               </b-col>
             </b-row>
             <b-row>
               <b-col sm="3" align-self="center">
                 <label for="enddate">To</label>
               </b-col>
-              <b-col sm="9">
+              <b-col sm="5">
                 <b-form-input id="endtdate" type="date" v-model="enddate"></b-form-input>
+              </b-col>
+              <b-col sm="3">
+                  <b-form-input id="endhour" type="time" v-model="endhour"></b-form-input>
               </b-col>
             </b-row>
           </b-container>
         </b-card>
-      </b-card-group>
+        </b-col>
+      </b-row>
+
       <b-card header="Logs initially sorted in reverse date, from most recent to older">
-        <p class="verticalalign margintopbottom0 underlined">Max number of returned lines : {{maxlines}}</p>
+        <span class="verticalalign margintopbottom0 underlined">Max number of returned lines : {{maxlines}}</span>
         <b-table striped hover small bordered :items="thelogs" :fields="fields" responsive="sm" tbody-tr-class="small">
           <template v-slot:cell(timestamp)="item">
             {{item.value  | formatdate}}
@@ -92,7 +102,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Logs 1.49, Feb 12 2020 ",
+        version: "Logs 1.54, Feb 12 2020 ",
         all_logs: [ ],
         fields: [         // Some displayed fields in the table
           {key: 'timestamp', label: 'Time', sortable:true},
@@ -121,9 +131,7 @@ export default {
     ),
     filterbox: 
       {
-        get() {
-          return this.$store.state.logstore.severityfilter;
-        },
+        get() {return this.$store.state.logstore.severityfilter;},
         set(value) {
           // Call a Vuex mutation (synchronous) to refresh the log query
           // and update the store
@@ -132,9 +140,7 @@ export default {
       },
     messagefilter: 
       {
-        get() {
-          return this.$store.state.logstore.messagefilter;
-        },
+        get() {return this.$store.state.logstore.messagefilter;},
         set(value) {
           // Use a timeout to avoid calling the store service for every keystroke 
           if (this.timeoutsid !== null)
@@ -145,21 +151,29 @@ export default {
         }
       },
       startdate: {
-        get() {
-          return this.$store.state.logstore.startdate;
-        },
+        get() {return this.$store.state.logstore.startdate;},
         set(value) {
           this.$store.dispatch('logstore/loadLogs', [ this.filterbox, this.messagefilter, value, this.enddate ]);
         }
       },
-      enddate: {
-        get() {
-          return this.$store.state.logstore.enddate;
+      starthour: {
+          get() {return this.$store.state.logstore.starthour;},
+          set(value) { 
+            console.log(`Start Hour is ${starthour}`)
+          }
         },
+      enddate: {
+        get() {return this.$store.state.logstore.enddate;},
         set(value) {
-          this.$store.dispatch('logstore/loadLogs', [ this.filterbox, this.messagefilter, this.startdate, value ]);
-        }
-      }
+            this.$store.dispatch('logstore/loadLogs', [ this.filterbox, this.messagefilter, this.startdate, value ]);
+          },
+        },
+      endhour: {
+          get() {return this.$store.state.logstore.endhour;},          
+          set(value) { 
+            console.log(`End Hour is ${endhour}`)
+          }
+        },
   },  
   
   // ------------------------------------------------------------------------------------------------------------
