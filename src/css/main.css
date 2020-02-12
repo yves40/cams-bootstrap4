@@ -69,6 +69,8 @@ ul {
 .textright { text-align: right; }
 
 .verticalalign { vertical-align: middle; }
+.padtopbottom0 { padding-top: 0; padding-bottom: 0;}
+.margintopbottom0 { margin-top: 0; margin-bottom: 0;}
 
 div.inlineright { float:right; }
 

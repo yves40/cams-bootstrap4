@@ -30,6 +30,7 @@
   Jan 26 2020   User admin menu modified to edit a user profile in ADMIN mode
   Jan 29 2020   Menu entry text modified
                 Start work on superadmin log browser vue
+  Feb 12 2020   user admin : eidt and modify now accessible through the list of users
 -->
 
 <template>
@@ -111,7 +112,7 @@ export default {
   name: "app",
   data() {
       return {
-        version: "Cams Manager 2.36, Jan 29 2020 ",
+        version: "Cams Manager 2.37, Feb 12 2020 ",
         copyright: "oldtimerSoft",
         // These arrays are defining the displayed menus
         // enableflag drives the visibility of the URL
@@ -135,8 +136,6 @@ export default {
             navoptions: [
               {url: "listusers",params: {},text: "List", enableflag: true, disableflag: false, },
               {url: "register",params: { mode: 'ADMIN'},text: "Add", enableflag: true, disableflag: false, },
-              {url: "edit",params: { mode: 'ADMIN'},text: "Modify", enableflag: true, disableflag: false, },
-              {url: "notyet",params: {},text: "Delete", enableflag: true, disableflag: false, },
             ]
           },
           {

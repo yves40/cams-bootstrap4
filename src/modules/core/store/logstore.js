@@ -8,6 +8,7 @@
     Feb 07 2020     Handle the message filter for log search
     Feb 09 2020     Add dates to filter results
     Feb 10 2020     Date parameters 
+    Feb 12 2020     Max log list length from properties
 ----------------------------------------------------------------------------*/
 
 import Vue from 'vue';
@@ -23,7 +24,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state:  {
-        Version: 'logstore.js:1.22, Feb 10 2020 ',
+        Version: 'logstore.js:1.23, Feb 12 2020 ',
         today: datetime.getDate(),
         hourminute: datetime.getShortTime(),
         updatecount: 0,
@@ -66,8 +67,6 @@ export default {
                 state.messagefilter = payload[1];
                 state.startdate = payload[2];
                 state.enddate = payload[3];
-
-                console.log(payload)
             }
             properties.axioscall(
             {
@@ -76,7 +75,7 @@ export default {
                 headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
                 params: {
                     "severityfilter": state.severityfilter,
-                    "lineslimit": 100,
+                    "lineslimit": properties.LOGLISTMAX,
                     "messagefilter": state.messagefilter
                 }
             }

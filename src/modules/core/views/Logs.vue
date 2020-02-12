@@ -9,6 +9,7 @@
   Feb 07 2020   Work on log list...Manage the message search filter
   Feb 09 2020   Add dates to filter results
   Feb 10 2020   Date filters
+  Feb 12 2020   Date filters, and list display
 
 -->
 <template>
@@ -42,7 +43,7 @@
                 id="messagefilter"
                 class="mb-2"
                 v-model="messagefilter"
-                placeholder="Search filter">
+                placeholder="Message search filter">
               </b-form-input>
             </b-form-group>
           </b-form>
@@ -66,14 +67,14 @@
           </b-container>
         </b-card>
       </b-card-group>
-      <div>
+      <b-card header="Logs initially sorted in reverse date, from most recent to older">
+        <p class="verticalalign margintopbottom0 underlined">Max number of returned lines : {{maxlines}}</p>
         <b-table striped hover small bordered :items="thelogs" :fields="fields" responsive="sm" tbody-tr-class="small">
           <template v-slot:cell(timestamp)="item">
             {{item.value  | formatdate}}
           </template>
         </b-table>
-      </div>
-
+      </b-card>
     </b-container>
   </div>
 </template>
@@ -84,13 +85,14 @@
 // ------------------------------------------------------------------------------------------------------------
 const logger = require('../../core/services/logger');
 const datetime = require('../../core/services/datetime');
+const properties = require('../../core/services/properties')
 
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   data() {
       return {
-        version: "Logs 1.47, Feb 10 2020 ",
+        version: "Logs 1.48, Feb 12 2020 ",
         all_logs: [ ],
         fields: [         // Some displayed fields in the table
           {key: 'timestamp', label: 'Time', sortable:true},
@@ -101,6 +103,7 @@ export default {
           {key : 'module', sortable: false},
         ],
         timeoutsid: null,
+        maxlines: properties.LOGLISTMAX,
       };
   },
   // ------------------------------------------------------------------------------------------------------------

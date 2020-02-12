@@ -31,8 +31,9 @@
 //    Jan 20 2020   asusp4 now accesses mongodb in asusp7
 //    Feb 01 2020   Mongodb interval check when connection lost
 //    Feb 08 2020   In airport
+//    Feb 12 2020   Property for log list max number of lines
 //----------------------------------------------------------------------------
-const Version = 'properties:1.46, Feb 08 2020 ';
+const Version = 'properties:1.47, Feb 12 2020 ';
 
 const axios = require('axios');
 
@@ -87,6 +88,8 @@ const tokenexpirationdelay = 600;
 const tokenexpirationalert = 60;    // Display a message in menu to inform user session is soon expired
 // Mongolog : default lines limit for returned data
 const MONGOLOGLINESLIMIT = 20;
+// Log list max number of lines (see Logs.vue)
+const LOGLISTMAX = 200;
 
 module.exports = {
     webserver: webserver,
@@ -112,6 +115,7 @@ module.exports = {
     MONGOUSER,
     MONGOPASSWORD,
     MONGOLOGLINESLIMIT,
+    LOGLISTMAX,
     jwtconfig,
     tokenexpirationdelay,
     tokenexpirationalert,
