@@ -7,8 +7,9 @@
 //    Oct 29 2019   Get other functions from helpers
 //    Feb 09 2020   date format for browser use jj/mm/aaaa
 //    Feb 10 2020   More work 
+//    Feb 12 2020   New methods 
 //----------------------------------------------------------------------------
-const Version = 'datetime:1.11, Feb 10 2020';
+const Version = 'datetime:1.12, Feb 12 2020';
 
 const months = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
 
@@ -25,6 +26,8 @@ function getDate() {
     let d = new Date();
     return months[d.getMonth()] + '-' + d.getDate() + '-' + d.getFullYear() + ' ';
 }
+
+// Offset is optional and specified in days
 function getDateBrowserFormat(offset = 0) {  // For bootstrap / browser date picker format
     let d;
     if(offset === 0) {
@@ -36,6 +39,35 @@ function getDateBrowserFormat(offset = 0) {  // For bootstrap / browser date pic
     }
     return d.getFullYear() + '-' +  (d.getMonth() + 1).toString().padStart(2, "0") + '-' + d.getDate().toString().padStart(2, "0");
 }
+
+function getDateBrowserFormatMax(offset = 0) {
+    let d;
+    if(offset === 0) {
+        d = new Date(Date.now());
+    }
+    else {
+        d = new Date();
+        d.setDate(d.getDate() + offset);
+    }
+    d.setHours(23);
+    d.setMinutes(59);
+    return d.getFullYear() + '-' +  (d.getMonth() + 1).toString().padStart(2, "0") + '-' + d.getDate().toString().padStart(2, "0");
+}
+
+function getDateBrowserFormatMin(offset = 0) {
+    let d;
+    if(offset === 0) {
+        d = new Date(Date.now());
+    }
+    else {
+        d = new Date();
+        d.setDate(d.getDate() + offset);
+    }
+    d.setHours(0);
+    d.setMinutes(0);
+    return d.getFullYear() + '-' +  (d.getMonth() + 1).toString().padStart(2, "0") + '-' + d.getDate().toString().padStart(2, "0");
+}
+
 function getTime() {
     let d = new Date();
     return d.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1") ;
@@ -84,6 +116,8 @@ module.exports =  {
     getDateTime: getDateTime,
     getDate: getDate,
     getDateBrowserFormat: getDateBrowserFormat,
+    getDateBrowserFormatMax: getDateBrowserFormatMax,
+    getDateBrowserFormatMin: getDateBrowserFormatMin,
     getTime: getTime,
     getShortTime: getShortTime,
     getHoursMinutes,

@@ -102,7 +102,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Logs 1.54, Feb 12 2020 ",
+        version: "Logs 1.56, Feb 12 2020 ",
         all_logs: [ ],
         fields: [         // Some displayed fields in the table
           {key: 'timestamp', label: 'Time', sortable:true},
@@ -159,7 +159,7 @@ export default {
       starthour: {
           get() {return this.$store.state.logstore.starthour;},
           set(value) { 
-            console.log(`Start Hour is ${starthour}`)
+            console.log(`Start Hour is ${starthour.value}`)
           }
         },
       enddate: {
@@ -171,7 +171,7 @@ export default {
       endhour: {
           get() {return this.$store.state.logstore.endhour;},          
           set(value) { 
-            console.log(`End Hour is ${endhour}`)
+            console.log(`End Hour is ${endhour.value}`)
           }
         },
   },  
