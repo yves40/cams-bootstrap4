@@ -92,7 +92,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Logs 1.48, Feb 12 2020 ",
+        version: "Logs 1.49, Feb 12 2020 ",
         all_logs: [ ],
         fields: [         // Some displayed fields in the table
           {key: 'timestamp', label: 'Time', sortable:true},
@@ -165,6 +165,7 @@ export default {
   // ------------------------------------------------------------------------------------------------------------
   created() {
     //this.$parent.disableMenu('logs');
+    this.$store.dispatch('logstore/resetDates');
     this.$store.dispatch('logstore/loadLogs');
   },
   beforeDestroy() {

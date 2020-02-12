@@ -24,7 +24,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state:  {
-        Version: 'logstore.js:1.23, Feb 12 2020 ',
+        Version: 'logstore.js:1.24, Feb 12 2020 ',
         today: datetime.getDate(),
         hourminute: datetime.getShortTime(),
         updatecount: 0,
@@ -56,6 +56,10 @@ export default {
             state.logs = payload;
             state.updatecount++;
         },
+        resetDates(state) {
+            state.startdate = datetime.getDateBrowserFormat();
+            state.enddate = datetime.getDateBrowserFormat(-10);
+        }
     },
     /*----------------------------------------------------------------------------
         VUEX actions
@@ -76,7 +80,9 @@ export default {
                 params: {
                     "severityfilter": state.severityfilter,
                     "lineslimit": properties.LOGLISTMAX,
-                    "messagefilter": state.messagefilter
+                    "messagefilter": state.messagefilter,
+                    "start": state.startdate,
+                    "end": state.enddate,
                 }
             }
             )
@@ -88,6 +94,9 @@ export default {
                     logger.error(state.Version + error);
                 },
             );
-        }, 
+        },
+        resetDates( { commit } ) {
+            commit('resetDates');
+        }
     }   
 }

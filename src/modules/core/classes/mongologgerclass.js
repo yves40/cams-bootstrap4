@@ -15,12 +15,14 @@
 //    Jan 30 2020   Method to get all users and application logs
 //    Feb 05 2020   Filter on logs with severity
 //    Feb 07 2020   Filter on logs with severity and message
+//    Feb 12 2020   Filter on logs with dates
 //----------------------------------------------------------------------------
 "use strict"
 const MongoLogModel = require('../model/mongoLogModel');
 const mongo = require ('../services/mongodb');
 const Mongolog = require ('../model/mongoLogModel');
 const logger = require ('../services/logger');
+const datetime = require('../services/datetime');
 
 //----------------------------------------------------------------------------
 // The class 
@@ -29,7 +31,7 @@ module.exports = class mongologger {
   constructor (modulename = 'Unspecified', 
               category = 'Unspecified', 
               email = 'Irelevant' ) {
-      this.Version = 'mongologgerclass:1.50, Feb 07 2020 ';
+      this.Version = 'mongologgerclass:1.59, Feb 12 2020 ';
       this.DEBUG = 0;
       this.INFORMATIONAL = 1;
       this.WARNING = 2;
@@ -126,13 +128,42 @@ module.exports = class mongologger {
   // Pass user email and optional lines limit for the returned data
   // Severity if passed defines the log type we want in DIWEF
   //----------------------------------------------------------------------------
-  getLogs(lineslimit = undefined, severity = undefined, messagefilter = undefined) {
+  getLogs(lineslimit = undefined, severity = undefined, 
+        messagefilter = undefined, 
+        startdate = datetime.getDateBrowserFormat(), enddate = datetime.getDateBrowserFormat(-10))
+  {
     return new Promise((resolve, reject) => {
+      let startdateQ, enddateQ;
+      if (startdate) {
+        startdateQ = new Date(startdate);
+        startdateQ.setDate(startdateQ.getDate() + 1);
+      } 
+      if (enddate) {
+        enddateQ = new Date(enddate);
+      } 
       (async () => {
         let query = Mongolog.find({ });
         query.select('module category email message timestamp severity').sort({timestamp: -1});  // Sorted by most recent dates
         // Check required severity and message
         query.select().where('severity').in(severity).where({ 'message' : { '$regex' : messagefilter, '$options' : 'i' } });
+        // Check required dates
+        if(startdate && enddate) {  
+          query.select().where('timestamp').gte(enddateQ).lte(startdateQ);
+          console.log(`************ from ${startdateQ} to ${enddateQ}`);
+        }
+        else {
+          // Any recent time ? Must be : after MAR 31 
+          if(enddate) {  
+            query.select().where('timestamp').gte(enddateQ);
+            console.log(`************ to ${enddateQ}`);
+          }
+          // Any oldest time ? Must be : before MAR 31
+          if(startdate) {  
+            query.select().where('timestamp').lte(startdateQ);
+            console.log(`************ from ${startdateQ}`);
+          }
+        }
+        
         // Check line limit
         if (lineslimit !== undefined) query.limit(lineslimit);
         await query.exec(function(err, thelist) {

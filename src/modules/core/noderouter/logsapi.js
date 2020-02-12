@@ -28,8 +28,10 @@ router.get('/logs/list',
         let lineslimit = parseInt(req.query.lineslimit);
         let severityfilter = req.query.severityfilter;
         let messagefilter = req.query.messagefilter;
+        let start = req.query.start;
+        let end = req.query.end;
         const mongologs = new mongologgerclass();
-        mongologs.getLogs(lineslimit, severityfilter, messagefilter).then((logs) => {
+        mongologs.getLogs(lineslimit, severityfilter, messagefilter, start, end).then((logs) => {
             res.status(200).send(logs);
         })
         .catch((errormessage => {
