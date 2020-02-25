@@ -7,6 +7,7 @@
     Oct 23 2019     Add mongo 
     Jan 20 2020     WIP on users listing interface
     Jan 30 2020     logstore
+    Feb 25 2020     cap error on userstore
 ----------------------------------------------------------------------------*/
 
 import Vue from 'vue';
@@ -16,7 +17,7 @@ const logger = require('../services/logger');
 
 // Get various stores
 import corestore from './corestore';
-import userstore from '../../users/store/userstore';
+import userstore from '../../users/store/userStore';
 import userliststore from '../../users/store/userListStore';
 import logstore from './logstore';
 import mongostore from './mongostore';
