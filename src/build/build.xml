@@ -3,6 +3,7 @@
     build.xml
 
     Feb 19 2020       Initial
+    Feb 25 2020       Deployment on vboxnode, and tests
 
 ****************************************************************************************************** -->
 <project name="assessment" default="help" basedir="." >
@@ -11,32 +12,32 @@
     <target name="help" description="What's in this build file">
         <echo message="************************ @  Targets available "></echo>
         <echo message=""></echo>
-        <echo message="************************ @  .......... camsvboxweb   : cams on vboxweb"></echo>
+        <echo message="************************ @  .......... camsvboxnode   : cams on VBOX VM vboxnode"></echo>
         <echo message=""></echo>
     </target>
 
     <!-- ===================================================================================== -->
     <!-- Hosts deployment-->
     <!-- ===================================================================================== -->
-    <target name="camsvboxweb" depends="cleanup">
-        <echo message="************************ @ deploy node cams to ${vboxweb.server}"></echo>
+    <target name="camsvboxnode" depends="cleanup">
+        <echo message="************************ @ deploy node cams to ${vboxnode.server}"></echo>
         <antcall target="nodekit"></antcall>
+        <!-- The application files -->
         <antcall target="serverupdate">
-            <param name="remoteserver" value="${vboxweb.server}"/>
+            <param name="remoteserver" value="${vboxnode.server}"/>
             <param name="localdir" value="${build.workdir}"/>
             <param name="localzip" value="cams-bootstrap4.zip"/>
-            <param name="remotenetdir" value="${vboxweb.htmlroot}/cams"/>
-            <param name="remoteaccount" value="${vboxweb.nodeuser}"/>
-            <param name="remoteaccountpass" value="${vboxweb.nodepassword}"/>
-            <param name="cams" value="false"/>
+            <param name="remotenetdir" value="${vboxnode.approot}/cams"/>
+            <param name="remoteaccount" value="${vboxnode.nodeuser}"/>
+            <param name="remoteaccountpass" value="${vboxnode.nodepassword}"/>
         </antcall>
         <!-- Manage the .bashrc file -->
-        <sshexec command="mv ${vboxweb.htmlroot}/cams/src/shell.bashrc ~/.bashrc" host="${vboxweb.server}" username="${vboxweb.nodeuser}"
-                 password="${vboxweb.nodepassword}"
+        <sshexec command="mv ${vboxnode.approot}/cams/src/shell/vboxnode/.bashrc ~/.bashrc" host="${vboxnode.server}" username="${vboxnode.nodeuser}"
+                 password="${vboxnode.nodepassword}"
                  trust="true" verbose="${zip.verbosemode}"/>
         <!-- chmod for shell script -->
-        <sshexec command="chmod +x ${vboxweb.htmlroot}/cams/src/shell/*.sh" host="${vboxweb.server}" username="${vboxweb.nodeuser}"
-                 password="${vboxweb.nodepassword}"
+        <sshexec command="chmod +x ${vboxnode.approot}/cams/src/shell/*.sh" host="${vboxnode.server}" username="${vboxnode.nodeuser}"
+                 password="${vboxnode.nodepassword}"
                  trust="true" verbose="${zip.verbosemode}"/>
     </target>
 
@@ -86,7 +87,8 @@
     <!-- Cumulative updates don't call it -->
     <!-- ===================================================================================== -->
     <target name="servercleanup" >
-        <echo message="************************ @  Cleanup target server directory : ${remotenetdir}"></echo>
+        <echo message="************************ @  Cleanup target server directory : ${remotenetdir} on ${remoteserver}"></echo>
+        <echo message="************************ @  Using : ${remoteaccount}"></echo>
         <sshexec command="rm -rfv ${remotenetdir}/src ${remotenetdir}/*collection* ${remotenetdir}/package* ${remotenetdir}/*.zip
             " host="${remoteserver}" username="${remoteaccount}" 
             password="${remoteaccountpass}" trust="true" verbose="${delete.verbosemode}"  />
