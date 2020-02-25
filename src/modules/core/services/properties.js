@@ -32,8 +32,9 @@
 //    Feb 01 2020   Mongodb interval check when connection lost
 //    Feb 08 2020   In airport
 //    Feb 12 2020   Property for log list max number of lines
+//    Feb 25 2020   vboxnode deployment
 //----------------------------------------------------------------------------
-const Version = 'properties:1.47, Feb 12 2020 ';
+const Version = 'properties:1.48, Feb 25 2020 ';
 
 const axios = require('axios');
 
@@ -53,6 +54,7 @@ const corsclientorigin = 'http://localhost:8080';
 const mongodbserver =  process.env.MONGOSERVER || 'mongodb://localhost:27017/cams';    // Default
 // Possible alternatives
 const mongolist = [
+    { node: 'vboxnode', url: 'mongodb://192.168.47.166:27017/cams'},
     { node: 'ASUSP4', url: 'mongodb://192.168.47.24:27017/cams'},   // Instead of local .111
     { node: 'ASUSP7', url: 'mongodb://localhost/cams'},
 ];
