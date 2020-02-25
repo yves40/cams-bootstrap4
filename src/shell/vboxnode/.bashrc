@@ -121,6 +121,9 @@ if ! shopt -oq posix; then
   fi
 fi
 
+# User env 
+export COMPUTERNAME=`hostname`
+export CAMSHOME='/home/node/cams/src'
 # User specific aliases and functions
 alias shsys='ps -edf | grep -i '
 alias hh='history | grep -i '
