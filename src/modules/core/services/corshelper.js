@@ -10,11 +10,34 @@
 //                  middleware. Look at responseheader.js
 //                  useful URL: https://github.com/expressjs/cors/blob/master/README.md
 //    Nov 20 2019   No jwt in header here
+//    Feb 26 2020   vboxnode deployment, change a few things about CORS and
+//                  corsclientorigin
 //----------------------------------------------------------------------------
-const Version = "corshelper:1.23, Nov 20 2019 ";
+const Version = "corshelper:1.24, Feb 26 2020 ";
+
+
+// CORS sites enabled for cross server requests
+// This list gives one valid client per nodejs running node
+const corsclientdef = 'http://localhost:8080';
+const corsclients = [
+  { node: 'vboxnode', origin: 'http://vboxnode:8088' },
+  { node: 'ASUSP4', origin: 'http://localhost:8080' },
+  { node: 'ASUSP7', origin: 'http://localhost:8080' },
+];
 
 const logger = require('./logger');
-const corsclientorigin = require('./properties').corsclientorigin;
+
+function getClientSite() {
+  let corsclient = corsclientdef; // In case no match is found
+  const nodename = process.env.COMPUTERNAME;
+  for (let i=0; i < corsclients.length; ++i) {
+    if (corsclients[i].node === nodename) {
+      corsclient = corsclients[i].origin;
+      break;
+    }
+  }
+  return corsclient;
+}
 
 function checkOrigin(origin, callback) {
   logger.debug(Version + (origin === undefined ? 'Local node': origin) + ' CORS check');
@@ -22,7 +45,7 @@ function checkOrigin(origin, callback) {
     callback(null, true);
   }
   else { // origin is specified
-    if (corsclientorigin === origin) {
+    if (getClientSite() === origin) {
       callback(null, true)
     } else {
       logger.error(Version + (origin === null ? 'Local node': origin) + ' not allowed by CORS');
@@ -51,5 +74,6 @@ function getCORSwhitelist() {
 module.exports = {
   getCORS: getCORS,
   getCORSwhitelist: getCORSwhitelist,
+  getClientSite: getClientSite,
 }
 

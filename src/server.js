@@ -16,6 +16,7 @@
     Dec 06 2019   Category for log message in mongo
     Jan 20 2020   Static path for png files
     Jan 30 2020   Logs services added 
+    Feb 26 2020   Change cors client site identification
 ----------------------------------------------------------------------------*/
 const mongoose = require('mongoose');
 const express = require('express');
@@ -30,7 +31,7 @@ const corshelper = require('./modules/core/services/corshelper');
 const cors = require('cors');
 const mongologgerclass = require('./modules/core/classes/mongologgerclass');
 
-const Version = 'server.js:1.33, Jan 20 2020';
+const Version = 'server.js:1.35, Feb 26 2020';
 
 const app = express();
 //---------------------------------------------------------------------------------------------------------
@@ -88,7 +89,7 @@ logger.info('Log level         : ' + logparams.loglevel);
 logger.info("---------------------------------------------------------");
 logger.info('CORS Security setting: webserver node');
 logger.info("---------------------------------------------------------");
-logger.info('Site : ' + properties.corsclientorigin);
+logger.info('Site : ' + corshelper.getClientSite());
 app.use(cors(corshelper.getCORS()));
 // Log a start message in mongo
 const mongolog = new mongologgerclass(Version, 'NODESERVER');

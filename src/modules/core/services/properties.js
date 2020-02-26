@@ -33,8 +33,10 @@
 //    Feb 08 2020   In airport
 //    Feb 12 2020   Property for log list max number of lines
 //    Feb 25 2020   vboxnode deployment
+//    Feb 26 2020   vboxnode deployment, change a few things about CORS and
+//                  corsclientorigin. Now managed by corshelper
 //----------------------------------------------------------------------------
-const Version = 'properties:1.48, Feb 25 2020 ';
+const Version = 'properties:1.49, Feb 26 2020 ';
 
 const axios = require('axios');
 
@@ -46,9 +48,6 @@ const webserverport = process.env.WEBSERVERPORT || 8080;
 // The node server
 const nodeserver =  process.env.NODESERVER || 'http://localhost:8081';
 const nodeserverport = process.env.NODESERVERPORT || 8081;
-// CORS site enabled for cross server requests
-// The web app on 8080 calls the node services on 8081
-const corsclientorigin = 'http://localhost:8080';  
 // Mongo DB params
 // const mongodbserver =  process.env.MONGOSERVER || 'mongodb://vboxweb:4100/cams';
 const mongodbserver =  process.env.MONGOSERVER || 'mongodb://localhost:27017/cams';    // Default
@@ -101,7 +100,6 @@ module.exports = {
     nodeserverport: nodeserverport,
     loggerlevel: loggerlevel,
     nodeserver: nodeserver,
-    corsclientorigin: corsclientorigin,
     COREDELAY,
     MONGODELAYCHECK: MONGODELAYCHECK,
     MONGOSERVERCHECK: MONGOSERVERCHECK,
