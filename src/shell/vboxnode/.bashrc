@@ -122,8 +122,13 @@ if ! shopt -oq posix; then
 fi
 
 # User env 
+echo
+echo 'Welcome, .bashrc 1.08: Feb 26 2020'
+echo
+
 export COMPUTERNAME=`hostname`
 export CAMSHOME='/home/node/cams/src'
+export CH='/home/node/cams/src'
 # User specific aliases and functions
 alias shsys='ps -edf | grep -i '
 alias hh='history | grep -i '
