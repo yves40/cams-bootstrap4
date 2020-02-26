@@ -1,0 +1,4 @@
+GET http://vboxnode:8081/mongo/status
+Content-Type: application/json
+
+
