@@ -45,8 +45,8 @@ const COREDELAY = 1000;
 // The webpack dev server
 const webserver = process.env.WEBSERVER || "http://localhost:8080";
 const webserverport = process.env.WEBSERVERPORT || 8080;
-// The node server
-const nodeserver =  process.env.NODESERVER || 'http://localhost:8081';
+// The node server : Put this camspi in your hosts or DNS
+const nodeserver =  process.env.NODESERVER || 'http://camsapi:8081';
 const nodeserverport = process.env.NODESERVERPORT || 8081;
 // Mongo DB params
 // const mongodbserver =  process.env.MONGOSERVER || 'mongodb://vboxweb:4100/cams';

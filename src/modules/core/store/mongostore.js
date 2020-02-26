@@ -17,6 +17,7 @@
     Nov 03 2019     No longer use the developped axios module
     Nov 05 2019     Mongo status service, send back the string. Check
     Nov 29 2019     Investigate timer mechanism
+    Feb 26 2020     Mongo status messages
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -28,7 +29,6 @@ const MONGODELAYCHECK = properties.MONGODELAYCHECK;
 const MONGOUP = properties.MONGOUP;
 const MONGODOWN = properties.MONGODOWN;
 
-let failures = 0;       // Nbr of times the mongo server does not respond
 let previousmongostate = MONGODOWN;
 
 Vue.use(Vuex);
@@ -37,9 +37,11 @@ Vue.use(Vuex);
     VUEX states
 ----------------------------------------------------------------------------*/
 const state =  {
-    Version: 'mongoStore:1.81, Nov 29 2019 ',
+    Version: 'mongoStore:1.83, Feb 26 2020 ',
     MAXLOG:16,
     mongodown: true,        // TRUE if mongodb is down
+    messagelock: false,     // Just to avoid zillions messages in the console
+    errorlock: false,
 };
 /*----------------------------------------------------------------------------
     VUEX Getters
@@ -63,6 +65,10 @@ const mutations = { // Synchronous
         state.logs = [];
     },
     updateMongoStatus(state) {  // Check mongo status every 5 seconds
+        if (!state.messagelock) {
+            logger.debug(state.Version + ' get mongo status from ' + properties.nodeserver);
+            state.messagelock = true;
+        }
         properties.axioscall(
             {
                 url: '/mongo/status',
@@ -71,31 +77,14 @@ const mutations = { // Synchronous
         )
         .then((response) => {
                 state.mongodown = response.data.isdown;
-                if(state.mongodown) {
-                    ++failures;
-                    if( previousmongostate !== MONGODOWN) {
-                        logger.debug(state.Version + 'Mongo is down');
-                        previousmongostate = MONGODOWN;
-                    }
-                }
-                else {
-                    if (failures !== 0) {
-                        logger.debug(state.Version + 'mongodb  service is back after ' + failures*MONGODELAYCHECK/1000 + ' seconds');
-                        failures = 0;     // Back to normal status
-                    }
-                    else {
-                        if( previousmongostate !== MONGOUP) {
-                            logger.debug(state.Version + 'mongodb is up');
-                            previousmongostate = MONGOUP;
-                        }
-                    }
-                }
-        })
+                state.errorlock = false;
+            })
         .catch(() => {
-                ++failures;
-                if ((failures % 10 === 0)||(failures === 1)) {
-                    logger.error(state.Version + ' Error when calling mongodb status service ');
-                }
+            if (!state.errorlock) {
+                logger.debug(state.Version + ' Error when getting mongo status from ' + properties.nodeserver);
+                state.errorlock = true;
+                state.messagelock = false;
+            }
         });
     },
 };
