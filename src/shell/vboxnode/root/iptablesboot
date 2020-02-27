@@ -1,0 +1,25 @@
+#!/bin/bash
+export LOG=/tmp/mongoport.log
+
+case $1 in
+ 'start')
+	# mongodb server accessible from remote client. dangerous ;-)
+  	echo "`date` : Opening port 27017 for mongodb." >> $LOG
+	iptables  -A INPUT -p tcp -m tcp --dport 27017 -j ACCEPT
+	echo `iptables -L | grep 27017` >> $LOG
+	echo "Open port 8088 for the webdev server" >> $LOG
+	# webpack server
+	ufw allow 8088/tcp
+	# express server
+ 	ufw allow 8081/tcp
+	exit 0 
+  ;;
+ 'stop')
+  	echo "`date` : Non sense." >> $LOG
+	exit 0 
+  ;;
+ *)
+  	echo "Parameter pleease: start/stop." >> $LOG
+	exit 0 
+  ;;
+esac
