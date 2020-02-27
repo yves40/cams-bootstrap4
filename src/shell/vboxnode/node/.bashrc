@@ -123,7 +123,7 @@ fi
 
 # User env 
 echo
-echo 'Welcome, .bashrc 1.08: Feb 26 2020'
+echo 'Welcome, .bashrc 1.09: Feb 27 2020'
 echo
 
 export COMPUTERNAME=`hostname`

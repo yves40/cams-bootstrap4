@@ -32,11 +32,11 @@
             <param name="remoteaccountpass" value="${vboxnode.nodepassword}"/>
         </antcall>
         <!-- Manage the .bashrc file -->
-        <sshexec command="mv ${vboxnode.approot}/cams/src/shell/vboxnode/.bashrc ~/.bashrc" host="${vboxnode.server}" username="${vboxnode.nodeuser}"
+        <sshexec command="mv ${vboxnode.approot}/cams/src/shell/vboxnode/node/.bashrc ~/.bashrc" host="${vboxnode.server}" username="${vboxnode.nodeuser}"
                  password="${vboxnode.nodepassword}"
                  trust="true" verbose="${zip.verbosemode}"/>
         <!-- chmod for shell script -->
-        <sshexec command="chmod +x ${vboxnode.approot}/cams/src/shell/vboxnode/*.sh" host="${vboxnode.server}" username="${vboxnode.nodeuser}"
+        <sshexec command="chmod +x ${vboxnode.approot}/cams/src/shell/vboxnode/node/*.sh" host="${vboxnode.server}" username="${vboxnode.nodeuser}"
                  password="${vboxnode.nodepassword}"
                  trust="true" verbose="${zip.verbosemode}"/>
     </target>
