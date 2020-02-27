@@ -9,7 +9,7 @@
   "scripts": {
     "startserver": "pm2 start ./src/server.js --watch --ignore-watch='node_modules' --name server",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --hot",
-    "devvboxnode": "cross-env NODE_ENV=development webpack-dev-server --hot --host vboxnode --port 8088",
+    "devx": "cross-env NODE_ENV=development webpack-dev-server --hot --host vboxnode --port 8088",
     "stopserver": "pm2 delete server",
     "stopweb": "pm2 delete webvue",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
