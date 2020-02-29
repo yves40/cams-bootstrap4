@@ -57,6 +57,7 @@
                 <include name="**/*.ico"/>
                 <include name="**/.bashrc"/>
                 <include name="**/log0.sh"/>
+                <include name="**/admin.sh"/>
                 <include name="**/.package.json"/>
                 <include name="**/.babelrc"/>
                 <include name="**/.package-lock.json"/>
