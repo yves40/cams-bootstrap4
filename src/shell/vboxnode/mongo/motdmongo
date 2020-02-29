@@ -1,0 +1,24 @@
+
+
+ Some mongo directories to consider 
+===================================
+
+
+/var/lib/mongodb
+/var/log/mongodb
+/etc/mongod.conf
+
+Start    : sudo systemctl start mongod
+Status   : sudo systemctl status mongod
+Stop     : sudo systemctl stop mongod
+Restart  : sudo systemctl restart mongod
+
+Bootime ON : 
+========================
+
+sudo systemctl enable mongod.service
+
+Should display .....
+
+Created symlink /etc/systemd/system/multi-user.target.wants/mongod.service → /lib/systemd/system/mongod.service.
+
