@@ -44,7 +44,7 @@ Start()
             log "#1 Web app"
             ret=`pwd`
             cd $CAMSHOME
-            npm run devxb
+            npm run devx
             cd $ret
             log "#2 the API server"
             pm2 start $CAMSHOME/src/server.js --watch
@@ -53,7 +53,8 @@ Start()
             log "#1 Web app"
             ret=`pwd`
             cd $CAMSHOME
-            npm run devxb
+            ls -l
+            npm run devx
             cd $ret
             cat nohup.out
             ;;
