@@ -124,12 +124,12 @@ fi
 
 # User env 
 echo
-echo 'Welcome, .bashrc 1.09: Feb 27 2020'
+echo 'Welcome, .bashrc 1.10: Feb 29 2020'
 echo
 
 export COMPUTERNAME=`hostname`
-export CAMSHOME='/home/node/cams/src'
-export CH='/home/node/cams/src'
+export CAMSHOME='/home/node/cams'
+export CH='/home/node/cams'
 # User specific aliases and functions
 alias shsys='ps -edf | grep -i '
 alias hh='history | grep -i '
@@ -140,4 +140,4 @@ alias motd='cat /etc/motd'
 alias mongo='mongo --port 27017 --quiet'
 alias nodemon='nodemon --no-colors'
 alias renv='. ~/.bashrc'
-alias nod='$CAMSHOME/shell/vboxnode/node/admin.sh'
+alias nod='$CAMSHOME/src/shell/vboxnode/node/admin.sh'
