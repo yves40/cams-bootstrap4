@@ -2,9 +2,10 @@
 #	admin.sh
 #
 #	Feb 29 2020  	Initial
+#	Mar 01 2020  	Find how to start webpack-dev-server in background
 #--------------------------------------------------------------------------------
-VERSION="admin.sh v 1.04, "
-VERSIONDATE="Feb 29 2020 "
+VERSION="admin.sh v 1.07, "
+VERSIONDATE="Mar 01 2020 "
 LOG="/tmp/nodeadmin.log"
 CAMSHOME='/home/node/cams'
 #--------------------------------------------------------------------------------
@@ -44,8 +45,9 @@ Start()
             log "#1 Web app"
             ret=`pwd`
             cd $CAMSHOME
-            npm run devx
+            npm run devx&
             cd $ret
+            echo
             log "#2 the API server"
             pm2 start $CAMSHOME/src/server.js --watch
             ;;
@@ -53,14 +55,13 @@ Start()
             log "#1 Web app"
             ret=`pwd`
             cd $CAMSHOME
-            ls -l
-            npm run devx
+            npm run devx&
+            echo
             cd $ret
-            cat nohup.out
             ;;
     API)  log "Start API processes"
             log "#2 the API server"
-            pm2 start $CAMSHOME/src/server.js --watch
+            pm2 start $CAMSHOME/src/server.js --watch --ignore-watch='node_modules' --name camsserver
             ;;
     MONGO)  log "Start mongodb"
             log "#3 the DB server: log in mongo account"
@@ -83,10 +84,9 @@ Stop()
   echo
 
   case $proclist in 
-    ALL)    log "Stop all node processes"
+    ALL)    log "Stop all node processes (except mongo)"
             ps -edf | grep -v grep | grep -i -e 'webpack-dev-server
-nodemon
-/TOOLS/node/bin/node' > processlist
+cams/src/server' > processlist
             while read line
             do  
               pid=`echo "$line" | awk '/ / { print $2 }';`
@@ -125,8 +125,7 @@ Status()
   echo 'Node and mongodb processes status'
   echo
   ps -edf | grep -v grep | grep -i -e 'webpack-dev-server
-nodemon
-/TOOLS/node/bin/node
+cams/src/server
 mongod' > processlist
 
   while read line
