@@ -35,8 +35,9 @@
 //    Feb 25 2020   vboxnode deployment
 //    Feb 26 2020   vboxnode deployment, change a few things about CORS and
 //                  corsclientorigin. Now managed by corshelper
+//    Mar 01 2020   zerasp deployment
 //----------------------------------------------------------------------------
-const Version = 'properties:1.49, Feb 26 2020 ';
+const Version = 'properties:1.50, Mar 01 2020 ';
 
 const axios = require('axios');
 
@@ -53,6 +54,7 @@ const nodeserverport = process.env.NODESERVERPORT || 8081;
 const mongodbserver =  process.env.MONGOSERVER || 'mongodb://localhost:27017/cams';    // Default
 // Possible alternatives
 const mongolist = [
+    { node: 'raspberrypi', url: 'mongodb://192.168.47.168:27017/cams'},
     { node: 'vboxnode', url: 'mongodb://192.168.47.166:27017/cams'},
     { node: 'ASUSP4', url: 'mongodb://192.168.47.24:27017/cams'},   // Instead of local .111
     { node: 'ASUSP7', url: 'mongodb://localhost/cams'},
