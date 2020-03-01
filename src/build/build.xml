@@ -23,7 +23,9 @@
     <!-- ===================================================================================== -->
     <target name="camsvboxnode" depends="cleanup">
         <echo message="************************ @ deploy node cams to ${vboxnode.server}"></echo>
-        <antcall target="nodekit"></antcall>
+        <antcall target="nodekit">
+            <param name="shellnode" value="vboxnode"/>
+        </antcall>
         <!-- The application files -->
         <antcall target="serverupdate">
             <param name="remoteserver" value="${vboxnode.server}"/>
@@ -48,7 +50,9 @@
     <!-- ===================================================================================== -->
     <target name="camszerasp" depends="cleanup">
         <echo message="************************ @ deploy node cams to ${zerasp.server}"></echo>
-        <antcall target="nodekit"></antcall>
+        <antcall target="nodekit">
+            <param name="shellnode" value="zerasp"/>
+        </antcall>
         <!-- The application files -->
         <antcall target="serverupdate">
             <param name="remoteserver" value="${zerasp.server}"/>
@@ -82,9 +86,9 @@
                 <include name="**/*.css"/>
                 <include name="**/*.png"/>
                 <include name="**/*.ico"/>
-                <include name="**/.bashrc"/>
-                <include name="**/log0.sh"/>
-                <include name="**/admin.sh"/>
+                <include name="**/${shellnode}/.bashrc"/>
+                <include name="**/${shellnode}//log0.sh"/>
+                <include name="**/${shellnode}//admin.sh"/>
                 <include name="**/.package.json"/>
                 <include name="**/.babelrc"/>
                 <include name="**/.package-lock.json"/>

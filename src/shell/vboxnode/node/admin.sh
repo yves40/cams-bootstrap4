@@ -3,8 +3,9 @@
 #
 #	Feb 29 2020  	Initial
 #	Mar 01 2020  	Find how to start webpack-dev-server in background
+#               Deployment campaign on zerasp ;-)
 #--------------------------------------------------------------------------------
-VERSION="admin.sh v 1.07, "
+VERSION="admin.sh v 1.09, "
 VERSIONDATE="Mar 01 2020 "
 LOG="/tmp/nodeadmin.log"
 CAMSHOME='/home/node/cams'
@@ -60,8 +61,16 @@ Start()
             cd $ret
             ;;
     API)  log "Start API processes"
-            log "#2 the API server"
-            pm2 start $CAMSHOME/src/server.js --watch --ignore-watch='node_modules' --name camsserver
+            x=`hostname`
+            log "#2 the API server on $x"
+            case $x in 
+              'raspberrypi')    # avoid -watch on the raspberry to spare some cpu
+                      pm2 start $CAMSHOME/src/server.js --name camsserver
+                      ;;
+              'vboxnode')  
+                      pm2 start $CAMSHOME/src/server.js --watch --ignore-watch='node_modules' --name camsserver
+                      ;;
+            esac
             ;;
     MONGO)  log "Start mongodb"
             log "#3 the DB server: log in mongo account"
