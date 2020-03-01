@@ -4,6 +4,7 @@
 
     Feb 19 2020       Initial
     Feb 25 2020       Deployment on vboxnode, and tests
+    Mar 01 2020       Deployment on zerasp, and tests
 
 ****************************************************************************************************** -->
 <project name="assessment" default="help" basedir="." >
@@ -12,7 +13,8 @@
     <target name="help" description="What's in this build file">
         <echo message="************************ @  Targets available "></echo>
         <echo message=""></echo>
-        <echo message="************************ @  .......... camsvboxnode   : cams on VBOX VM vboxnode"></echo>
+        <echo message="************************ @  .......... camsvboxnode: cams on VBOX VM vboxnode"></echo>
+        <echo message="************************ @  .......... camszerasp  : cams on Raspberry pi"></echo>
         <echo message=""></echo>
     </target>
 
@@ -38,6 +40,31 @@
         <!-- chmod for shell script -->
         <sshexec command="chmod +x ${vboxnode.approot}/cams/src/shell/vboxnode/node/*.sh" host="${vboxnode.server}" username="${vboxnode.nodeuser}"
                  password="${vboxnode.nodepassword}"
+                 trust="true" verbose="${zip.verbosemode}"/>
+    </target>
+
+    <!-- ===================================================================================== -->
+    <!-- Hosts deployment-->
+    <!-- ===================================================================================== -->
+    <target name="camszerasp" depends="cleanup">
+        <echo message="************************ @ deploy node cams to ${zerasp.server}"></echo>
+        <antcall target="nodekit"></antcall>
+        <!-- The application files -->
+        <antcall target="serverupdate">
+            <param name="remoteserver" value="${zerasp.server}"/>
+            <param name="localdir" value="${build.workdir}"/>
+            <param name="localzip" value="cams-bootstrap4.zip"/>
+            <param name="remotenetdir" value="${zerasp.approot}/cams"/>
+            <param name="remoteaccount" value="${zerasp.nodeuser}"/>
+            <param name="remoteaccountpass" value="${zerasp.nodepassword}"/>
+        </antcall>
+        <!-- Manage the .bashrc file -->
+        <sshexec command="mv ${zerasp.approot}/cams/src/shell/zerasp/node/.bashrc ~/.bashrc" host="${zerasp.server}" username="${zerasp.nodeuser}"
+                 password="${zerasp.nodepassword}"
+                 trust="true" verbose="${zip.verbosemode}"/>
+        <!-- chmod for shell script -->
+        <sshexec command="chmod +x ${zerasp.approot}/cams/src/shell/zerasp/node/*.sh" host="${zerasp.server}" username="${zerasp.nodeuser}"
+                 password="${zerasp.nodepassword}"
                  trust="true" verbose="${zip.verbosemode}"/>
     </target>
 
