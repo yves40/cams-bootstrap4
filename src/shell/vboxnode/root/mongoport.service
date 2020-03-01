@@ -1,0 +1,22 @@
+# --------------------------------------------------------------------------
+# Mar 01 2020   Initial
+# --------------------------------------------------------------------------
+# UBUNTU : To be placed into /lib/systemd/system
+# Then run : systemctl enable mongoport.service
+# It will create a symbolic link in /etc/systemd/system/multi-user.target.wants/mongoport.service
+# toward /lib/systemd/system/mongoport.service
+# You can then issue these commands to manage the service
+#   systemctl enable mongoport.service
+#   systemctl disable mongoport.service
+# --------------------------------------------------------------------------
+[Unit]
+Description=MongoDB Database Server port open
+After=network.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=no
+ExecStart=/root/iptablesboot start
+
+[Install]
+WantedBy=multi-user.target
