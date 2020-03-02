@@ -3,6 +3,7 @@
 #
 #	Feb 25 2020		Initial from dev
 #	Feb 29 2020		Alias for admin.sh
+#	Mar 02 2020		nod alias
 #----------------------------------------------------------------------------------------
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
@@ -140,4 +141,4 @@ alias motd='cat /etc/motd'
 alias mongo='mongo --port 27017 --quiet'
 alias nodemon='nodemon --no-colors'
 alias renv='. ~/.bashrc'
-alias nod='$CAMSHOME/src/shell/vboxnode/node/admin.sh'
+alias nod='$CAMSHOME/src/shell/admin.sh'

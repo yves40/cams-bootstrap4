@@ -5,6 +5,7 @@
 #	Feb 01 2019		Change alias for nodeadmin.sh
 #	Mar 20 2019		Set working directory after login
 #	Feb 19 2020		cams-bootstrap4, revival on vboxweb !!
+#	Mar 02 2020		nod alias
 #----------------------------------------------------------------------------------------
 
 # Source global definitions
