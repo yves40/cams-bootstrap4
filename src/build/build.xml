@@ -6,6 +6,7 @@
     Feb 25 2020       Deployment on vboxnode, and tests
     Mar 01 2020       Deployment on zerasp, and tests
     Mar 02 2020       Reorg of deployment directories 
+    Mar 03 2020       Add files for the root account
 
 ****************************************************************************************************** -->
 <project name="assessment" default="help" basedir="." >
@@ -14,8 +15,8 @@
     <target name="help" description="What's in this build file">
         <echo message="************************ @  Targets available "></echo>
         <echo message=""></echo>
-        <echo message="************************ @  .......... camsvboxnode: cams on VBOX VM vboxnode"></echo>
-        <echo message="************************ @  .......... camszerasp  : cams on Raspberry pi"></echo>
+        <echo message="************************ @  .......... camsvboxnode : cams on VBOX VM vboxnode"></echo>
+        <echo message="************************ @  .......... camszerasp   : cams on Raspberry pi"></echo>
         <echo message=""></echo>
     </target>
 
@@ -37,7 +38,7 @@
             <param name="remoteaccountpass" value="${vboxnode.nodepassword}"/>
         </antcall>
         <!-- Manage the .bashrc file -->
-        <sshexec command="mv ${vboxnode.approot}/cams/src/shell/vboxnode/node/.bashrc ~/.bashrc" host="${vboxnode.server}" username="${vboxnode.nodeuser}"
+        <sshexec command="cp ${vboxnode.approot}/cams/src/shell/vboxnode/node/.bashrc ~/.bashrc" host="${vboxnode.server}" username="${vboxnode.nodeuser}"
                  password="${vboxnode.nodepassword}"
                  trust="true" verbose="${zip.verbosemode}"/>
         <!-- chmod for shell script -->
@@ -64,7 +65,7 @@
             <param name="remoteaccountpass" value="${zerasp.nodepassword}"/>
         </antcall>
         <!-- Manage the .bashrc file -->
-        <sshexec command="mv ${zerasp.approot}/cams/src/shell/zerasp/node/.bashrc ~/.bashrc" host="${zerasp.server}" username="${zerasp.nodeuser}"
+        <sshexec command="cp ${zerasp.approot}/cams/src/shell/zerasp/node/.bashrc ~/.bashrc" host="${zerasp.server}" username="${zerasp.nodeuser}"
                  password="${zerasp.nodepassword}"
                  trust="true" verbose="${zip.verbosemode}"/>
         <!-- chmod for shell script -->
@@ -79,7 +80,9 @@
     <target name="nodekit">
         <copy todir="${build.workdir}" verbose="${copy.verbosemode}">
             <fileset dir="${build.srcdir}" casesensitive="true">
-                <include name="**/*admin.sh"/>
+                <include name="**/admin.sh"/>
+                <include name="**/.bashrc"/>
+                <include name="**/${shellnode}/**"/>
                 <include name="**/*.html"/>
                 <include name="**/*.js"/>
                 <include name="**/*.json"/>
@@ -87,7 +90,6 @@
                 <include name="**/*.css"/>
                 <include name="**/*.png"/>
                 <include name="**/*.ico"/>
-                <include name="**/${shellnode}/node/log0.sh"/>
                 <include name="**/.package.json"/>
                 <include name="**/.babelrc"/>
                 <include name="**/.package-lock.json"/>
@@ -95,13 +97,16 @@
                 <exclude name="**/*collection.json"/>
             </fileset>
         </copy>
+        <!-- 
         <echo message="Copying .bashrc for node ${shellnode}"></echo>
         <copy todir="${build.workdir}" verbose="on">
             <fileset dir="${build.srcdir}" casesensitive="true">
                 <include name="**/${shellnode}/node/.bashrc"/>
+                <include name="**/${shellnode}/mongo/.bashrc"/>
                 <include name="**/${shellnode}/zerasp/.bashrc"/>
             </fileset>
         </copy>
+        -->
     </target>
 
     <!-- ===================================================================================== -->
@@ -154,7 +159,7 @@
         </scp>
         
         <echo message="************************ @  Unzipping script files"></echo>
-        <sshexec command="unzip -o ${remotenetdir}/${localzip} -d ${remotenetdir}" host="${remoteserver}" username="${remoteaccount}"
+        <sshexec command="unzip -o -q ${remotenetdir}/${localzip} -d ${remotenetdir}" host="${remoteserver}" username="${remoteaccount}"
                  password="${remoteaccountpass}"
                  trust="true" verbose="${zip.verbosemode}"/>
     </target>

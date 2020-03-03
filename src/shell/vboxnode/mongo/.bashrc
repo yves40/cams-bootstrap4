@@ -127,6 +127,6 @@ alias lal='ls -al'
 alias ll='ls -l'
 
 #----------------------------------------------- 
-cat motdmongo
+cat motdmongo.txt
 
 alias hh='history | grep '

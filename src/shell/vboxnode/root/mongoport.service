@@ -1,5 +1,6 @@
 # --------------------------------------------------------------------------
 # Mar 01 2020   Initial
+# Mar 03 2020   Add extension to iptablesboot
 # --------------------------------------------------------------------------
 # UBUNTU : To be placed into /lib/systemd/system
 # Then run : systemctl enable mongoport.service
@@ -16,7 +17,7 @@ After=network.target
 [Service]
 Type=oneshot
 RemainAfterExit=no
-ExecStart=/root/iptablesboot start
+ExecStart=/root/iptablesboot.sh start
 
 [Install]
 WantedBy=multi-user.target
