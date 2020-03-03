@@ -1,25 +1,40 @@
 #!/bin/bash
 export LOG=/tmp/mongoport.log
 
+VERSION="admin.sh v 1.08, "
+VERSIONDATE="Mar 03 2020 "
+LOG="/tmp/iptablesboot.log"
+#--------------------------------------------------------------------------------
+# Logger
+#--------------------------------------------------------------------------------
+log()
+{
+        echo "`date '+%Y-%m-%d %H:%M:%S'` : $VERSION $1" >> $LOG
+        echo "`date '+%Y-%m-%d %H:%M:%S'` : $1"
+}
+#--------------------------------------------------------------------------------
+# Executed once @ boot
+#--------------------------------------------------------------------------------
 case $1 in
  'start')
 	# mongodb server accessible from remote client. dangerous ;-)
-  	echo "`date` : Opening port 27017 for mongodb." >> $LOG
+  log "Opening port 27017 for mongodb."
 	iptables  -A INPUT -p tcp -m tcp --dport 27017 -j ACCEPT
-	echo `iptables -L | grep 27017` >> $LOG
-	echo "Open port 8088 for the webdev server" >> $LOG
+	echo `iptables -L | grep 27017` 
+	log "Open port 8088 for the webdev server"
 	# webpack server
 	ufw allow 8088/tcp
+	log "Open port 801 for the express server" 
 	# express server
  	ufw allow 8081/tcp
 	exit 0 
   ;;
  'stop')
-  	echo "`date` : Non sense." >> $LOG
+  	log "`date` : Non sense." 
 	exit 0 
   ;;
  *)
-  	echo "Parameter pleease: start/stop." >> $LOG
+  	log "Parameter pleease: start/stop."
 	exit 0 
   ;;
 esac
