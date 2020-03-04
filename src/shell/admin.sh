@@ -1,13 +1,13 @@
 #--------------------------------------------------------------------------------
 #	admin.sh
 #
-#	Feb 29 2020  	Initial
-#	Mar 01 2020  	Find how to start webpack-dev-server in background
-#                       Deployment campaign on zerasp ;-)
-#	Mar 02 2020  	Unified for all manage nodes
+#	  Feb 29 2020  	Initial
+#	  Mar 01 2020  	Find how to start webpack-dev-server in background
+#                 Deployment campaign on zerasp ;-)
+#	  Mar 02 2020  	Unified for all manage nodes
 #--------------------------------------------------------------------------------
-VERSION="admin.sh v 1.10, "
-VERSIONDATE="Mar 02 2020 "
+VERSION="admin.sh v 1.11, "
+VERSIONDATE="Mar 04 2020 "
 LOG="/tmp/nodeadmin.log"
 CAMSHOME='/home/node/cams'
 #--------------------------------------------------------------------------------

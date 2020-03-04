@@ -1,9 +1,9 @@
 #!/bin/bash
 export LOG=/tmp/mongoport.log
 
-VERSION="admin.sh v 1.08, "
-VERSIONDATE="Mar 03 2020 "
-LOG="/tmp/iptablesboot.log"
+VERSION="admin.sh v 1.10, "
+VERSIONDATE="Mar 04 2020 "
+LOG="/home/node/iptablesboot.log"
 #--------------------------------------------------------------------------------
 # Logger
 #--------------------------------------------------------------------------------
@@ -24,9 +24,10 @@ case $1 in
 	log "Open port 8088 for the webdev server"
 	# webpack server
 	ufw allow 8088/tcp
-	log "Open port 801 for the express server" 
+	log "Open port 8081 for the express server" 
 	# express server
  	ufw allow 8081/tcp
+	 ufw reload
 	exit 0 
   ;;
  'stop')

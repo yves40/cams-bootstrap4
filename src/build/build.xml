@@ -42,7 +42,7 @@
                  password="${vboxnode.nodepassword}"
                  trust="true" verbose="${zip.verbosemode}"/>
         <!-- chmod for shell script -->
-        <sshexec command="chmod +x ${vboxnode.approot}/cams/src/shell/vboxnode/node/*.sh" host="${vboxnode.server}" username="${vboxnode.nodeuser}"
+        <sshexec command="chmod +x ${vboxnode.approot}/cams/src/shell/*.sh" host="${vboxnode.server}" username="${vboxnode.nodeuser}"
                  password="${vboxnode.nodepassword}"
                  trust="true" verbose="${zip.verbosemode}"/>
     </target>
