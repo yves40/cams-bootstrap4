@@ -5,9 +5,10 @@
 #	  Mar 01 2020  	Find how to start webpack-dev-server in background
 #                 Deployment campaign on zerasp ;-)
 #	  Mar 02 2020  	Unified for all manage nodes
+#	  Mar 09 2020  	Refresh for zerasp
 #--------------------------------------------------------------------------------
-VERSION="admin.sh v 1.11, "
-VERSIONDATE="Mar 04 2020 "
+VERSION="admin.sh v 1.12, "
+VERSIONDATE="Mar 09 2020 "
 LOG="/tmp/nodeadmin.log"
 CAMSHOME='/home/node/cams'
 #--------------------------------------------------------------------------------
@@ -59,7 +60,7 @@ Start()
             ret=`pwd`
             cd $CAMSHOME
             case $x in 
-              'raspberrypi')    # avoid -watch on the raspberry to spare some cpu
+              'zerasp')    # avoid -watch on the raspberry to spare some cpu
                         npm run devxr&
                       ;;
               'vboxnode')  
@@ -73,7 +74,7 @@ Start()
             x=`hostname`
             log "#2 the API server on $x"
             case $x in 
-              'raspberrypi')    # avoid -watch on the raspberry to spare some cpu
+              'zerasp')    # avoid -watch on the raspberry to spare some cpu
                       pm2 start $CAMSHOME/src/server.js --name camsserver
                       ;;
               'vboxnode')  
@@ -83,7 +84,7 @@ Start()
             ;;
     MONGO)  log "Start mongodb"
             log "#3 the DB server: log in mongo account"
-            sudo systemctl start mongod
+            sudo systemctl start mongodb.service
             ;;
   esac
 
@@ -127,7 +128,7 @@ cams/src/server' > processlist
             pm2 delete all
             ;;
     MONGO)  log "Stop mongodb"
-            sudo systemctl stop mongod
+            sudo systemctl stop mongodb.service
             ;;
   esac
   echo
