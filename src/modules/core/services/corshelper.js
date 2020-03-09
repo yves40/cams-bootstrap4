@@ -12,14 +12,16 @@
 //    Nov 20 2019   No jwt in header here
 //    Feb 26 2020   vboxnode deployment, change a few things about CORS and
 //                  corsclientorigin
+//    Mar 09 2020   zerasp deployment
 //----------------------------------------------------------------------------
-const Version = "corshelper:1.24, Feb 26 2020 ";
+const Version = "corshelper:1.26, Mar 09 2020 ";
 
 
 // CORS sites enabled for cross server requests
 // This list gives one valid client per nodejs running node
-const corsclientdef = 'http://localhost:8080';
+const origindef = 'http://localhost:8080';
 const corsclients = [
+  { node: 'zerasp', origin: 'http://zerasp:8088' },
   { node: 'vboxnode', origin: 'http://vboxnode:8088' },
   { node: 'ASUSP4', origin: 'http://localhost:8080' },
   { node: 'ASUSP7', origin: 'http://localhost:8080' },
@@ -28,15 +30,16 @@ const corsclients = [
 const logger = require('./logger');
 
 function getClientSite() {
-  let corsclient = corsclientdef; // In case no match is found
+  let origin = origindef; // In case no match is found
   const nodename = process.env.COMPUTERNAME;
   for (let i=0; i < corsclients.length; ++i) {
     if (corsclients[i].node === nodename) {
-      corsclient = corsclients[i].origin;
+      origin = corsclients[i].origin;
       break;
     }
   }
-  return corsclient;
+  logger.debug(Version + 'origin identified as ' + origin + ' for node ' +  nodename);
+  return origin;
 }
 
 function checkOrigin(origin, callback) {
