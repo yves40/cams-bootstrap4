@@ -38,7 +38,7 @@ function getClientSite() {
       break;
     }
   }
-  logger.debug(Version + 'origin identified as ' + origin + ' for node ' +  nodename);
+  logger.debug(Version + 'origin identified as ' + origin + ' for node ' +  nodename) ;
   return origin;
 }
 
