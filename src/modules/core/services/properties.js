@@ -55,7 +55,7 @@ const nodeserverport = process.env.NODESERVERPORT || 8081;
 const mongodbserver =  process.env.MONGOSERVER || 'mongodb://localhost:27017/cams';    // Default
 // Possible alternatives
 const mongolist = [
-    { node: 'raspberrypi', url: 'mongodb://camsapi:27017/cams'},
+    { node: 'zerasp', url: 'mongodb://camsapi:27017/cams'},
     { node: 'vboxnode', url: 'mongodb://camsapi:27017/cams'},
     { node: 'ASUSP4', url: 'mongodb://192.168.47.24:27017/cams'},   // Instead of local .111
     { node: 'ASUSP7', url: 'mongodb://localhost/cams'},
