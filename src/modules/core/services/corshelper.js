@@ -14,7 +14,7 @@
 //                  corsclientorigin
 //    Mar 09 2020   zerasp deployment
 //----------------------------------------------------------------------------
-const Version = "corshelper:1.26, Mar 09 2020 ";
+const Version = "corshelper:1.27, Mar 09 2020 ";
 
 
 // CORS sites enabled for cross server requests
@@ -38,7 +38,7 @@ function getClientSite() {
       break;
     }
   }
-  logger.debug(Version + 'origin identified as ' + origin + ' for node ' +  nodename) ;
+  // logger.debug(Version + 'origin identified as ' + origin + ' for node ' +  nodename) ;
   return origin;
 }
 
