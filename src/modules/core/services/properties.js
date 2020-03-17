@@ -37,8 +37,9 @@
 //                  corsclientorigin. Now managed by corshelper
 //    Mar 01 2020   zerasp deployment
 //    Mar 04 2020   camsapi test
+//    Mar 17 2020   ASUSP7 mongodb url updated
 //----------------------------------------------------------------------------
-const Version = 'properties:1.52, Mar 04 2020 ';
+const Version = 'properties:1.53, Mar 17 2020 ';
 
 const axios = require('axios');
 
@@ -58,7 +59,7 @@ const mongolist = [
     { node: 'zerasp', url: 'mongodb://camsapi:27017/cams'},
     { node: 'vboxnode', url: 'mongodb://camsapi:27017/cams'},
     { node: 'ASUSP4', url: 'mongodb://192.168.47.24:27017/cams'},   // Instead of local .111
-    { node: 'ASUSP7', url: 'mongodb://localhost/cams'},
+    { node: 'ASUSP7', url: 'mongodb://localhost:27017/cams'},
 ];
 const MONGODELAYCHECK = 1000;   // For the web interface
 const MONGOSERVERCHECK = 10000  // For the Express server to retry mongodb connection 
