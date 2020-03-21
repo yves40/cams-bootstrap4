@@ -68,6 +68,7 @@ module.exports =  class axiosclass {
     //-----------------------------------------------------------------------------
     // Private functions
     // Check the mongodb connection status for a given server
+    // Returns a Promise so when you call it, use the classic caller syntax
     //-----------------------------------------------------------------------------
     checkServer(serverurl) {
         return new Promise( (resolve, reject) => {
