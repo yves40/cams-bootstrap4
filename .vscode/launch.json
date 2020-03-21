@@ -66,5 +66,11 @@
       "name": "testpromise",
       "program": "${workspaceFolder}\\src\\modules\\sandbox\\batch\\testpromise.js",
     }
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "testaxios",
+      "program": "${workspaceFolder}\\src\\modules\\core\\batch\\testaxios.js",
+    }
   ]
 }
