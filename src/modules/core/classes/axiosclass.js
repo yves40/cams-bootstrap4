@@ -10,9 +10,13 @@ const properties = require('../services/properties');
 
 module.exports =  class axiosclass {
 
+    // In the constructor, the /mongo/status service is called 
+    // for each server defined in the list extracted from properties.nodeservercandidates
+    // The idea is to build a list of potential node/express server and flag them
+    // as available or not. 
     constructor () 
     {
-        this.Version = 'axiosclass:1.02, Mar 21 2020 ';
+        this.Version = 'axiosclass:1.04, Mar 21 2020 ';
         this.nodeservers = []; // { nodeserver: status:}
         this.axiosinstance = axios.create({
                 timeout: 2000,
@@ -36,8 +40,30 @@ module.exports =  class axiosclass {
     getVersion() {
         return this.Version;
     }
+    // Returns an array of potential servers and their status
     getNodeServers() {
         return this.nodeservers;
+    }
+    // Returns one usable node server
+    // If none, returns a null
+    getLastActiveNode() {
+      let servercode = null;
+      this.nodeservers.forEach( (node) => {
+        if(node.status === 1) servercode = node.nodeserver;
+      });
+      return servercode;
+    }
+    // Returns the first usable node server
+    // If none, returns a null
+    getFirstActiveNode() {
+      let servercode = null;
+      for(let loop = 0; loop < this.nodeservers.length; ++loop) {
+        if(this.nodeservers[loop].status === 1) { 
+          servercode = this.nodeservers[loop].nodeserver;
+          break;
+        }
+      };
+      return servercode;
     }
     //-----------------------------------------------------------------------------
     // Private functions
