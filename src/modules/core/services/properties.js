@@ -38,8 +38,9 @@
 //    Mar 01 2020   zerasp deployment
 //    Mar 04 2020   camsapi test
 //    Mar 17 2020   ASUSP7 mongodb url updated
+//    Mar 21 2020   nodeservercandidates
 //----------------------------------------------------------------------------
-const Version = 'properties:1.53, Mar 17 2020 ';
+const Version = 'properties:1.55, Mar 21 2020 ';
 
 const axios = require('axios');
 
@@ -51,6 +52,11 @@ const webserverport = process.env.WEBSERVERPORT || 8080;
 // The node server : Put this camspi in your hosts or DNS
 const nodeserver =  process.env.NODESERVER || 'http://camsapi:8081';
 const nodeserverport = process.env.NODESERVERPORT || 8081;
+const nodeservercandidates = [
+    { url: 'http://camsapi:8081'},
+    { url: 'http://localhost:8081'},
+    { url: 'http://zerasp:8081'},
+  ];
 // Mongo DB params
 // const mongodbserver =  process.env.MONGOSERVER || 'mongodb://vboxweb:4100/cams';
 const mongodbserver =  process.env.MONGOSERVER || 'mongodb://localhost:27017/cams';    // Default
@@ -102,6 +108,7 @@ module.exports = {
     mongodbserver: mongodbserver,
     mongolist: mongolist,
     nodeserverport: nodeserverport,
+    nodeservercandidates, nodeservercandidates,
     loggerlevel: loggerlevel,
     nodeserver: nodeserver,
     COREDELAY,
