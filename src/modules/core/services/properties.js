@@ -39,8 +39,9 @@
 //    Mar 04 2020   camsapi test
 //    Mar 17 2020   ASUSP7 mongodb url updated
 //    Mar 21 2020   nodeservercandidates
+//    Mar 22 2020   Add IPs
 //----------------------------------------------------------------------------
-const Version = 'properties:1.55, Mar 21 2020 ';
+const Version = 'properties:1.56, Mar 22 2020 ';
 
 const axios = require('axios');
 
@@ -56,6 +57,8 @@ const nodeservercandidates = [
     { url: 'http://camsapi:8081'},
     { url: 'http://localhost:8081'},
     { url: 'http://zerasp:8081'},
+    { url: 'http://192.168.47.168:8081'}, // For my tab and phone
+    { url: 'http://192.168.47.166:8081'},
   ];
 // Mongo DB params
 // const mongodbserver =  process.env.MONGOSERVER || 'mongodb://vboxweb:4100/cams';

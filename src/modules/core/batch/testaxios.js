@@ -3,12 +3,14 @@
 //
 //    Mar 19 2020     Initial
 //    Mar 21 2020     Spring time and coronavirus
+//    Mar 22 2020     Spring time and coronavirus: few more tests
 //-------------------------------------------------------------------------------
 
-const Version = "testaxios.js:1.12 Mar 21 2020 ";
+const Version = "testaxios.js:1.16 Mar 22 2020 ";
 
 const logger = require("../services/logger");
 const axiosclass = require('../classes/axiosclass');
+const DELAY = 5000;
 //----------------------------------------------------------------------------
 // ussage
 //----------------------------------------------------------------------------
@@ -47,6 +49,35 @@ setTimeout(() => {
     logger.info(Version + '1st Active node is ' + theserver);
   else
     logger.error(Version + 'No active node sorry')
-  console.log('\n\n');
-  process.exit(0);;
-}, 5000)
+  logger.info(Version + 'Selected server : ' + ax.getSelectedServer());
+  // test the get method
+  logger.info(Version + 'get /mongo/status')
+  ax.get('/mongo/status').then( (response) => {
+    console.log('\n\n' + JSON.stringify(response.data));
+  })
+  .catch((error) => {
+    console.log('\n\n' + JSON.stringify(error.message));
+  })
+  // test false url
+  logger.info(Version + 'get /mongo/statusss')
+  ax.get('/mongo/statusss').then( (response) => {
+    console.log('\n\n' + JSON.stringify(response.data));
+  })
+  .catch((error) => {
+    console.log('\n\n' + JSON.stringify(error.message));
+  })
+  // test full url
+  logger.info(Version + 'get https://jsonplaceholder.typicode.com/users')
+  ax.getFull('https://jsonplaceholder.typicode.com/users').then( (response) => {
+    console.log('\n\n' + JSON.stringify(response.data));
+  })
+  .catch((error) => {
+    console.log('\n\n' + JSON.stringify(error.message));
+  })
+  .finally( () => { // Wait a little bit and exit
+    setTimeout( () => {
+      console.log('\n\n');
+      process.exit(0);
+    }, DELAY);
+  })
+}, DELAY)
