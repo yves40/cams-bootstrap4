@@ -18,26 +18,25 @@
     Nov 05 2019     Mongo status service, send back the string. Check
     Nov 29 2019     Investigate timer mechanism
     Feb 26 2020     Mongo status messages
+    Mar 22 2020     New axios class
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
 
 const logger = require('../services/logger');
-
+const axiosclass = require('../classes/axiosclass');
 const properties = require('../services/properties');
 const MONGODELAYCHECK = properties.MONGODELAYCHECK;
 const MONGOUP = properties.MONGOUP;
 const MONGODOWN = properties.MONGODOWN;
 
-let previousmongostate = MONGODOWN;
-
 Vue.use(Vuex);
-
+const ax = new axiosclass();
 /*----------------------------------------------------------------------------
     VUEX states
 ----------------------------------------------------------------------------*/
 const state =  {
-    Version: 'mongoStore:1.83, Feb 26 2020 ',
+    Version: 'mongoStore:1.84, Mar 22 2020 ',
     MAXLOG:16,
     mongodown: true,        // TRUE if mongodb is down
     messagelock: false,     // Just to avoid zillions messages in the console
@@ -69,12 +68,7 @@ const mutations = { // Synchronous
             logger.debug(state.Version + ' get mongo status from ' + properties.nodeserver);
             state.messagelock = true;
         }
-        properties.axioscall(
-            {
-                url: '/mongo/status',
-                method: 'get',
-            }
-        )
+        ax.get('/mongo/status')
         .then((response) => {
                 state.mongodown = response.data.isdown;
                 state.errorlock = false;
