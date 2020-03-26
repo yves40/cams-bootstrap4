@@ -40,8 +40,9 @@
 //    Mar 17 2020   ASUSP7 mongodb url updated
 //    Mar 21 2020   nodeservercandidates
 //    Mar 22 2020   Add IPs
+//    Mar 25 2020   Add symbolic names to nodeservercandidates
 //----------------------------------------------------------------------------
-const Version = 'properties:1.56, Mar 22 2020 ';
+const Version = 'properties:1.57, Mar 25 2020 ';
 
 const axios = require('axios');
 
@@ -54,11 +55,11 @@ const webserverport = process.env.WEBSERVERPORT || 8080;
 const nodeserver =  process.env.NODESERVER || 'http://camsapi:8081';
 const nodeserverport = process.env.NODESERVERPORT || 8081;
 const nodeservercandidates = [
-    { url: 'http://camsapi:8081'},
-    { url: 'http://localhost:8081'},
-    { url: 'http://zerasp:8081'},
-    { url: 'http://192.168.47.168:8081'}, // For my tab and phone
-    { url: 'http://192.168.47.166:8081'},
+    { url: 'http://camsapi:8081', name: 'camsapi'},
+    { url: 'http://localhost:8081', name: 'dev machine'},
+    { url: 'http://zerasp:8081', name: 'Raspberry Pi 4'},
+    { url: 'http://192.168.47.168:8081', name: 'Raspberry Pi 4 / ip'}, // For my tab and phone
+    { url: 'http://192.168.47.166:8081', name: 'vboxnode / ip'},
   ];
 // Mongo DB params
 // const mongodbserver =  process.env.MONGOSERVER || 'mongodb://vboxweb:4100/cams';

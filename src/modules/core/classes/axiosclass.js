@@ -3,6 +3,7 @@
 //
 //    Mar 21   Initial
 //    Mar 22   More methods
+//    Mar 25   Add info to the properties and exploit them
 //----------------------------------------------------------------------------
 const axios = require('axios');
 
@@ -47,18 +48,21 @@ module.exports =  class axiosclass {
     // as available or not. 
     constructor (preferredserver = null) 
     {
-        this.Version = 'axiosclass:1.08, Mar 22 2020 ';
+        this.Version = 'axiosclass:1.09, Mar 25 2020 ';
         this.nodeservers = []; // { nodeserver: status:}
         this.selectedserver = null;
+        this.selectedservername = null;
         // Search for potential servers
         // the selectedserver will be the last in the list which is active
         const servercandidates =  properties.nodeservercandidates;
         for (let loop = 0; loop < servercandidates.length; ++loop ) {
-            this.nodeservers.push({ 'nodeserver':servercandidates[loop].url, 'status': 0 });
+            this.nodeservers.push({ 'nodeserver':servercandidates[loop].url, 'name': '', 'status': 0 });
             checkServer(servercandidates[loop].url).then( (response) => {
               logger.debug(servercandidates[loop].url + ' : ' + response.data.status + ' : ' + response .data.checktime);
               this.nodeservers[loop].status = 1;
+              this.nodeservers[loop].name = servercandidates[loop].name;
               this.selectedserver = servercandidates[loop].url;
+              this.selectedservername = servercandidates[loop].name;
             })
             .catch( (error) => {
                 this.nodeservers[loop].status = 0;
@@ -100,6 +104,10 @@ module.exports =  class axiosclass {
     // Returns the selected server 
     getSelectedServer() {
       return this.selectedserver === null ? 'None': this.selectedserver;
+    }
+    // Returns the selected server 
+    getSelectedServerName() {
+      return this.selectedservername === null ? 'None': this.selectedservername;
     }
     // Simple get request : The URL does not include the server and port
     // It'll be automatically concatenated

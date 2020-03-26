@@ -20,6 +20,7 @@
     Feb 26 2020     Mongo status messages
     Mar 22 2020     New axios class
     Mar 23 2020     More info sent back for mongo status
+    Mar 25 2020     Define a node server symbolic name
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -37,7 +38,7 @@ const ax = new axiosclass();
     VUEX states
 ----------------------------------------------------------------------------*/
 const state =  {
-    Version: 'mongoStore:1.85, Mar 23 2020 ',
+    Version: 'mongoStore:1.86, Mar 25 2020 ',
     MAXLOG:16,
     mongodown: true,        // TRUE if mongodb is down
     mongoserver: '',
@@ -88,7 +89,7 @@ const mutations = { // Synchronous
             }
         })
         .finally(() => {
-            state.mongoserver = ax.getSelectedServer();
+            state.mongoserver = ax.getSelectedServerName();
         });
     },
 };
