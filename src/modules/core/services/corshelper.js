@@ -13,14 +13,16 @@
 //    Feb 26 2020   vboxnode deployment, change a few things about CORS and
 //                  corsclientorigin
 //    Mar 09 2020   zerasp deployment
+//    Mar 26 2020   zerasp deployment with a browser from android tablet
 //----------------------------------------------------------------------------
-const Version = "corshelper:1.27, Mar 09 2020 ";
+const Version = "corshelper:1.28, Mar 26 2020 ";
 
 
 // CORS sites enabled for cross server requests
 // This list gives one valid client per nodejs running node
 const origindef = 'http://localhost:8080';
 const corsclients = [
+  { node: 'zerasp', origin: 'http://192.168.47.168:8088' }, // To access from Galaxy tab (no host file)
   { node: 'zerasp', origin: 'http://zerasp:8088' },
   { node: 'vboxnode', origin: 'http://vboxnode:8088' },
   { node: 'ASUSP4', origin: 'http://localhost:8080' },
