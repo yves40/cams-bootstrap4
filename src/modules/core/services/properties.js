@@ -92,12 +92,7 @@ const jwtconfig = {
     jwtSecret: process.env.NODESECRET || 'thisisthesecretkey' ,
     jwtSession: {session: false},
 };
-// Some axios params
-const axioscall = axios.create({
-    baseURL: nodeserver,
-    timeout: 5000,
-    withCredentials: true,
-  });  
+
 // User session duration in seconds
 const tokenexpirationdelay = 600;
 const tokenexpirationalert = 60;    // Display a message in menu to inform user session is soon expired
@@ -134,5 +129,4 @@ module.exports = {
     jwtconfig,
     tokenexpirationdelay,
     tokenexpirationalert,
-    axioscall,
 }

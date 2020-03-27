@@ -31,6 +31,7 @@ router.get('/logs/list',
         let start = req.query.start;
         let end = req.query.end;
         const mongologs = new mongologgerclass();
+        console.log(JSON.stringify(req.query))
         mongologs.getLogs(lineslimit, severityfilter, messagefilter, start, end).then((logs) => {
             res.status(200).send(logs);
         })

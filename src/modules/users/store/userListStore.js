@@ -10,14 +10,16 @@
     Jan 24 2020   Change ma,agement of empty user list after search 
     Jan 26 2020   Now get the user list with profilecodes
                   Add some methods to colllapse UI in users list
+    Mar 26 2020     Use axiosclass now
+    Mar 27 2020     Use axiosclass now, phase II
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
 
 const logger = require('../../core/services/logger');
 const properties = require('../../core/services/properties');
-const AXIOS = properties.axioscall;
-const datetime = require('../../core/services/datetime')
+const axiosclass = require('../../core/classes/axiosclass');
+const ax = new axiosclass();
 
 Vue.use(Vuex);
 
@@ -27,7 +29,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userListStore:1.17, Jan 27 2020 ',
+        Version: 'userListStore:1.19, Mar 27 2020 ',
         filter: '',     // Filter user list based on the interface field
         userlist: {},
     },
@@ -69,17 +71,10 @@ export default {
         loadUsersList( {commit, state}, filter) {
             return new Promise( (resolve, reject) => {
                 state.filter = filter;
-                AXIOS(
-                    {
-                        method: 'get',
-                        url: '/users/listrequested',
-                        headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
-                        params: {
-                            filter: filter,
-                            attrlist: '_id email name description lastlogin lastlogout created updated profilecode'
-                        },
-                 }
-                )
+                ax.get('/users/listrequested', {
+                    filter: filter,
+                    attrlist: '_id email name description lastlogin lastlogout created updated profilecode'
+                }, { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') })
                 .then((response) => {
                     logger.debug(state.Version + 'Got ' + response.data.length + ' user(s)');
                     commit('refreshUsersList', response.data);

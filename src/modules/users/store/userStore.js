@@ -36,15 +36,18 @@
     Jan 27 2020  theuser changed to loggeduser
     Jan 29 2020  Bug with update when editiong another user. Do not commit the loggeduser
                  Implement user generic delete (admin mode)
+    Mar 26 2020  Use axiosclass now
+    Mar 27 2020  Use axiosclass now, pahse II
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
 
 const logger = require('../../core/services/logger');
 const properties = require('../../core/services/properties');
-const AXIOS = properties.axioscall;
 const datetime = require('../../core/services/datetime')
 const jwthelper = require('../services/jwthelper');
+const axiosclass = require('../../core/classes/axiosclass');
+const ax = new axiosclass();
 
 Vue.use(Vuex);
 
@@ -54,7 +57,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:2.11, Jan 29 2020 ',
+        Version: 'userstore:2.15, Mar 27 2020 ',
         loggeduser: null,
         token: null,
         tokenobject: '{}',
@@ -128,17 +131,10 @@ export default {
         },
         updateuserlogs(state, severity = undefined) {
             if (severity === undefined) severity =  [ "0", "1", "2", "3", "4" ]; 
-            properties.axioscall(
-                {
-                    method: 'post',
-                    url: '/users/mylog',
-                    headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
-                    data: {
-                        "severity": severity,
-                        "lineslimit": 40,     
-                    }
-                }
-            )
+            ax.post('/users/mylog',{
+                "severity": severity,
+                "lineslimit": 40,     
+            }, { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') } )
             .then((response) => { 
                     state.userlogs = response.data; 
                     logger.debug(state.Version + 'Got ' + state.userlogs.length + ' log entries');
@@ -161,13 +157,7 @@ export default {
         },
         delete(state, payload = undefined) {
             if (payload === undefined) { // Delete ME !!!
-                AXIOS(
-                    {
-                        method: 'post',
-                        url: '/users/delete/email',
-                        headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
-                     }
-                )
+                ax.post('/users/delete/email', null, { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') })
                 .then((response) => {
                     logger.debug(state.Version + response.data);
                     }
@@ -178,16 +168,9 @@ export default {
                 );
             }
             else {      // Delete a specific user
-                AXIOS(
-                    {
-                        method: 'post',
-                        url: '/users/delete',
-                        headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
-                        data: {
-                            email: payload.email
-                        }
-                     }
-                )
+                ax.post('/users/delete', {
+                    email: payload.email
+                },{ 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') } )
                 .then((response) => {
                     logger.debug(state.Version + response.data);
                     }
@@ -207,17 +190,10 @@ export default {
                 // Session about to expire ?
                 if (state.tokenremainingtimeraw < properties.tokenexpirationalert ) {
                     if(!state.tokenalert) {
-                        properties.axioscall(
-                            {
-                                method: 'post',
-                                url: '/users/messages',
-                                headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
-                                data: {
-                                    message: 'Session soon expired for user ' + state.loggeduser.model.email,
-                                    severity: 'W',
-                                },
-                             }
-                        )
+                        ax.post('/users/messages', {
+                            message: 'Session soon expired for user ' + state.loggeduser.model.email,
+                            severity: 'W',
+                        }, { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') })
                         .then((response) => {
                             },
                         )
@@ -231,17 +207,10 @@ export default {
                 } 
                 // Session expired ?
                 if (state.tokenremainingtimeraw === 0) {
-                    properties.axioscall(
-                        {
-                            method: 'post',
-                            url: '/users/messages',
-                            headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
-                            data: {
-                                message: 'Session killed  for user ' + state.loggeduser.model.email,
-                                severity: 'F',
-                            },
-                         }
-                    )
+                    ax.post('/users/messages', {
+                        message: 'Session killed  for user ' + state.loggeduser.model.email,
+                        severity: 'F',
+                    }, { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') })
                     .then((response) => {
                     },
                     )
@@ -267,15 +236,10 @@ export default {
         // be able to call another vue
         login({commit, state}, payload) {
             return new Promise((resolve, reject) => {
-                properties.axioscall(
-                    {
-                        method: 'post',
-                        url: '/users/login',
-                        data: {
+                ax.post('/users/login', {
                             email: payload.email,
                             password: payload.password,
-                        },
-                     }
+                        }
                 )
                 .then((response) => {
                     window.localStorage.setItem('jwt', response.data.token);
@@ -296,16 +260,7 @@ export default {
         // Logout action -------------------------------------------------------------------
         logout({commit, state}, payload) {
             return new Promise((resolve, reject) => {
-                properties.axioscall(
-                    {
-                        method: 'post',
-                        url: '/users/logout',
-                        headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
-                        data: {
-                            mode: payload.mode,
-                        }
-                    }
-                )
+                ax.post('/users/logout', {mode: payload.mode}, { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') })
                 .then((response) => {
                         window.localStorage.setItem('jwt', response.data.token);
                         resolve('User ' +  response.data.email +  ' disconnected');
@@ -326,19 +281,13 @@ export default {
         // Register action -------------------------------------------------------------------
         register({commit, state}, payload) {
             return new Promise((resolve, reject) => {
-                properties.axioscall(
-                    {
-                        method: 'post',
-                        url: '/users/register',
-                        data: {
-                            name : payload.name,
-                            email: payload.email,
-                            userdescription: payload.userdescription,
-                            password: payload.password,
-                            privs: payload.privs,
-                        },
-                    }
-                )
+                ax.post('/users/register', {
+                    name : payload.name,
+                    email: payload.email,
+                    userdescription: payload.userdescription,
+                    password: payload.password,
+                    privs: payload.privs,
+                })
                 .then((response) => {
                         commit('deleteloginstate');
                         resolve(response.data.message);
@@ -354,19 +303,12 @@ export default {
         // Update action -------------------------------------------------------------------
         update({commit, state}, payload) {
             return new Promise((resolve, reject) => {
-                properties.axioscall(
-                    {
-                        method: 'post',
-                        url: '/users/update',
-                        headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
-                        data: {
-                            email: payload.email,
-                            name : payload.name,
-                            description: payload.description,
-                            privs: payload.privs,
-                        },
-                    }
-                )
+                ax.post('/users/update',{
+                    email: payload.email,
+                    name : payload.name,
+                    description: payload.description,
+                    privs: payload.privs,
+                }, { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') } )
                 .then((response) => {
                     if(payload.updatemode) {      // Don't commit if this is not the logged user editiong himself
                         commit('update', { name: payload.name, description: payload.description,

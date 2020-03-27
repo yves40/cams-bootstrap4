@@ -9,6 +9,8 @@
     Feb 09 2020     Add dates to filter results
     Feb 10 2020     Date parameters 
     Feb 12 2020     Max log list length from properties
+    Mar 26 2020     Use axiosclass now
+    Mar 27 2020     Use axiosclass now, phase II
 ----------------------------------------------------------------------------*/
 
 import Vue from 'vue';
@@ -16,6 +18,8 @@ import Vuex from 'vuex'
 import logger from '../services/logger';
 import properties from '../services/properties'
 import datetime from '../services/datetime'
+const axiosclass = require('../../core/classes/axiosclass');
+const ax = new axiosclass();
 
 Vue.use(Vuex);
 export default { 
@@ -24,7 +28,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state:  {
-        Version: 'logstore.js:1.25, Feb 12 2020 ',
+        Version: 'logstore.js:1.27, Mar 27 2020 ',
         today: datetime.getDate(),
         hourminute: datetime.getShortTime(),
         updatecount: 0,
@@ -74,19 +78,14 @@ export default {
                 state.startdate = payload[2];
                 state.enddate = payload[3];
             }
-            properties.axioscall(
-            {
-                method: 'get',
-                url: '/logs/list',
-                headers: { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') },
-                params: {
-                    "severityfilter": state.severityfilter,
-                    "lineslimit": properties.LOGLISTMAX,
-                    "messagefilter": state.messagefilter,
-                    "start": state.startdate,
-                    "end": state.enddate,
-                }
-            }
+            ax.get('/logs/list',{
+                "severityfilter": state.severityfilter,
+                "lineslimit": properties.LOGLISTMAX,
+                "messagefilter": state.messagefilter,
+                "start": state.startdate,
+                "end": state.enddate,
+                },  
+                { 'Authorization': 'jwt ' + window.localStorage.getItem('jwt') }
             )
             .then((response) => { 
                 commit('updateLogs', response.data);

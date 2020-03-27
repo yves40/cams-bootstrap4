@@ -4,6 +4,7 @@
 //    Mar 21   Initial
 //    Mar 22   More methods
 //    Mar 25   Add info to the properties and exploit them
+//    Mar 27   Work on post and get with params
 //----------------------------------------------------------------------------
 const axios = require('axios');
 
@@ -48,7 +49,7 @@ module.exports =  class axiosclass {
     // as available or not. 
     constructor (preferredserver = null) 
     {
-        this.Version = 'axiosclass:1.09, Mar 25 2020 ';
+        this.Version = 'axiosclass:1.11, Mar 27 2020 ';
         this.nodeservers = []; // { nodeserver: status:}
         this.selectedserver = null;
         this.selectedservername = null;
@@ -109,16 +110,44 @@ module.exports =  class axiosclass {
     getSelectedServerName() {
       return this.selectedservername === null ? 'None': this.selectedservername;
     }
-    // Simple get request : The URL does not include the server and port
+    //----------------------------------------------------------------------------------------
+    // get request : The URL does not include the server and port
     // It'll be automatically concatenated
-    get(url) {
+    //----------------------------------------------------------------------------------------
+    get(url, data = null, headers = null) {
       return new Promise( (resolve, reject) => {
+        let params = {
+          baseURL: this.selectedserver,
+          url: url,
+          method: 'get',
+        }
+        if(data) params.params = data;
+        if(headers) params.headers = headers;
         axiosinstance(
-          {
-              baseURL: this.selectedserver,
-              url: url,
-              method: 'get',
-          }
+          params
+        ).then( (response) => {
+          resolve(response);
+        })
+        .catch((error)  => {
+          reject(error);
+        })
+      });      
+    }
+    //----------------------------------------------------------------------------------------
+    // post request : The URL does not include the server and port
+    // It'll be automatically concatenated
+    //----------------------------------------------------------------------------------------
+    post(url, data = null, headers = null) {
+      return new Promise( (resolve, reject) => {
+        let params = {
+          baseURL: this.selectedserver,
+          url: url,
+          method: 'post',
+        }
+        if(data) params.data = data;
+        if(headers) params.headers = headers;
+        axiosinstance(
+          params
         ).then( (response) => {
           resolve(response);
         })
