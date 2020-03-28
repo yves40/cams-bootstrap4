@@ -14,8 +14,9 @@
 //                  corsclientorigin
 //    Mar 09 2020   zerasp deployment
 //    Mar 26 2020   zerasp deployment with a browser from android tablet
+//    Mar 28 2020   Trying to solve multi test environments problems
 //----------------------------------------------------------------------------
-const Version = "corshelper:1.28, Mar 28 2020 ";
+const Version = "corshelper:1.30, Mar 28 2020 ";
 
 
 // CORS sites enabled for cross server requests
@@ -50,7 +51,7 @@ function checkOrigin(origin, callback) {
     callback(null, true);
   }
   else { // origin is specified
-    if (getClientSite() === origin) {
+    if (getClientSite(origin.split(':')[1].substr(2)) === origin) {
       callback(null, true)
     } else {
       logger.error(Version + (origin === null ? 'Local node': origin) + ' not allowed by CORS');
