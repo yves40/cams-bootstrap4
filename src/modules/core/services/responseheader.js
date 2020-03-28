@@ -13,7 +13,7 @@ const Version = 'responseheader.js:1.05, Feb 26 2020 ';
 // Define the function installed by Express in server.js initialization
 
 const responseheader = (req, res, next ) => {
-  res.set('Access-Control-Allow-Origin', corshelper.getClientSite());   // Set the client address for the server
+  res.set('Access-Control-Allow-Origin', corshelper.getClientSite(req.hostname));   // Set the client address for the server
                                                               // to inform the client browser that he will 
                                                               // accept requests from him : can only specify one URI
   res.set('Access-Control-Allow-Credentials', 'true');
