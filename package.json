@@ -13,7 +13,8 @@
     "devxr": "cross-env NODE_ENV=development webpack-dev-server --hot --host zerasp --port 8088",
     "stopserver": "pm2 delete server",
     "stopweb": "pm2 delete webvue",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
+    "cypress": "cypress open"
   },
   "dependencies": {
     "axios": "^0.19.0",
