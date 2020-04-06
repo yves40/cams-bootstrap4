@@ -15,8 +15,9 @@
 //    Mar 09 2020   zerasp deployment
 //    Mar 26 2020   zerasp deployment with a browser from android tablet
 //    Mar 28 2020   Trying to solve multi test environments problems
+//    Apr 06 2020   Tests for corsclient
 //----------------------------------------------------------------------------
-const Version = "corshelper:1.30, Mar 28 2020 ";
+const Version = "corshelper:1.31, Apr 06 2020 ";
 
 
 // CORS sites enabled for cross server requests
@@ -41,7 +42,7 @@ function getClientSite(nodename) {
       break;
     }
   }
-  // logger.debug(Version + 'origin identified as ' + origin + ' for node ' +  nodename) ;
+  logger.debug(Version + 'nodename ' + nodename + ' origin ' +   origin ) ;
   return origin;
 }
 
