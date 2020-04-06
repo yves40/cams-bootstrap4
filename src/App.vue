@@ -30,7 +30,8 @@
   Jan 26 2020   User admin menu modified to edit a user profile in ADMIN mode
   Jan 29 2020   Menu entry text modified
                 Start work on superadmin log browser vue
-  Feb 12 2020   user admin : eidt and modify now accessible through the list of users
+  Feb 12 2020   user admin : edit and modify now accessible through the list of users
+  Apr 06 2020   Transmit host name when created to the Vuex store
 -->
 
 <template>
@@ -112,7 +113,7 @@ export default {
   name: "app",
   data() {
       return {
-        version: "Cams Manager 2.37, Feb 12 2020 ",
+        version: "Cams Manager 2.38, Apr 06 2020 ",
         copyright: "oldtimerSoft",
         // These arrays are defining the displayed menus
         // enableflag drives the visibility of the URL
@@ -213,6 +214,7 @@ export default {
 
   mounted() {
     this.$store.dispatch("corestore/settimer");
+    this.$store.dispatch("mongostore/setNodeServer", { loc: window.location.hostname });
     this.$store.dispatch('mongostore/setMongoTimer');  // Used to periodically check mongodb server status
   },
 

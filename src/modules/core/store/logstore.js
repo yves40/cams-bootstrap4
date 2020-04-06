@@ -11,6 +11,7 @@
     Feb 12 2020     Max log list length from properties
     Mar 26 2020     Use axiosclass now
     Mar 27 2020     Use axiosclass now, phase II
+    Apr 06 2020     Use axiosclass now, phase III, modifed constructor
 ----------------------------------------------------------------------------*/
 
 import Vue from 'vue';
@@ -19,7 +20,7 @@ import logger from '../services/logger';
 import properties from '../services/properties'
 import datetime from '../services/datetime'
 const axiosclass = require('../../core/classes/axiosclass');
-const ax = new axiosclass();
+let ax = null;
 
 Vue.use(Vuex);
 export default { 
@@ -28,7 +29,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state:  {
-        Version: 'logstore.js:1.27, Mar 27 2020 ',
+        Version: 'logstore.js:1.32, Apr 06 2020 ',
         today: datetime.getDate(),
         hourminute: datetime.getShortTime(),
         updatecount: 0,
@@ -65,6 +66,9 @@ export default {
         resetDates(state) {
             state.startdate = datetime.getDateBrowserFormat();
             state.enddate = datetime.getDateBrowserFormat(-10);
+        },
+        searchNodeServer(state, hostname) {
+            ax = new axiosclass(hostname);
         }
     },
     /*----------------------------------------------------------------------------
@@ -98,6 +102,9 @@ export default {
         },
         resetDates( { commit } ) {
             commit('resetDates');
+        },
+        setNodeServer( { commit }, payload) {
+            commit('searchNodeServer', payload.loc);
         }
     }   
 }

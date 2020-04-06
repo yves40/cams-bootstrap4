@@ -1,10 +1,11 @@
 //----------------------------------------------------------------------------
 //    axiosclass.js
 //
-//    Mar 21   Initial
-//    Mar 22   More methods
-//    Mar 25   Add info to the properties and exploit them
-//    Mar 27   Work on post and get with params
+//    Mar 21 2020   Initial
+//    Mar 22 2020   More methods
+//    Mar 25 2020   Add info to the properties and exploit them
+//    Mar 27 2020   Work on post and get with params
+//    Apr 06 2020   Constructor now receives the web host name
 //----------------------------------------------------------------------------
 const axios = require('axios');
 
@@ -49,26 +50,39 @@ module.exports =  class axiosclass {
     // as available or not. 
     constructor (preferredserver = null) 
     {
-        this.Version = 'axiosclass:1.11, Mar 27 2020 ';
+        this.Version = 'axiosclass:1.19, Apr 06 2020 ';
         this.nodeservers = []; // { nodeserver: status:}
         this.selectedserver = null;
         this.selectedservername = null;
-        // Search for potential servers
-        // the selectedserver will be the last in the list which is active
         const servercandidates =  properties.nodeservercandidates;
-        for (let loop = 0; loop < servercandidates.length; ++loop ) {
-            this.nodeservers.push({ 'nodeserver':servercandidates[loop].url, 'name': '', 'status': 0 });
-            checkServer(servercandidates[loop].url).then( (response) => {
-              logger.debug(servercandidates[loop].url + ' : ' + response.data.status + ' : ' + response .data.checktime);
-              this.nodeservers[loop].status = 1;
-              this.nodeservers[loop].name = servercandidates[loop].name;
+        if (preferredserver) {
+          for (let loop = 0; loop < servercandidates.length; ++loop ) {
+            if(servercandidates[loop].url.split(':')[1].substr(2) === preferredserver) {
+              logger.debug(this.Version + 'Selected nodeJS server : ' + servercandidates[loop].url);
+              this.nodeservers.push({ 'nodeserver':servercandidates[loop].url, 'name': servercandidates[loop].name, 'status': 1 });
               this.selectedserver = servercandidates[loop].url;
               this.selectedservername = servercandidates[loop].name;
-            })
-            .catch( (error) => {
-                this.nodeservers[loop].status = 0;
-                logger.error(servercandidates[loop].url + ' : ' + error);
-            })          
+              break;
+            }
+          }
+        }
+        else {    // Should never go here
+          // Search for potential servers
+          // the selectedserver will be the last in the list which is active
+          for (let loop = 0; loop < servercandidates.length; ++loop ) {
+              this.nodeservers.push({ 'nodeserver':servercandidates[loop].url, 'name': '', 'status': 0 });
+              checkServer(servercandidates[loop].url).then( (response) => {
+                logger.debug(servercandidates[loop].url + ' : ' + response.data.status + ' : ' + response .data.checktime);
+                this.nodeservers[loop].status = 1;
+                this.nodeservers[loop].name = servercandidates[loop].name;
+                this.selectedserver = servercandidates[loop].url;
+                this.selectedservername = servercandidates[loop].name;
+              })
+              .catch( (error) => {
+                  this.nodeservers[loop].status = 0;
+                  logger.error(servercandidates[loop].url + ' : ' + error);
+              })          
+          }  
         }
     } 
     //------------------------------------------------------------------------

@@ -10,6 +10,7 @@
   Feb 09 2020   Add dates to filter results
   Feb 10 2020   Date filters
   Feb 12 2020   Date filters, and list display
+  Apr 06 2020   Transmit host name when created to the Vuex store
 
 -->
 <template>
@@ -102,7 +103,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Logs 1.56, Feb 12 2020 ",
+        version: "Logs 1.57, Apr 06 2020 ",
         all_logs: [ ],
         fields: [         // Some displayed fields in the table
           {key: 'timestamp', label: 'Time', sortable:true},
@@ -179,6 +180,7 @@ export default {
   // ------------------------------------------------------------------------------------------------------------
   created() {
     //this.$parent.disableMenu('logs');
+    this.$store.dispatch('logstore/setNodeServer', { loc: window.location.hostname });
     this.$store.dispatch('logstore/resetDates');
     this.$store.dispatch('logstore/loadLogs');
   },

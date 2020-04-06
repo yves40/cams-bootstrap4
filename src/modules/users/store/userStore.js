@@ -38,6 +38,7 @@
                  Implement user generic delete (admin mode)
     Mar 26 2020  Use axiosclass now
     Mar 27 2020  Use axiosclass now, pahse II
+    Apr 06 2020     Use axiosclass now, phase III, modifed constructor
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -47,7 +48,7 @@ const properties = require('../../core/services/properties');
 const datetime = require('../../core/services/datetime')
 const jwthelper = require('../services/jwthelper');
 const axiosclass = require('../../core/classes/axiosclass');
-const ax = new axiosclass();
+let ax = null;
 
 Vue.use(Vuex);
 
@@ -57,7 +58,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userstore:2.15, Mar 27 2020 ',
+        Version: 'userstore:2.16, Apr 06 2020 ',
         loggeduser: null,
         token: null,
         tokenobject: '{}',
@@ -225,6 +226,9 @@ export default {
                     state.logrefresh = false;
                 }
             }
+        },
+        searchNodeServer(state, hostname) {
+            ax = new axiosclass(hostname);
         }
     },
     /*----------------------------------------------------------------------------
@@ -343,7 +347,10 @@ export default {
         {
             logger.debug(state.Version + 'Deleting now ' + payload.email);
             commit('delete', { email: payload.email } );
-        }
+        },
+        setNodeServer( { commit }, payload) {
+            commit('searchNodeServer', payload.loc);
+        }    
     },
 }
 

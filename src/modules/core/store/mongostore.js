@@ -21,6 +21,7 @@
     Mar 22 2020     New axios class
     Mar 23 2020     More info sent back for mongo status
     Mar 25 2020     Define a node server symbolic name
+    Apr 06 2020     Use axiosclass now, phase III, modifed constructor
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -33,12 +34,12 @@ const MONGOUP = properties.MONGOUP;
 const MONGODOWN = properties.MONGODOWN;
 
 Vue.use(Vuex);
-const ax = new axiosclass();
+let ax = null;
 /*----------------------------------------------------------------------------
     VUEX states
 ----------------------------------------------------------------------------*/
 const state =  {
-    Version: 'mongoStore:1.86, Mar 25 2020 ',
+    Version: 'mongoStore:1.87, Apr 06 2020 ',
     MAXLOG:16,
     mongodown: true,        // TRUE if mongodb is down
     mongoserver: '',
@@ -92,6 +93,9 @@ const mutations = { // Synchronous
             state.mongoserver = ax.getSelectedServerName();
         });
     },
+    searchNodeServer(state, hostname) {
+        ax = new axiosclass(hostname);
+    }
 };
 /*----------------------------------------------------------------------------
     VUEX actions
@@ -106,6 +110,9 @@ const actions = { // Asynchronous
             context.commit('updateMongoStatus')
             }, MONGODELAYCHECK);
     },
+    setNodeServer( { commit }, payload) {
+        commit('searchNodeServer', payload.loc);
+    }
 };
 
 export default { 

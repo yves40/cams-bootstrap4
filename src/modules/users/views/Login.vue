@@ -22,6 +22,7 @@
   Dec 21 2019   Manage the delete me menu
   Jan 02 2020   Menu management
   Jan 17 2020   Buttons size and playing with toggleable breakpoints
+  Apr 06 2020   Transmit host name when created to the Vuex store
 -->
 <template>
   <div>
@@ -100,7 +101,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "Login 1.86, Jan 17 2020 ",
+        version: "Login 1.87, Apr 06 2020 ",
         email: 'yves@free.fr',
         password: 'manager',
       };
@@ -132,7 +133,8 @@ export default {
   },  
   // ------------------------------------------------------------------------------------------------------------
   created() {
-          this.$parent.setupMenus('login');
+      this.$store.dispatch('userstore/setNodeServer', { loc: window.location.hostname });
+      this.$parent.setupMenus('login');
   },
   beforeDestroy() {
     this.$parent.enableMenu('login');

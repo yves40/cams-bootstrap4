@@ -12,6 +12,7 @@
                   Add some methods to colllapse UI in users list
     Mar 26 2020     Use axiosclass now
     Mar 27 2020     Use axiosclass now, phase II
+    Apr 06 2020     Use axiosclass now, phase III, modifed constructor
 ----------------------------------------------------------------------------*/
 import Vue from 'vue';  
 import Vuex from 'vuex';
@@ -19,7 +20,7 @@ import Vuex from 'vuex';
 const logger = require('../../core/services/logger');
 const properties = require('../../core/services/properties');
 const axiosclass = require('../../core/classes/axiosclass');
-const ax = new axiosclass();
+let ax = null;
 
 Vue.use(Vuex);
 
@@ -29,7 +30,7 @@ export default {
         VUEX states
     ----------------------------------------------------------------------------*/
     state: {
-        Version: 'userListStore:1.19, Mar 27 2020 ',
+        Version: 'userListStore:1.20, Apr 06 2020 ',
         filter: '',     // Filter user list based on the interface field
         userlist: {},
     },
@@ -62,7 +63,10 @@ export default {
             state.userlist.forEach(element => {
                 element.show = true;
             });
-        }
+        },
+        searchNodeServer(state, hostname) {
+            ax = new axiosclass(hostname);
+        }    
     },
     /*----------------------------------------------------------------------------
         VUEX actions (ASynchronous) 
@@ -94,7 +98,10 @@ export default {
         // Set the expanded flag into the user list
         expandAll( {commit }) {
             commit('expand');
-        }
+        },
+        setNodeServer( { commit }, payload) {
+            commit('searchNodeServer', payload.loc);
+        }    
     }
 }
 

@@ -6,6 +6,7 @@
   Dec 21 2019   Use swal from bootstrap-sweetalert
   Jan 16 2020   Better logic on user deletion service call
   Jan 29 2020   Generic delete for any user : User object parameter passed
+  Apr 06 2020   Transmit host name when created to the Vuex store
 
 -->
 <template>
@@ -64,13 +65,14 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      version: "Delete 1.22, Jan 29 2020",
+      version: "Delete 1.23, Apr 06 2020",
       selfedit: true,
       targetuser: null,
     };
   },
  
  created() {
+    this.$store.dispatch("userstore/setNodeServer", { loc: window.location.hostname });
     this.$parent.disableMenu('deleteme');
     if ( this.$route.params.email !== undefined) {
       this.selfedit = false;

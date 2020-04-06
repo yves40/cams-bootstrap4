@@ -11,6 +11,7 @@
                 Add buttons (collapse, expand...)
   Jan 27 2020   Add a user edit button
   Jan 29 2020   Add a user delete button
+  Apr 06 2020   Transmit host name when created to the Vuex store
 -->
 <template>
   <div>
@@ -111,7 +112,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
       return {
-        version: "List 1.69, Jan 29 2020 ",
+        version: "List 1.70, Apr 06 2020 ",
         timeoutsid: null,
       }
   },
@@ -166,6 +167,7 @@ export default {
   
   // ------------------------------------------------------------------------------------------------------------
   created() {
+    this.$store.dispatch("userliststore/setNodeServer", { loc: window.location.hostname });
     this.$store.dispatch('userliststore/loadUsersList', this.emailfilter);
     this.$parent.disableMenu('listusers');
   },
