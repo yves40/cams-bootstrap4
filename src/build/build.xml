@@ -7,6 +7,7 @@
     Mar 01 2020       Deployment on zerasp, and tests
     Mar 02 2020       Reorg of deployment directories 
     Mar 03 2020       Add files for the root account
+    May 10 2020       Playing with raspberry, add batch testing code
 
 ****************************************************************************************************** -->
 <project name="assessment" default="help" basedir="." >
@@ -17,6 +18,7 @@
         <echo message=""></echo>
         <echo message="************************ @  .......... camsvboxnode : cams on VBOX VM vboxnode"></echo>
         <echo message="************************ @  .......... camszerasp   : cams on Raspberry pi"></echo>
+        <echo message="************************ @  .......... batchzerasp  : Utils batch for node on Raspberry pi"></echo>
         <echo message=""></echo>
     </target>
 
@@ -75,6 +77,44 @@
     </target>
 
     <!-- ===================================================================================== -->
+    <!-- Hosts deployment-->
+    <!-- ===================================================================================== -->
+    <target name="batchzerasp" depends="cleanup">
+        <echo message="************************ @ deploy node cams to ${zerasp.server}"></echo>
+        <antcall target="nodebatchkit">
+            <param name="shellnode" value="zerasp"/>
+        </antcall>
+        <!-- The application files -->
+        <antcall target="serverupdate">
+            <param name="remoteserver" value="${zerasp.server}"/>
+            <param name="localdir" value="${build.workdir}"/>
+            <param name="localzip" value="batchkit.zip"/>
+            <param name="remotenetdir" value="${zerasp.approot}/cams"/>
+            <param name="remoteaccount" value="${zerasp.nodeuser}"/>
+            <param name="remoteaccountpass" value="${zerasp.nodepassword}"/>
+        </antcall>
+        <!-- Manage the .bashrc file -->
+        <sshexec command="cp ${zerasp.approot}/cams/src/shell/zerasp/node/.bashrc ~/.bashrc" host="${zerasp.server}" username="${zerasp.nodeuser}"
+                 password="${zerasp.nodepassword}"
+                 trust="true" verbose="${zip.verbosemode}"/>
+        <!-- chmod for shell script -->
+        <sshexec command="chmod +x ${zerasp.approot}/cams/src/shell/*.sh" host="${zerasp.server}" username="${zerasp.nodeuser}"
+                 password="${zerasp.nodepassword}"
+                 trust="true" verbose="${zip.verbosemode}"/>
+    </target>
+
+    <!-- ===================================================================================== -->
+    <!-- node Vue web app kit building -->
+    <!-- ===================================================================================== -->
+    <target name="nodebatchkit">
+        <copy todir="${build.workdir}" verbose="${copy.verbosemode}">
+            <fileset dir="${build.srcdir}" casesensitive="true">
+                <include name="**/sandbox/batch/*.js"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- ===================================================================================== -->
     <!-- node Vue web app kit building -->
     <!-- ===================================================================================== -->
     <target name="nodekit">
@@ -108,7 +148,6 @@
         </copy>
         -->
     </target>
-
     <!-- ===================================================================================== -->
     <!-- Generic task -->
     <!-- ===================================================================================== -->
