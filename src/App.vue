@@ -32,6 +32,7 @@
                 Start work on superadmin log browser vue
   Feb 12 2020   user admin : edit and modify now accessible through the list of users
   Apr 06 2020   Transmit host name when created to the Vuex store
+  Jul 27 2020   Vue3 tests
 -->
 
 <template>
@@ -168,12 +169,13 @@ export default {
             ]
           },
           {
-            text: "About",
+            text: "Tools",
             enableflag: true,
             navoptions: [
               {url: "about",params: {},text: "about",enableflag: true,disableflag: false, },
+              {url: "vue3test",params: {},text: "vue3test",enableflag: true,disableflag: false, },
             ]
-          }
+          },
         ]
       };
     },

@@ -9,8 +9,8 @@
     Dec 05 2019   WIP on session message in menu
     Dec 13 2019   Log window styles 
     Dec 31 2019   Log list styles.
-    feb 05 2020   Log list styles..
-
+    Feb 05 2020   Log list styles..
+    Jul 27 2020   Play with Vue3
 */
 
 * {
@@ -75,3 +75,10 @@ ul {
 div.inlineright { float:right; }
 
 .small { font-size: small; }
+
+.vue3 {
+  margin-left: auto;
+  margin-right: auto;
+  width: 30em;
+  padding: 1em;
+}

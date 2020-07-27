@@ -129,6 +129,7 @@
                 <include name="**/*.vue"/>
                 <include name="**/*.css"/>
                 <include name="**/*.png"/>
+                <include name="**/*.jpg"/>
                 <include name="**/*.ico"/>
                 <include name="**/.package.json"/>
                 <include name="**/.babelrc"/>
