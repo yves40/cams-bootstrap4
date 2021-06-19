@@ -6,9 +6,10 @@
 #                 Deployment campaign on zerasp ;-)
 #	  Mar 02 2020  	Unified for all manage nodes
 #	  Mar 09 2020  	Refresh for zerasp
+#	  Jun 19 2021  	mongodb service changed to mongod service
 #--------------------------------------------------------------------------------
-VERSION="admin.sh v 1.12, "
-VERSIONDATE="Mar 09 2020 "
+VERSION="admin.sh v 1.13, "
+VERSIONDATE="Jun 19 2021 "
 LOG="/tmp/nodeadmin.log"
 CAMSHOME='/home/node/cams'
 #--------------------------------------------------------------------------------
@@ -84,7 +85,7 @@ Start()
             ;;
     MONGO)  log "Start mongodb"
             log "#3 the DB server: log in mongo account"
-            sudo systemctl start mongodb.service
+            sudo systemctl start mongod.service
             ;;
   esac
 
